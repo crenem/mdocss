@@ -146,7 +146,7 @@ Reference academic styles are implementation aids, not claims of endorsement by 
 
 ## v0.9 — Release candidate
 
-**Draft status:** preparation is underway. Normative wording, versioning guidance, migration notes, implementation guidance, semantic-role coverage, schema/example consistency tests, and a release-readiness audit now exist. Remaining blockers are tracked in GitHub issues #2–#5.
+**Draft status:** preparation is underway. Normative wording, versioning guidance, migration notes, implementation guidance, semantic-role coverage, schema/example consistency tests, and a release-readiness audit now exist. A second standard-library Python implementation now exercises the same public conformance corpus independently of the Node reference code. Remaining blockers are tracked in GitHub issues #2–#5.
 
 **Goal:** freeze the 1.0 contract and search for interoperability failures.
 
@@ -158,7 +158,7 @@ Reference academic styles are implementation aids, not claims of endorsement by 
 - semantic profile reviewed for unnecessary classes
 - public implementation guide
 - migration notes from all 0.x drafts
-- at least two independently functioning reader implementations or code paths tested against the same corpus
+- at least two independently functioning reader implementations or code paths tested against the same corpus — implemented in Node and independently authored Python validation/recovery code; third-party review remains desirable
 - release-candidate feedback period
 
 **Exit condition:** no known breaking changes required for ordinary 0.9 documents to become 1.0 documents.
