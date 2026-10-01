@@ -161,6 +161,8 @@ For MDOCSS 0.1, `entrypoint`, if supplied, MUST equal `root.md`.
 
 During the 0.x draft period, `specVersion` is OPTIONAL. Authors and tools that emit a manifest SHOULD include it. The version-compatibility model is defined in `VERSIONING.md`.
 
+The frozen MDOCSS 1.0 rule is that a package MAY still omit `manifest.json`, but when a manifest is present in a 1.0-authored package it MUST declare a 1.0.x `specVersion`. Same-major newer-minor 1.x documents are read forward-compatibly according to `VERSIONING.md`; that reading rule does not make a 1.1 document conforming output for an exact 1.0 authoring target.
+
 Unknown manifest fields SHOULD be preserved by editors and MUST NOT cause rejection unless they violate a security or conformance requirement.
 
 ## 7. Assets and path resolution
