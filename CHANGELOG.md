@@ -5,7 +5,8 @@
 - Froze the exact 1.0 release-candidate manifest contract at `schema/manifest-1.0.schema.json` and closed the version-negotiation design blocker.
 - Aligned `SPEC.md` with stylesheet constraints already enforced by schema/package validation: non-empty declarations, stable ASCII IDs, `.css` targets, and exact regular UTF-8 stylesheet resolution.
 - Escaped manifest-derived language metadata before inserting it into generated browser/Obsidian iframe markup.
-- Added a headless Chromium runtime smoke gate covering real package loading, seven-profile style switching, semantic-content invariance, local assets, blocked remote resources, print delegation, hostile archive rejection, ZIP-profile rejection, and metadata-escaping behavior.
+- Added a hosted-Chrome runtime smoke gate covering real package loading, seven-profile style switching, semantic-content invariance, source-package invariance, local assets, blocked remote resources, print delegation, hostile archive rejection, ZIP-profile rejection, and metadata-escaping behavior.
+- Fixed a browser-viewer bug discovered by the runtime gate where author CSS on `.document-frame` overrode the HTML `hidden` state and could leave stale content visible after a rejected package.
 
 - Defined ZIP-based MDOCSS container.
 - Required `root.md` canonical content.
