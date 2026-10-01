@@ -21,9 +21,21 @@ async function walk(dir, base = dir) {
 }
 
 function dangerous(name) {
-  if (!name || name.startsWith("/") || name.includes("\\")) return true;
+  if (!name || name.includes("\0")) return true;
+  if (name.startsWith("/") || name.startsWith("\\")) return true;
+  if (/^[A-Za-z]:/.test(name)) return true;
+  if (name.includes("\\")) return true;
   const parts = name.split("/");
   return parts.includes("..");
+}
+
+async function utf8Text(item) {
+  const bytes = await item.async("uint8array");
+  return new TextDecoder("utf-8", { fatal: true }).decode(bytes);
+}
+
+function originalName(name, item) {
+  return item?.unsafeOriginalName || name;
 }
 
 function declaredStyles(manifest) {
@@ -45,19 +57,27 @@ async function validateZip(zip) {
   if (!zip.file("root.md")) errors.push("Missing required root.md");
 
   for (const name of names) {
-    if (dangerous(name)) errors.push(`Dangerous archive path: ${name}`);
+    const item = zip.files[name];
+    const original = originalName(name, item);
+    if (dangerous(original)) errors.push(`Dangerous archive path: ${original}`);
   }
 
   const root = zip.file("root.md");
   if (root) {
-    try { await root.async("string"); }
-    catch { errors.push("root.md could not be decoded as text"); }
+    try { await utf8Text(root); }
+    catch { errors.push("root.md is not valid UTF-8"); }
+  }
+
+  const fallbackCss = zip.file("root.css");
+  if (fallbackCss) {
+    try { await utf8Text(fallbackCss); }
+    catch { errors.push("root.css is not valid UTF-8"); }
   }
 
   const manifestFile = zip.file("manifest.json");
   if (manifestFile) {
     try {
-      const data = JSON.parse(await manifestFile.async("string"));
+      const data = JSON.parse(await utf8Text(manifestFile));
       const schema = JSON.parse(await fs.readFile(new URL("../schema/manifest.schema.json", import.meta.url), "utf8"));
       const ajv = new Ajv2020({ allErrors: true, strict: false });
       addFormats(ajv);
@@ -81,7 +101,13 @@ async function validateZip(zip) {
           errors.push(`Stylesheet does not reference a .css file: ${style.href}`);
         }
 
-        if (!zip.file(style.href)) errors.push(`Declared stylesheet not found: ${style.href}`);
+        const styleFile = zip.file(style.href);
+        if (!styleFile) {
+          errors.push(`Declared stylesheet not found: ${style.href}`);
+        } else {
+          try { await utf8Text(styleFile); }
+          catch { errors.push(`Stylesheet is not valid UTF-8: ${style.href}`); }
+        }
       }
 
       if (data.defaultStylesheet && !ids.has(data.defaultStylesheet)) {
@@ -113,7 +139,8 @@ program.command("unpack")
   .action(async (file, directory) => {
     const zip = await loadArchive(file);
     for (const [name, item] of Object.entries(zip.files)) {
-      if (dangerous(name)) throw new Error(`Refusing dangerous archive path: ${name}`);
+      const original = originalName(name, item);
+      if (dangerous(original)) throw new Error(`Refusing dangerous archive path: ${original}`);
       if (item.dir) continue;
       const dest = path.join(directory, ...name.split("/"));
       await fs.mkdir(path.dirname(dest), { recursive: true });
