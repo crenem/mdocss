@@ -349,7 +349,8 @@ program.command("remove-style")
     if (!target) throw new Error(`Stylesheet id not found: ${id}`);
 
     const remaining = styles.filter(style => style.id !== id);
-    manifest.stylesheets = remaining;
+    if (remaining.length) manifest.stylesheets = remaining;
+    else delete manifest.stylesheets;
 
     if (manifest.defaultStylesheet === id) {
       if (remaining.length) manifest.defaultStylesheet = remaining[0].id;
