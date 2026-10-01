@@ -125,3 +125,22 @@ test("rich-reader ZIP preflight rejects BZIP2 and ZIP64 corpus cases", async () 
     /ZIP64 features/
   );
 });
+
+
+test("rich-reader ZIP preflight requires UTF-8 flag for non-ASCII member names", async () => {
+  const cases = JSON.parse(await fs.readFile("conformance/cases.json", "utf8"));
+  const valid = cases.find(item => item.id === "V009");
+  const invalid = cases.find(item => item.id === "I028");
+
+  assert.deepEqual(
+    zipInteroperabilityIssues(Buffer.from(valid.generated.rawBase64, "base64")),
+    []
+  );
+
+  assert.match(
+    zipInteroperabilityIssues(
+      Buffer.from(invalid.generated.rawBase64, "base64")
+    ).join("\n"),
+    /Non-ASCII ZIP member name must set the UTF-8 language flag/
+  );
+});
