@@ -5,6 +5,9 @@ import JSZip from "jszip";
 
 const repoPath = path.resolve(path.dirname(new URL(import.meta.url).pathname), "..");
 const artifactsPath = path.join(repoPath, "artifacts");
+const conformanceCases = JSON.parse(
+  await fs.readFile(path.join(repoPath, "conformance", "cases.json"), "utf8")
+);
 
 async function walk(directory, base = directory) {
   const out = [];
@@ -92,7 +95,7 @@ kit.file("README-FIRST.md", [
   "- documents/semantic-paper.mdocss",
   "- documents/local-asset.mdocss",
   "- documents/remote-resource.mdocss",
-  "- hostile/ representative invalid fixtures",
+  "- hostile/ representative invalid fixtures, including generated ZIP-profile cases",
   "- ROOT-SHA256.txt baseline for canonical-content checks",
   "- SMOKE_RESULTS_TEMPLATE.md for recording the test",
   "- SMOKE-METADATA.json with the CI commit when available",
@@ -139,6 +142,19 @@ for (const name of [
     "hostile/" + name,
     await fs.readFile(path.join(repoPath, "conformance", "fixtures", name))
   );
+}
+
+
+for (const testCase of conformanceCases) {
+  const rawBase64 = testCase?.generated?.rawBase64;
+  if (!rawBase64) continue;
+
+  const bytes = Buffer.from(rawBase64, "base64");
+  if (testCase.expected === "valid") {
+    kit.file(`documents/conformance-${testCase.id}.mdocss`, bytes);
+  } else {
+    kit.file(`hostile/conformance-${testCase.id}.mdocss`, bytes);
+  }
 }
 
 const rootText = await fs.readFile(path.join(repoPath, "examples", "style-demo", "root.md"));
