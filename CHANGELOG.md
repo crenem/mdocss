@@ -43,3 +43,5 @@
 - Extended the 1.0 baseline schema and both reference readers for same-major 1.x forward compatibility.
 - Added package-level tests covering legacy manifests, 1.0 output, newer 1.x minor versions, unsupported future majors, and the no-manifest 1.0 minimum-document rule.
 - Froze the planned media-type registration path as vendor-tree `application/vnd.mdocss+zip`, with IANA submission deferred until a stable 1.0 specification URL and durable contact/change-controller details exist.
+- Added an independently authored, standard-library-only Python validator/recovery implementation and made CI run it against the same public corpus as the Node reference implementation.
+- Expanded the shared conformance inventory to 28 cases, including exact 1.0 authoring, no-manifest 1.0 minimum documents, same-major 1.x reading, and target-specific version failures.
