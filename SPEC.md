@@ -4,28 +4,32 @@
 **Version:** 0.1.0  
 **File extension:** `.mdocss`
 
-The key words **MUST**, **MUST NOT**, **REQUIRED**, **SHOULD**, **SHOULD NOT**, and **MAY** are to be interpreted as normative requirements.
+The key words **MUST**, **MUST NOT**, **REQUIRED**, **SHOULD**, **SHOULD NOT**, and **MAY** are normative.
 
 ## 1. Purpose
 
 MDOCSS is an open document-container format for packaging Markdown content, CSS presentation rules, metadata, and related assets into one portable file.
 
-The canonical content of an MDOCSS document is Markdown. A conforming archive MUST remain intelligible when extracted with a generic ZIP utility.
+The canonical semantic content is Markdown. A conforming archive MUST remain intelligible when extracted with an ordinary ZIP utility.
+
+MDOCSS deliberately separates content from presentation. The same `root.md` MAY be rendered through multiple named stylesheets without changing the Markdown content.
 
 ## 2. Container
 
-An MDOCSS file:
+An MDOCSS document:
 
 1. MUST be a valid ZIP archive.
 2. MUST use the file extension `.mdocss`.
 3. MUST contain `root.md` at the archive root.
-4. MAY contain `root.css` at the archive root.
-5. MAY contain `manifest.json` at the archive root.
-6. MAY contain arbitrary additional files and directories, subject to the path and security requirements in this specification.
+4. MAY contain `root.css` as the conventional fallback stylesheet.
+5. MAY contain `manifest.json`.
+6. MAY contain additional CSS files, conventionally beneath `styles/`.
+7. MAY contain local assets, conventionally beneath `assets/`.
+8. MAY contain other files subject to the path and security requirements below.
 
-Readers MUST NOT require archive members to be stored in any particular order.
+Readers MUST NOT depend on ZIP member ordering.
 
-## 3. Required document
+## 3. Canonical content
 
 ### 3.1 root.md
 
@@ -34,119 +38,198 @@ Readers MUST NOT require archive members to be stored in any particular order.
 It MUST:
 
 - be a regular file;
-- be encoded as UTF-8;
-- contain Markdown text.
+- be UTF-8 text;
+- contain Markdown.
 
-An implementation MUST treat `root.md` as the canonical semantic content of the document.
+Readers MUST treat `root.md` as canonical semantic content.
 
-MDOCSS 0.1 does not mandate a single Markdown dialect. A manifest MAY declare a Markdown profile. If no profile is declared, readers SHOULD support a CommonMark-compatible baseline where practical.
+MDOCSS 0.1 does not mandate one Markdown dialect. A manifest MAY declare `markdownProfile`. If none is declared, readers SHOULD provide a CommonMark-compatible baseline where practical.
 
-## 4. Optional stylesheet
+## 4. Stylesheets
 
 ### 4.1 root.css
 
 `/root.css` is OPTIONAL.
 
-If present, it MUST be UTF-8 encoded CSS text.
+If present, it MUST be UTF-8 CSS text.
 
-A rendering implementation MAY apply `root.css` to the rendered representation of `root.md`. An implementation that cannot or chooses not to process CSS MUST still expose the Markdown content.
+`root.css` is the conventional fallback for simple documents and for readers that do not implement named stylesheet selection.
 
-The absence or failure of `root.css` MUST NOT make the document unreadable.
+Failure to load CSS MUST NOT prevent access to `root.md`.
 
-CSS processing MUST be treated as untrusted input. Readers SHOULD prevent CSS from escaping the document rendering context or affecting the host application's chrome.
+### 4.2 Named stylesheets
 
-## 5. Optional manifest
+A document MAY declare multiple selectable stylesheets in `manifest.json`:
 
-### 5.1 manifest.json
+```json
+{
+  "stylesheets": [
+    {
+      "id": "default",
+      "label": "Default",
+      "href": "root.css"
+    },
+    {
+      "id": "dark",
+      "label": "Dark",
+      "href": "styles/dark.css"
+    }
+  ],
+  "defaultStylesheet": "default"
+}
+```
+
+Each stylesheet entry MUST contain:
+
+- `id`: a stable identifier unique within the document;
+- `label`: a human-readable name;
+- `href`: an archive-relative path to a CSS file.
+
+A stylesheet entry MAY contain:
+
+- `description`: human-readable explanatory text;
+- `profile`: an implementation-independent style-profile identifier, such as a future standardized academic or organizational style profile.
+
+Every declared `href` MUST resolve to a regular CSS file inside the archive.
+
+If `defaultStylesheet` is present, it MUST equal the `id` of one declared stylesheet.
+
+### 4.3 Runtime style selection
+
+A style-aware reader SHOULD expose named stylesheets when more than one is available.
+
+The initial active stylesheet SHOULD be chosen in this order:
+
+1. reader-local user preference for that document, if supported;
+2. `defaultStylesheet`;
+3. a declared stylesheet whose `href` is `root.css`;
+4. the first declared stylesheet;
+5. undeclared `root.css`, if present;
+6. no document stylesheet.
+
+Switching the active stylesheet is presentation state. It MUST NOT require modification of `root.md`.
+
+An editor MUST NOT rewrite `defaultStylesheet` merely because the user temporarily selected a different style. Changing the author-defined default is a separate explicit edit.
+
+Readers SHOULD be able to hot-swap the active stylesheet without reparsing or rewriting canonical Markdown solely for style selection.
+
+### 4.4 CSS isolation
+
+CSS MUST be treated as untrusted document data.
+
+Readers SHOULD scope document CSS so it cannot style the host application's chrome or unrelated documents.
+
+Relative CSS resources are resolved inside the archive. Readers MUST NOT resolve archive-relative references outside the archive and SHOULD NOT fetch remote CSS, fonts, images, or other network resources without explicit user or host-application permission.
+
+## 5. Semantic class profile
+
+MDOCSS defines a companion Core Semantic Class Profile in `SEMANTICS.md`.
+
+The profile provides stable CSS hooks for document roles that ordinary Markdown does not identify reliably, including title-page fields, abstracts, references, figures, tables, notes, and appendices.
+
+Semantic classes are OPTIONAL for core document conformance. A document without them remains valid MDOCSS.
+
+Stylesheets claiming compatibility with the MDOCSS Core Semantic Class Profile SHOULD target those classes rather than application-specific DOM classes for essential formatting.
+
+Ordinary Markdown structures SHOULD continue to use native rendered elements such as `h1`–`h6`, `p`, `blockquote`, lists, links, and tables instead of redundant MDOCSS classes.
+
+## 6. Manifest
 
 `/manifest.json` is OPTIONAL.
 
 If present, it MUST:
 
-- be valid UTF-8 JSON;
-- contain a top-level JSON object;
-- conform to the MDOCSS manifest schema for the declared specification version.
+- be UTF-8;
+- be valid JSON;
+- contain a top-level object;
+- conform to the schema for the declared specification version.
 
-Unknown manifest fields SHOULD be preserved by editors when rewriting an archive and MUST NOT cause a reader to reject an otherwise readable document unless they violate a normative security rule.
-
-Recommended fields include:
+Recognized fields include:
 
 - `specVersion`
 - `title`
 - `language`
 - `markdownProfile`
 - `entrypoint`
-- `stylesheet`
+- `stylesheets`
+- `defaultStylesheet`
 - `created`
 - `modified`
 - `authors`
 
-For MDOCSS 0.1, `entrypoint`, if supplied, MUST equal `root.md`. `stylesheet`, if supplied, MUST equal `root.css`.
+For MDOCSS 0.1, `entrypoint`, if supplied, MUST equal `root.md`.
 
-## 6. Assets and relative paths
+Unknown manifest fields SHOULD be preserved by editors and MUST NOT cause rejection unless they violate a security or conformance requirement.
 
-Supporting resources SHOULD be stored beneath `/assets/`, although other non-reserved directories MAY be used.
+## 7. Assets and path resolution
 
-Relative references in `root.md` and `root.css` are resolved relative to the file containing the reference.
+Supporting resources SHOULD be stored beneath `/assets/`.
 
-Examples:
+Alternate presentation styles SHOULD be stored beneath `/styles/`.
+
+Relative references in `root.md` are resolved relative to `root.md`. Relative references in a CSS file are resolved relative to that CSS file.
+
+Example Markdown:
 
 ```markdown
 ![Diagram](assets/diagram.svg)
 ```
 
+Example CSS in `styles/print.css`:
+
 ```css
 .hero {
-  background-image: url("assets/background.png");
+  background-image: url("../assets/background.png");
 }
 ```
 
-Readers MUST NOT resolve an archive-relative path outside the archive.
+Readers MUST NOT resolve archive-relative paths outside the archive.
 
-## 7. Reserved root names
+## 8. Reserved root names
 
-The following archive-root names are reserved by MDOCSS 0.1:
+MDOCSS 0.1 reserves:
 
 - `root.md`
 - `root.css`
 - `manifest.json`
 - `assets/`
+- `styles/`
 
 Future versions MAY reserve additional names.
 
 Readers SHOULD ignore unknown, non-dangerous archive members.
 
-## 8. Path rules and security
+## 9. Path and archive security
 
 Archive member paths:
 
 - MUST use forward slashes (`/`) as separators;
 - MUST be relative;
 - MUST NOT begin with `/`;
-- MUST NOT contain path traversal segments that escape the archive root;
+- MUST NOT escape the archive root through `..` traversal;
 - MUST NOT rely on symbolic links.
 
-Readers MUST defend against ZIP-slip/path-traversal attacks when extracting archives.
+Readers MUST defend against ZIP-slip/path-traversal attacks.
 
 Readers SHOULD impose reasonable limits on:
 
 - total uncompressed size;
 - per-file uncompressed size;
-- archive member count;
+- member count;
 - compression ratio;
-- recursive or nested archive processing.
+- recursive/nested archive processing.
 
 MDOCSS documents MUST be treated as untrusted data.
 
-## 9. Scripts and active content
+## 10. Active content
 
 MDOCSS 0.1 defines no executable scripting facility.
 
-Readers MUST NOT execute scripts merely because script-like files or markup are present in an archive.
+Readers MUST NOT execute scripts merely because script-like files or markup are present.
 
-If a Markdown renderer supports raw HTML, implementations SHOULD sanitize dangerous HTML and URLs according to the security model of the host application.
+If raw HTML is supported in Markdown, readers SHOULD sanitize dangerous HTML and URLs according to the host application's security model.
 
-## 10. Media types
+## 11. Media type
 
 The proposed media type is:
 
@@ -154,50 +237,60 @@ The proposed media type is:
 application/vnd.mdocss+zip
 ```
 
-Until formally registered, implementations MAY use:
+Until formally registered, implementations MAY use `application/zip` while identifying MDOCSS by extension or archive contents.
 
-```text
-application/zip
-```
+## 12. Conformance
 
-while identifying the format by extension or archive contents.
-
-## 11. Conformance
-
-### 11.1 Conforming document
+### 12.1 Conforming document
 
 A conforming MDOCSS 0.1 document MUST:
 
 - be a valid ZIP archive;
 - contain exactly one root-level `root.md`;
-- satisfy the UTF-8 and path requirements of this specification.
+- satisfy the UTF-8 and path requirements;
+- use unique IDs for declared stylesheets;
+- ensure every declared stylesheet resolves to a regular CSS file within the archive;
+- ensure `defaultStylesheet`, when present, names a declared stylesheet.
 
-### 11.2 Conforming reader
+### 12.2 Conforming reader
 
 A conforming reader MUST:
 
 - locate and expose `root.md`;
-- function when `root.css` and `manifest.json` are absent;
+- function when CSS and `manifest.json` are absent;
 - ignore unsupported optional files where safe;
 - reject or safely handle dangerous paths.
 
-### 11.3 Conforming editor
+A style-aware reader SHOULD enumerate declared styles and support runtime style switching without modifying `root.md`.
 
-A conforming editor MUST meet reader requirements and SHOULD preserve unknown archive members and unknown manifest fields when saving, unless the user explicitly removes them.
+### 12.3 Conforming editor
 
-## 12. Forward compatibility
+A conforming editor MUST meet reader requirements.
+
+It SHOULD preserve:
+
+- unknown archive members;
+- unknown manifest fields;
+- recognized and unknown MDOCSS semantic classes that it can safely round-trip.
+
+A style-aware editor SHOULD distinguish temporary active-style selection from an explicit edit to `defaultStylesheet`.
+
+## 13. Forward compatibility
 
 Readers MUST NOT reject a document solely because it contains unknown files or unknown manifest properties.
 
-If `manifest.json` declares a future major specification version that the reader does not support, the reader SHOULD warn the user but SHOULD still offer access to `root.md` when it can do so safely.
+If `manifest.json` declares a future major specification version, a reader SHOULD warn the user but SHOULD still offer access to `root.md` when safe.
 
-## 13. Example
+## 14. Example
 
 ```text
 paper.mdocss
 ├── root.md
 ├── root.css
 ├── manifest.json
+├── styles/
+│   ├── dark.css
+│   └── manuscript.css
 └── assets/
     └── chart.svg
 ```
@@ -211,13 +304,34 @@ Example manifest:
   "language": "en",
   "markdownProfile": "CommonMark",
   "entrypoint": "root.md",
-  "stylesheet": "root.css",
+  "stylesheets": [
+    {
+      "id": "default",
+      "label": "Default",
+      "href": "root.css"
+    },
+    {
+      "id": "dark",
+      "label": "Dark",
+      "href": "styles/dark.css"
+    },
+    {
+      "id": "manuscript",
+      "label": "Manuscript",
+      "href": "styles/manuscript.css"
+    }
+  ],
+  "defaultStylesheet": "default",
   "authors": [
     { "name": "Example Author" }
   ]
 }
 ```
 
-## 14. Design principle
+## 15. Design principle
 
-A conforming MDOCSS document MUST degrade gracefully. Loss of MDOCSS-specific presentation support may reduce visual fidelity, but MUST NOT prevent recovery of the canonical Markdown content.
+MDOCSS MUST degrade gracefully.
+
+Loss of MDOCSS-specific presentation support may reduce visual fidelity, but MUST NOT prevent recovery of canonical Markdown.
+
+Presentation MUST remain separable from semantic content: changing a stylesheet MUST NOT require changing `root.md`.
