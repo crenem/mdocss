@@ -12,7 +12,8 @@
     "validate:example": "node src/cli.js pack examples/basic /tmp/example.mdocss && node src/cli.js validate /tmp/example.mdocss",
     "conformance": "node conformance/run.js",
     "build:viewer": "node scripts/build-viewer.mjs",
-    "test:viewer": "node --test test/viewer-core.test.js"
+    "test:viewer": "node --test test/viewer-core.test.js",
+    "build:obsidian": "tsc -p integrations/obsidian/tsconfig.json --noEmit && node integrations/obsidian/esbuild.config.mjs"
   },
   "dependencies": {
     "ajv": "^8.17.1",
@@ -23,6 +24,9 @@
     "dompurify": "^3.2.6"
   },
   "devDependencies": {
-    "esbuild": "^0.25.0"
+    "esbuild": "^0.25.0",
+    "obsidian": "latest",
+    "typescript": "^5.8.3",
+    "@types/node": "^22.15.17"
   }
 }
