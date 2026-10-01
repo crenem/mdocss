@@ -131,5 +131,12 @@
     "file": "invalid-duplicate-member.mdocss",
     "expected": "invalid",
     "purpose": "Archive contains duplicate root.md member names."
+  },
+  {
+    "id": "U001",
+    "file": "unsupported-future-major.mdocss",
+    "expected": "unsupported",
+    "purpose": "A future unsupported major version is not valid for this validator, but canonical root.md remains safely recoverable.",
+    "recoverRoot": true
   }
 ]
