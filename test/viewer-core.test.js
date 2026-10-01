@@ -1,8 +1,14 @@
 import test from "node:test";
 import assert from "node:assert/strict";
+import fs from "node:fs/promises";
+import JSZip from "jszip";
 import {
   chooseInitialStyle,
+  dangerousArchiveMember,
+  duplicateZipMemberNames,
   inferMimeType,
+  isZipSymlink,
+  manifestCompatibility,
   normalizeArchiveReference,
   referenceKind,
   styleChoices
@@ -57,4 +63,28 @@ test("common bundled resource types receive useful MIME types", () => {
   assert.equal(inferMimeType("assets/image.svg"), "image/svg+xml");
   assert.equal(inferMimeType("fonts/body.woff2"), "font/woff2");
   assert.equal(inferMimeType("assets/unknown.bin"), "application/octet-stream");
+});
+
+
+test("manifest compatibility enters recovery mode for unsupported versions", () => {
+  assert.equal(manifestCompatibility(null).supported, true);
+  assert.equal(manifestCompatibility({}).supported, true);
+  assert.equal(manifestCompatibility({ specVersion: "0.1.7" }).supported, true);
+  assert.equal(manifestCompatibility({ specVersion: "9.0.0" }).supported, false);
+  assert.equal(manifestCompatibility({ specVersion: "not-a-version" }).supported, false);
+});
+
+test("browser preflight detects dangerous paths and duplicate ZIP members", async () => {
+  assert.equal(dangerousArchiveMember("../escape.txt"), true);
+  assert.equal(dangerousArchiveMember("C:/escape.txt"), true);
+  assert.equal(dangerousArchiveMember("assets/image.png"), false);
+
+  const duplicate = await fs.readFile("conformance/fixtures/invalid-duplicate-member.mdocss");
+  assert.deepEqual(duplicateZipMemberNames(duplicate), ["root.md"]);
+});
+
+test("browser preflight identifies ZIP symbolic links", async () => {
+  const bytes = await fs.readFile("conformance/fixtures/invalid-symlink.mdocss");
+  const zip = await JSZip.loadAsync(bytes);
+  assert.equal(isZipSymlink(zip.files["assets/link"]), true);
 });
