@@ -60,6 +60,7 @@ This repository includes:
 - `SMOKE_TEST.md` — manual browser/Obsidian runtime test plan
 - `ACCESSIBILITY.md` — accessibility guidance for readers and stylesheet authors
 - `PRINT.md` — print and paged-media guidance
+- `MEDIA_TYPE.md` — prepared IANA registration draft for the candidate MDOCSS media type
 - `styles/` — reference APA 7, MLA 9, Chicago 18, professional, reading, dark, and large-print profiles
 - `schema/manifest.schema.json` — JSON Schema for `manifest.json`
 - `src/cli.js` — reference CLI for pack/unpack/inspect/validate/style listing
