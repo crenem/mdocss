@@ -12,7 +12,29 @@
     "language": { "type": "string" },
     "markdownProfile": { "type": "string" },
     "entrypoint": { "const": "root.md" },
-    "stylesheet": { "const": "root.css" },
+    "stylesheets": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["id", "label", "href"],
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^[A-Za-z][A-Za-z0-9._-]*$"
+          },
+          "label": { "type": "string", "minLength": 1 },
+          "href": { "type": "string", "minLength": 1 },
+          "description": { "type": "string" },
+          "profile": { "type": "string" }
+        },
+        "additionalProperties": true
+      }
+    },
+    "defaultStylesheet": {
+      "type": "string",
+      "pattern": "^[A-Za-z][A-Za-z0-9._-]*$"
+    },
     "created": { "type": "string", "format": "date-time" },
     "modified": { "type": "string", "format": "date-time" },
     "authors": {
