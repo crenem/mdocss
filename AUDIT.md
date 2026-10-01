@@ -53,7 +53,7 @@ Remaining work:
 
 ## Media type
 
-Current status: **registration draft prepared; submission pending**
+Current status: **registration path frozen; submission prerequisites pending**
 
 The `+zip` structured syntax suffix is registered for ZIP-based media types.
 
@@ -65,8 +65,9 @@ Tracked in issue #3.
 
 Before 1.0:
 
-- review and complete the prepared `MEDIA_TYPE.md` registration draft;
-- confirm final subtype spelling and change-control contact;
+- publish a stable versioned 1.0 specification URL;
+- complete registrant/contact and durable change-controller details;
+- submit `application/vnd.mdocss+zip` through the IANA vendor-tree application path;
 - update `SPEC.md` only after registration status is known.
 
 ## Semantic profile
