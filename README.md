@@ -53,6 +53,9 @@ This repository includes:
 - `SPEC.md` — normative container and reader/editor behavior
 - `SEMANTICS.md` — Core Semantic Class Profile
 - `ROADMAP.md` — staged path to a stable 1.0 release
+- `ACCESSIBILITY.md` — accessibility guidance for readers and stylesheet authors
+- `PRINT.md` — print and paged-media guidance
+- `styles/` — reference APA 7, MLA 9, Chicago 18, professional, reading, dark, and large-print profiles
 - `schema/manifest.schema.json` — JSON Schema for `manifest.json`
 - `src/cli.js` — reference CLI for pack/unpack/inspect/validate/style listing
 - `examples/basic/` — example source document with multiple styles
@@ -88,6 +91,7 @@ node src/cli.js unpack example.mdocss extracted
 npm run conformance
 npm run build:viewer
 npm run build:obsidian
+npm run build:style-demo
 
 # Round-trip editing
 node src/cli.js set-root example.mdocss revised.md
