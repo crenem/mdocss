@@ -1,0 +1,47 @@
+{
+  "version": "0.1.0",
+  "profiles": [
+    {
+      "id": "org.mdocss.apa7.student",
+      "label": "APA 7 Student Paper",
+      "file": "apa7-student.css",
+      "category": "academic"
+    },
+    {
+      "id": "org.mdocss.mla9",
+      "label": "MLA 9 Research Paper",
+      "file": "mla9.css",
+      "category": "academic"
+    },
+    {
+      "id": "org.mdocss.chicago18.manuscript",
+      "label": "Chicago 18 Manuscript",
+      "file": "chicago18-manuscript.css",
+      "category": "academic"
+    },
+    {
+      "id": "org.mdocss.business-report",
+      "label": "Business Report",
+      "file": "business-report.css",
+      "category": "professional"
+    },
+    {
+      "id": "org.mdocss.reading.clean",
+      "label": "Clean Reading",
+      "file": "clean-reading.css",
+      "category": "reading"
+    },
+    {
+      "id": "org.mdocss.reading.dark",
+      "label": "Dark Reading",
+      "file": "dark-reading.css",
+      "category": "reading"
+    },
+    {
+      "id": "org.mdocss.accessibility.large-print",
+      "label": "Accessible Large Print",
+      "file": "accessible-large-print.css",
+      "category": "accessibility"
+    }
+  ]
+}

@@ -1,0 +1,67 @@
+.mdocss-document {
+  max-width: 72ch;
+  margin: 0 auto;
+  padding: 3rem 1.5rem 6rem;
+  color: #202124;
+  background: #fff;
+  font-family: ui-serif, Georgia, Cambria, "Times New Roman", serif;
+  font-size: 18px;
+  line-height: 1.72;
+}
+
+.mdocss-title-page {
+  padding: 3rem 0;
+  border-bottom: 1px solid #dadce0;
+  margin-bottom: 3rem;
+}
+
+.mdocss-title {
+  margin: 0;
+  font-size: 2.35rem;
+  line-height: 1.1;
+}
+
+.mdocss-subtitle {
+  margin-top: 0.5rem;
+  color: #5f6368;
+  font-size: 1.25rem;
+}
+
+.mdocss-title-page p {
+  margin: 0.25rem 0;
+  color: #5f6368;
+}
+
+.mdocss-document h1 {
+  margin-top: 2.4rem;
+  font-size: 1.8rem;
+  line-height: 1.2;
+}
+
+.mdocss-document h2 {
+  margin-top: 2rem;
+  font-size: 1.4rem;
+  line-height: 1.25;
+}
+
+.mdocss-document h3 {
+  margin-top: 1.6rem;
+  font-size: 1.15rem;
+}
+
+.mdocss-document blockquote {
+  margin-inline: 0;
+  padding-left: 1.25rem;
+  border-left: 0.25rem solid #9aa0a6;
+  color: #3c4043;
+}
+
+.mdocss-reference {
+  margin: 0.65rem 0;
+  padding-left: 1.5rem;
+  text-indent: -1.5rem;
+}
+
+.mdocss-document a {
+  text-underline-offset: 0.14em;
+}
