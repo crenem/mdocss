@@ -39,3 +39,6 @@
 - Hardened browser and Obsidian readers against duplicate members, symbolic links, dangerous archive paths, and unsupported future-version semantics.
 - Froze the planned 1.0 rule that a present manifest MUST declare `specVersion`; added a candidate 1.0 manifest schema and tests.
 - Added a field-by-field draft IANA media-type registration document.
+- Added explicit CLI version negotiation with distinct unsupported-major handling and strict `--target 1.0` authoring validation.
+- Extended the 1.0 baseline schema and both reference readers for same-major 1.x forward compatibility.
+- Added package-level tests covering legacy manifests, 1.0 output, newer 1.x minor versions, unsupported future majors, and the no-manifest 1.0 minimum-document rule.
