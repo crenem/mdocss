@@ -165,24 +165,24 @@ class MdocssView extends FileView {
     this.plugin = plugin;
   }
 
-  getViewType(): string {
+  override getViewType(): string {
     return VIEW_TYPE_MDOCSS;
   }
 
-  getDisplayText(): string {
+  override getDisplayText(): string {
     return this.file?.basename ?? "MDOCSS";
   }
 
-  getIcon(): string {
+  override getIcon(): string {
     return "file-text";
   }
 
-  async onLoadFile(file: TFile): Promise<void> {
+  override async onLoadFile(file: TFile): Promise<void> {
     await super.onLoadFile(file);
     await this.renderFile(file);
   }
 
-  async onUnloadFile(file: TFile): Promise<void> {
+  override async onUnloadFile(file: TFile): Promise<void> {
     this.revokeBlobUrls();
     this.zip = null;
     this.manifest = null;
@@ -205,7 +205,11 @@ class MdocssView extends FileView {
     if (!entry) return null;
 
     const bytes = await entry.async("uint8array");
-    const url = URL.createObjectURL(new Blob([bytes], { type: inferMimeType(path) }));
+    const buffer = bytes.buffer.slice(
+      bytes.byteOffset,
+      bytes.byteOffset + bytes.byteLength
+    ) as ArrayBuffer;
+    const url = URL.createObjectURL(new Blob([buffer], { type: inferMimeType(path) }));
     this.blobUrls.set(path, url);
     return url;
   }
@@ -498,7 +502,7 @@ class MdocssView extends FileView {
 export default class MdocssPlugin extends Plugin {
   data: PluginData = { styleByPath: {} };
 
-  async onload(): Promise<void> {
+  override async onload(): Promise<void> {
     const stored = await this.loadData();
     this.data = {
       styleByPath:
