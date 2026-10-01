@@ -10,7 +10,7 @@ A basic reader can be implemented in the following order.
 
 Treat the file as a ZIP container.
 
-Do not infer conformance from the `.mdocss` extension alone. A conforming document must satisfy the structural and safety rules in `SPEC.md`.
+Do not infer conformance from the `.mdocss` extension alone, and do not reject otherwise conforming package bytes solely because no filename or a different filename is available. A conforming document is identified by the structural and safety rules in `SPEC.md`.
 
 For core interoperability, reject packages that require split/spanned ZIP volumes, ZIP64 features, encryption, or compression methods other than Store (0) and Deflate (8). This narrow ZIP profile is intentional: an MDOCSS reader should not need a specialist archive stack merely to recover a document.
 
