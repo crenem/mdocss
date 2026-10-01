@@ -42,6 +42,16 @@ function referenceKind(value: string): "empty" | "fragment" | "data" | "blob" | 
   return "archive";
 }
 
+function escapeHtmlAttribute(value: string): string {
+  return String(value ?? "").replace(/[&<>"']/g, character => ({
+    "&": "&amp;",
+    "<": "&lt;",
+    ">": "&gt;",
+    '"': "&quot;",
+    "'": "&#39;"
+  } as Record<string, string>)[character]);
+}
+
 function safeDecode(value: string): string {
   try {
     return decodeURIComponent(value);
@@ -593,7 +603,7 @@ class MdocssView extends FileView {
     ].join("; ");
 
     return `<!doctype html>
-<html lang="${lang}">
+<html lang="${escapeHtmlAttribute(lang)}">
 <head>
   <meta charset="utf-8">
   <meta http-equiv="Content-Security-Policy" content="${csp}">
