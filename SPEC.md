@@ -19,7 +19,7 @@ MDOCSS deliberately separates content from presentation. The same `root.md` MAY 
 An MDOCSS document:
 
 1. MUST be a valid ZIP archive.
-2. MUST use the file extension `.mdocss`.
+2. SHOULD use the file extension `.mdocss` when represented as a named file.
 3. MUST contain `root.md` at the archive root.
 4. MAY contain `root.css` as the conventional fallback stylesheet.
 5. MAY contain `manifest.json`.
@@ -256,7 +256,7 @@ If raw HTML is supported in Markdown, readers SHOULD sanitize dangerous HTML and
 
 ## 11. Media type
 
-MDOCSS uses ZIP as its underlying representation. The registered `+zip` structured syntax suffix is therefore appropriate for a future MDOCSS-specific media-type registration.
+MDOCSS uses ZIP as its underlying representation. The `.mdocss` extension is the conventional file-name suffix but is not required to identify conformance when the package is supplied through a stream, database, content-addressed store, or other filename-independent transport. The registered `+zip` structured syntax suffix is therefore appropriate for a future MDOCSS-specific media-type registration.
 
 The candidate media type is:
 
