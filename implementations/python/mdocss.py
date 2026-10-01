@@ -54,7 +54,7 @@ class ValidationResult:
 
 
 def dangerous_path(name: str) -> bool:
-    if not name or "\x00" in name:
+    if not name or any(ord(ch) < 0x20 or ord(ch) == 0x7F for ch in name):
         return True
     if name.startswith(("/", "\\")):
         return True
@@ -62,7 +62,11 @@ def dangerous_path(name: str) -> bool:
         return True
     if "\\" in name:
         return True
-    return ".." in name.split("/")
+
+    parts = name.split("/")
+    if ".." in parts or "." in parts:
+        return True
+    return "" in parts[:-1]
 
 
 def is_symlink(info: zipfile.ZipInfo) -> bool:
