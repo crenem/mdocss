@@ -77,7 +77,7 @@ test("media type text does not claim the candidate MDOCSS subtype is registered"
 
 test("versioned schemas agree on exact three-component version syntax", async () => {
   const draft01 = JSON.parse(await fs.readFile("schema/manifest.schema.json", "utf8"));
-  const exact10 = JSON.parse(await fs.readFile("schema/manifest-1.0-draft.schema.json", "utf8"));
+  const exact10 = JSON.parse(await fs.readFile("schema/manifest-1.0.schema.json", "utf8"));
   const reader1x = JSON.parse(await fs.readFile("schema/manifest-1.x-reader.schema.json", "utf8"));
 
   const ajv = new Ajv2020({ allErrors: true, strict: false });
@@ -102,7 +102,7 @@ test("versioned schemas agree on exact three-component version syntax", async ()
 
 test("1.0 schema metadata formats are executable constraints", async () => {
   const schema = JSON.parse(
-    await fs.readFile("schema/manifest-1.0-draft.schema.json", "utf8")
+    await fs.readFile("schema/manifest-1.0.schema.json", "utf8")
   );
   const ajv = new Ajv2020({ allErrors: true, strict: false });
   addFormats(ajv);
