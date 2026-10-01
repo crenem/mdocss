@@ -9,7 +9,7 @@
   "properties": {
     "specVersion": {
       "type": "string",
-      "pattern": "^1\\.(?:0|[1-9]\\d*)(?:\\.\\d+)?$",
+      "pattern": "^1\\.(?:0|[1-9]\\d*)\\.\\d+$",
       "description": "MDOCSS 1.x declaration accepted by a 1.0-baseline reader for same-major forward compatibility."
     },
     "title": {
