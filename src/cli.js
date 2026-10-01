@@ -42,9 +42,17 @@ function isSymbolicLink(item) {
   return Number.isFinite(mode) && (mode & 0o170000) === 0o120000;
 }
 
-function duplicateCentralDirectoryNames(buffer) {
+function centralDirectoryProfile(buffer) {
+  const result = {
+    duplicates: [],
+    zip64: false,
+    multiDisk: false,
+    encrypted: [],
+    unsupportedCompression: []
+  };
+
   const minimumEocdSize = 22;
-  if (buffer.length < minimumEocdSize) return [];
+  if (buffer.length < minimumEocdSize) return result;
 
   const lowest = Math.max(0, buffer.length - minimumEocdSize - 0xffff);
   let eocd = -1;
@@ -56,17 +64,35 @@ function duplicateCentralDirectoryNames(buffer) {
     }
   }
 
-  if (eocd < 0) return [];
+  if (eocd < 0) return result;
 
+  const diskNumber = buffer.readUInt16LE(eocd + 4);
+  const centralDisk = buffer.readUInt16LE(eocd + 6);
+  const entriesOnDisk = buffer.readUInt16LE(eocd + 8);
   const totalEntries = buffer.readUInt16LE(eocd + 10);
+  const centralSize = buffer.readUInt32LE(eocd + 12);
   const centralOffset = buffer.readUInt32LE(eocd + 16);
 
-  // ZIP64 uses sentinel values here. JSZip may still parse such an archive,
-  // but this lightweight duplicate-name preflight does not attempt ZIP64 parsing.
-  if (totalEntries === 0xffff || centralOffset === 0xffffffff) return [];
+  result.multiDisk =
+    diskNumber !== 0 ||
+    centralDisk !== 0 ||
+    entriesOnDisk !== totalEntries;
+
+  if (
+    totalEntries === 0xffff ||
+    entriesOnDisk === 0xffff ||
+    centralSize === 0xffffffff ||
+    centralOffset === 0xffffffff
+  ) {
+    result.zip64 = true;
+    return result;
+  }
+
+  if (eocd >= 20 && buffer.readUInt32LE(eocd - 20) === 0x07064b50) {
+    result.zip64 = true;
+  }
 
   const seen = new Map();
-  const duplicates = [];
   let cursor = centralOffset;
 
   for (let index = 0; index < totalEntries; index += 1) {
@@ -74,14 +100,21 @@ function duplicateCentralDirectoryNames(buffer) {
       break;
     }
 
+    const versionNeeded = buffer.readUInt16LE(cursor + 6);
     const flags = buffer.readUInt16LE(cursor + 8);
+    const method = buffer.readUInt16LE(cursor + 10);
+    const compressedSize = buffer.readUInt32LE(cursor + 20);
+    const uncompressedSize = buffer.readUInt32LE(cursor + 24);
     const filenameLength = buffer.readUInt16LE(cursor + 28);
     const extraLength = buffer.readUInt16LE(cursor + 30);
     const commentLength = buffer.readUInt16LE(cursor + 32);
+    const diskStart = buffer.readUInt16LE(cursor + 34);
+    const localOffset = buffer.readUInt32LE(cursor + 42);
     const start = cursor + 46;
     const end = start + filenameLength;
+    const extraEnd = end + extraLength;
 
-    if (end > buffer.length) break;
+    if (extraEnd > buffer.length) break;
 
     const rawName = buffer.subarray(start, end);
     const key = rawName.toString("hex");
@@ -91,12 +124,64 @@ function duplicateCentralDirectoryNames(buffer) {
 
     const count = (seen.get(key)?.count ?? 0) + 1;
     seen.set(key, { count, displayName });
-    if (count === 2) duplicates.push(displayName);
+    if (count === 2) result.duplicates.push(displayName);
 
-    cursor = end + extraLength + commentLength;
+    if ((flags & 0x0001) !== 0) result.encrypted.push(displayName);
+    if (method !== 0 && method !== 8) {
+      result.unsupportedCompression.push({ name: displayName, method });
+    }
+
+    if (
+      compressedSize === 0xffffffff ||
+      uncompressedSize === 0xffffffff ||
+      diskStart === 0xffff ||
+      localOffset === 0xffffffff
+    ) {
+      result.zip64 = true;
+    }
+
+    let extraCursor = end;
+    while (extraCursor + 4 <= extraEnd) {
+      const headerId = buffer.readUInt16LE(extraCursor);
+      const dataSize = buffer.readUInt16LE(extraCursor + 2);
+      if (headerId === 0x0001) result.zip64 = true;
+      extraCursor += 4 + dataSize;
+    }
+
+    if (
+      localOffset + 30 <= buffer.length &&
+      buffer.readUInt32LE(localOffset) === 0x04034b50
+    ) {
+      const localCompressedSize = buffer.readUInt32LE(localOffset + 18);
+      const localUncompressedSize = buffer.readUInt32LE(localOffset + 22);
+      const localNameLength = buffer.readUInt16LE(localOffset + 26);
+      const localExtraLength = buffer.readUInt16LE(localOffset + 28);
+      const localExtraStart = localOffset + 30 + localNameLength;
+      const localExtraEnd = localExtraStart + localExtraLength;
+
+      if (
+        versionNeeded >= 45 &&
+        (localCompressedSize === 0xffffffff || localUncompressedSize === 0xffffffff)
+      ) {
+        result.zip64 = true;
+      }
+
+      let localExtraCursor = localExtraStart;
+      while (
+        localExtraCursor + 4 <= localExtraEnd &&
+        localExtraEnd <= buffer.length
+      ) {
+        const headerId = buffer.readUInt16LE(localExtraCursor);
+        const dataSize = buffer.readUInt16LE(localExtraCursor + 2);
+        if (headerId === 0x0001) result.zip64 = true;
+        localExtraCursor += 4 + dataSize;
+      }
+    }
+
+    cursor = extraEnd + commentLength;
   }
 
-  return duplicates;
+  return result;
 }
 
 async function utf8Text(item) {
@@ -209,10 +294,31 @@ async function manifestSchema(family) {
 
 async function loadArchive(file) {
   const buffer = await fs.readFile(file);
-  const duplicates = duplicateCentralDirectoryNames(buffer);
+  const profile = centralDirectoryProfile(buffer);
+
+  const profileErrors = [];
+  if (profile.multiDisk) {
+    profileErrors.push("Multi-disk/spanned ZIP archives are not allowed");
+  }
+  if (profile.zip64) {
+    profileErrors.push("ZIP64 features are not allowed by the MDOCSS 1.0 ZIP profile");
+  }
+  for (const entry of profile.encrypted) {
+    profileErrors.push(`Encrypted ZIP member is not allowed: ${entry}`);
+  }
+  for (const entry of profile.unsupportedCompression) {
+    profileErrors.push(
+      `Unsupported ZIP compression method ${entry.method}: ${entry.name}`
+    );
+  }
+
+  if (profileErrors.length) {
+    throw new Error(profileErrors.join("\n"));
+  }
+
   const zip = await JSZip.loadAsync(buffer);
   Object.defineProperty(zip, "__mdocssDuplicateNames", {
-    value: duplicates,
+    value: profile.duplicates,
     enumerable: false,
     configurable: false,
     writable: false
