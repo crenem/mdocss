@@ -97,7 +97,7 @@ Draft packages using two-component values should add an explicit patch component
 
 ## 0.1 manifest → 1.0 manifest
 
-The planned 1.0 rule requires `specVersion` whenever `manifest.json` exists.
+The frozen 1.0 rule requires `specVersion` whenever `manifest.json` exists.
 
 A 0.1 package with a manifest that omits `specVersion` can migrate by adding:
 
