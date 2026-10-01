@@ -92,20 +92,32 @@ A document MAY declare multiple selectable stylesheets in `manifest.json`:
 }
 ```
 
+When the `stylesheets` field is present, it MUST be a non-empty array.
+
 Each stylesheet entry MUST contain:
 
 - `id`: a stable identifier unique within the document;
-- `label`: a human-readable name;
-- `href`: an archive-relative path to a CSS file.
+- `label`: a non-empty human-readable name;
+- `href`: a non-empty archive-relative path to a CSS file.
+
+A stylesheet `id` MUST match:
+
+```text
+^[A-Za-z][A-Za-z0-9._-]*$
+```
+
+The identifier grammar is intentionally ASCII and case-sensitive so style selection remains predictable across implementations.
+
+A stylesheet `href` MUST end in `.css`, compared ASCII case-insensitively, and MUST satisfy the archive-relative path rules in Sections 7 and 9.
 
 A stylesheet entry MAY contain:
 
 - `description`: human-readable explanatory text;
 - `profile`: an implementation-independent style-profile identifier, such as a future standardized academic or organizational style profile.
 
-Every declared `href` MUST resolve to a regular CSS file inside the archive.
+Every declared `href` MUST resolve to exactly one regular UTF-8 CSS file inside the archive.
 
-If `defaultStylesheet` is present, it MUST equal the `id` of one declared stylesheet.
+If `defaultStylesheet` is present, it MUST match the stylesheet-ID grammar above and MUST equal the `id` of one declared stylesheet.
 
 ### 4.3 Runtime style selection
 
