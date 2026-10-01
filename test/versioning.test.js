@@ -9,7 +9,7 @@ import Ajv2020 from "ajv/dist/2020.js";
 import addFormats from "ajv-formats";
 import JSZip from "jszip";
 
-async function validator(schemaPath = "schema/manifest-1.0-draft.schema.json") {
+async function validator(schemaPath = "schema/manifest-1.0.schema.json") {
   const schema = JSON.parse(await fs.readFile(schemaPath, "utf8"));
   const ajv = new Ajv2020({ allErrors: true, strict: false });
   addFormats(ajv);
