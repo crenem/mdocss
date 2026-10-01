@@ -105,6 +105,11 @@ def zip_profile_errors(path: str | Path, infos: Iterable[zipfile.ZipInfo]) -> li
 
     zip64_seen = False
     for info in infos:
+        if (info.flag_bits & 0x0800) == 0 and any(ord(ch) > 127 for ch in info.filename):
+            errors.append(
+                f"Non-ASCII ZIP member name must set the UTF-8 language flag: {info.filename}"
+            )
+
         if info.compress_type not in (zipfile.ZIP_STORED, zipfile.ZIP_DEFLATED):
             errors.append(
                 f"Unsupported ZIP compression method {info.compress_type}: {info.filename}"
@@ -413,8 +418,8 @@ def validate_package(path: str | Path, target: str | None = None) -> ValidationR
                 # The minimum no-manifest package remains valid under 1.0.
                 pass
 
-    except zipfile.BadZipFile as exc:
-        errors.append(f"Invalid ZIP archive: {exc}")
+    except (zipfile.BadZipFile, UnicodeDecodeError) as exc:
+        errors.append(f"Invalid ZIP archive or filename encoding: {exc}")
     except InvalidDocument as exc:
         errors.append(str(exc))
     except OSError as exc:
