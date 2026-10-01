@@ -128,6 +128,11 @@ button:not(:disabled) {
   opacity: 0.68;
 }
 
+.document-frame[hidden],
+.empty-state[hidden] {
+  display: none !important;
+}
+
 .document-frame {
   display: block;
   inline-size: 100%;
