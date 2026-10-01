@@ -91,6 +91,7 @@ Requires Node.js 20+.
 npm install
 node src/cli.js pack examples/basic example.mdocss
 node src/cli.js validate example.mdocss
+node src/cli.js validate example.mdocss --target 1.0
 node src/cli.js inspect example.mdocss
 node src/cli.js styles example.mdocss
 node src/cli.js unpack example.mdocss extracted
