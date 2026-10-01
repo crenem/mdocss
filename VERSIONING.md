@@ -110,6 +110,11 @@ mdocss validate document.mdocss --target 1.0
 
 Under the 1.0 target, a package without `manifest.json` remains valid, but a present manifest MUST declare a 1.0.x `specVersion`. A 1.1 or later declaration is not valid *as 1.0-authored output*, even though a 1.0 reader may process its understood fields forward-compatibly.
 
+The reference repository therefore keeps these contracts separate:
+
+- `schema/manifest-1.0-draft.schema.json` — exact 1.0 authoring contract;
+- `schema/manifest-1.x-reader.schema.json` — 1.0-baseline reader contract for same-major 1.x forward compatibility.
+
 This distinction prevents a reader from rejecting safe same-major evolution while still allowing writers and CI systems to prove that emitted packages conform to a specific release contract.
 
 ## Implementation versions
