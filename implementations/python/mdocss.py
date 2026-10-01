@@ -9,11 +9,13 @@ JavaScript reference implementation.
 from __future__ import annotations
 
 import argparse
+import datetime as dt
 import json
 import re
 import stat
 import struct
 import sys
+import urllib.parse
 import zipfile
 from dataclasses import dataclass
 from pathlib import Path
@@ -23,6 +25,9 @@ from typing import Any, Iterable
 VERSION_RE = re.compile(r"^(\d+)\.(\d+)\.(\d+)$")
 STYLE_ID_RE = re.compile(r"^[A-Za-z][A-Za-z0-9._-]*$")
 DRIVE_RE = re.compile(r"^[A-Za-z]:")
+EMAIL_RE = re.compile(r"^[^@\s]+@[^@\s]+\.[^@\s]+$")
+URI_SCHEME_RE = re.compile(r"^[A-Za-z][A-Za-z0-9+.-]*:")
+RFC3339_ZONE_RE = re.compile(r"(?:Z|[+-]\d{2}:\d{2})$")
 
 
 class InvalidDocument(Exception):
@@ -206,9 +211,31 @@ def require_string(manifest: dict[str, Any], key: str) -> None:
         raise InvalidDocument(f"manifest.json /{key} must be a string")
 
 
+def valid_datetime(value: str) -> bool:
+    if not RFC3339_ZONE_RE.search(value):
+        return False
+    normalized = value[:-1] + "+00:00" if value.endswith("Z") else value
+    try:
+        dt.datetime.fromisoformat(normalized)
+        return True
+    except ValueError:
+        return False
+
+
+def valid_uri(value: str) -> bool:
+    if not URI_SCHEME_RE.match(value):
+        return False
+    parsed = urllib.parse.urlparse(value)
+    return bool(parsed.scheme)
+
+
 def validate_manifest_shape(manifest: dict[str, Any], family: str) -> None:
     for key in ("title", "language", "markdownProfile", "created", "modified"):
         require_string(manifest, key)
+
+    for key in ("created", "modified"):
+        if key in manifest and not valid_datetime(manifest[key]):
+            raise InvalidDocument(f"manifest.json /{key} must be an RFC 3339 date-time")
 
     if manifest.get("entrypoint", "root.md") != "root.md":
         raise InvalidDocument("manifest.json /entrypoint must equal root.md")
@@ -274,6 +301,16 @@ def validate_manifest_shape(manifest: dict[str, Any], family: str) -> None:
                     raise InvalidDocument(
                         f"manifest.json /authors/{index}/{optional} must be a string"
                     )
+
+            if "email" in author and not EMAIL_RE.fullmatch(author["email"]):
+                raise InvalidDocument(
+                    f"manifest.json /authors/{index}/email must be a valid email"
+                )
+
+            if "url" in author and not valid_uri(author["url"]):
+                raise InvalidDocument(
+                    f"manifest.json /authors/{index}/url must be a valid URI"
+                )
 
 
 def validate_package(path: str | Path, target: str | None = None) -> ValidationResult:
