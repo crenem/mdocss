@@ -46,6 +46,7 @@
 - Added an independently authored, standard-library-only Python validator/recovery implementation and made CI run it against the same public corpus as the Node reference implementation.
 - Expanded the shared conformance inventory to 36 cases, including exact 1.0 authoring, no-manifest 1.0 minimum documents, same-major 1.x reading, target-specific version failures, abbreviated-version rejection, metadata-format validation, BZIP2 rejection, and ZIP64 rejection.
 - Aligned schemas and all implementations on exact three-component `MAJOR.MINOR.PATCH` manifest versions.
+- Changed `.mdocss` from a byte-level conformance requirement to the recommended filename extension, allowing filename-independent streams and stores to carry conforming packages.
 - Defined a narrow ZIP interoperability profile: single-disk, non-ZIP64, unencrypted core members using Store or Deflate only.
 - Added `INTEROPERABILITY.md` to record multi-implementation evidence, resolved ambiguities, and remaining third-party/runtime validation work.
 - Stated explicitly in `SPEC.md` that compatible implementations do not require project-maintainer permission and that conformance does not require the reference implementation.
