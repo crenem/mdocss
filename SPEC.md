@@ -229,6 +229,7 @@ Readers SHOULD ignore unknown, non-dangerous archive members.
 Archive member paths:
 
 - MUST use forward slashes (`/`) as separators;
+- if a path contains non-ASCII characters, its ZIP filename bytes MUST be UTF-8 and the ZIP language-encoding (UTF-8) flag MUST be set;
 - MUST be relative;
 - MUST NOT begin with `/`;
 - MUST NOT escape the archive root through `..` traversal;
@@ -238,7 +239,9 @@ A conforming archive MUST NOT contain duplicate member names. Readers MUST rejec
 
 The MDOCSS 0.1 core defines no ZIP-level encryption. A conforming core document MUST NOT contain encrypted ZIP members. Encryption, if standardized in the future, requires a separate extension or later specification rather than implicit use of ZIP encryption features.
 
-Writers SHOULD avoid archive paths that differ only by case when those files could collide on case-insensitive filesystems. Extracting readers SHOULD defend against platform-normalized path collisions.
+Writers SHOULD use Unicode NFC for non-ASCII archive paths and matching resource references. NFC is a portability recommendation, not a 1.0 validity requirement.
+
+Writers SHOULD avoid archive paths that differ only by case when those files could collide on case-insensitive filesystems. Extracting readers SHOULD defend against Unicode-normalization and platform-normalized path collisions.
 
 Readers MUST defend against ZIP-slip/path-traversal attacks.
 
