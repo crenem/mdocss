@@ -93,7 +93,7 @@ test("style add, rename, move, and remove round-trip cleanly", async () => {
 
   zip = await load(target);
   manifest = JSON.parse(await zip.file("manifest.json").async("string"));
-  assert.deepEqual(manifest.stylesheets, []);
+  assert.equal("stylesheets" in manifest, false);
   assert.equal("defaultStylesheet" in manifest, false);
   assert.equal(zip.file("styles/academic.css"), null);
 });
