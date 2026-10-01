@@ -83,3 +83,14 @@ Readers should preserve unknown members when safely possible, but MUST NOT execu
 The public corpus under `conformance/` includes representative malicious path and malformed-text cases.
 
 It intentionally excludes actual ZIP bombs and other resource-exhaustion payloads. Implementations should test resource ceilings independently using controlled local fixtures appropriate to their deployment environment.
+
+
+## ZIP interoperability profile
+
+MDOCSS deliberately uses a narrower ZIP subset than the full ZIP feature set.
+
+Conforming core packages must be single-disk archives, must not require ZIP64, must not require encrypted members, and must use only Store (method 0) or Deflate (method 8) compression for regular members.
+
+This reduces parser diversity and prevents an archive from being formally “ZIP” while depending on a compression or addressing feature that common document readers cannot process consistently.
+
+Readers should identify these profile violations before interpreting package semantics where practical. A host may still offer explicit recovery tooling, but a package outside the profile is not conforming MDOCSS core.
