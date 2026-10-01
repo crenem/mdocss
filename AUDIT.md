@@ -25,8 +25,8 @@ Current status: **strong, still under audit**
 Remaining work:
 
 - explicit schema/example/package-reference consistency tests now run in CI;
-- decide whether `specVersion` becomes mandatory when a manifest exists in 1.0 (issue #4);
-- publish a 1.0 schema only after the versioning decision is frozen.
+- the 1.0 decision is now frozen: a present `manifest.json` MUST contain `specVersion`;
+- a candidate 1.0 manifest schema is published and must receive final RC review before losing its `-draft` status (issue #4).
 
 ## Security
 
@@ -122,7 +122,7 @@ The current blockers to calling a release v0.9 RC are:
 
 1. complete the browser/Obsidian runtime smoke test — issue #2;
 2. finalize media-type registration strategy — issue #3;
-3. freeze the 1.0 `specVersion` rule — issue #4;
+3. finalize/promote the candidate 1.0 manifest schema and version-negotiation fixtures — issue #4;
 4. independent implementation/interoperability exercise and RC feedback — issue #5;
 5. perform final review of `IMPLEMENTATION.md`, `VERSIONING.md`, and `MIGRATION.md`;
 6. perform a final normative/security/schema audit after the versioning decision.
