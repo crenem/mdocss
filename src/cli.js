@@ -4,7 +4,7 @@ import path from "node:path";
 import process from "node:process";
 import JSZip from "jszip";
 import { Command } from "commander";
-import Ajv from "ajv";
+import Ajv2020 from "ajv/dist/2020.js";
 import addFormats from "ajv-formats";
 
 const program = new Command();
@@ -50,7 +50,7 @@ async function validateZip(zip) {
     try {
       const data = JSON.parse(await manifestFile.async("string"));
       const schema = JSON.parse(await fs.readFile(new URL("../schema/manifest.schema.json", import.meta.url), "utf8"));
-      const ajv = new Ajv({ allErrors: true, strict: false });
+      const ajv = new Ajv2020({ allErrors: true, strict: false });
       addFormats(ajv);
       const check = ajv.compile(schema);
       if (!check(data)) {
