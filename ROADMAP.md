@@ -57,7 +57,7 @@ Milestones are release gates rather than branch names. The current draft PR alre
 
 ## v0.4 — Reference renderer
 
-**Draft status:** browser reference implementation is present and builds in CI. Final exit verification still requires a manual cross-render smoke test against an editor integration.
+**Draft status:** browser reference implementation builds and passes a real hosted-Chrome runtime gate in CI, covering package loading, style hot-swapping, content invariance, local/remote resources, print delegation, hostile input, and generated-markup metadata safety. Final exit verification requires the manual cross-render smoke test against the Obsidian integration.
 
 **Goal:** prove interoperable rendering outside the CLI.
 
