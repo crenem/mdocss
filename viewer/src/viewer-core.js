@@ -20,6 +20,14 @@ export function manifestCompatibility(manifest) {
     return { supported: true, mode: "supported", version: String(version) };
   }
 
+  if (major === 1) {
+    return {
+      supported: true,
+      mode: minor === 0 ? "supported" : "forward-compatible",
+      version: String(version)
+    };
+  }
+
   return { supported: false, mode: "unsupported", version: String(version) };
 }
 
