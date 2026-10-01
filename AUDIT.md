@@ -127,10 +127,11 @@ No broader patent or third-party-rights representation is implied by that statem
 The current blockers to calling a release v0.9 RC are:
 
 1. complete the browser/Obsidian runtime smoke test — issue #2;
-2. finalize media-type registration strategy — issue #3;
-3. finalize/promote the candidate 1.0 manifest schema and version-negotiation fixtures — issue #4;
-4. independent implementation/interoperability exercise and RC feedback — issue #5;
-5. perform final review of `IMPLEMENTATION.md`, `VERSIONING.md`, and `MIGRATION.md`;
-6. perform a final normative/security/schema audit after the versioning decision.
+2. complete the stable-spec/contact prerequisites and submit the frozen media-type registration path when appropriate — issue #3;
+3. perform final RC review and promote the candidate exact-1.0 manifest schema from `-draft` status — issue #4;
+4. obtain independent-party review/implementation evidence and conduct the documented RC feedback period — issue #5;
+5. perform the final normative/security/schema audit after runtime and outside-review findings are available.
+
+The in-repository implementation/versioning review, shared 28-case dual-language conformance exercise, and second-pass review of `IMPLEMENTATION.md`, `VERSIONING.md`, and `MIGRATION.md` are complete.
 
 Do not mark v0.9 or v1.0 complete while these remain unresolved.
