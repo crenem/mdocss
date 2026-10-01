@@ -3,7 +3,11 @@ import { marked } from "marked";
 import DOMPurify from "dompurify";
 import {
   chooseInitialStyle,
+  dangerousArchiveMember,
+  duplicateZipMemberNames,
   inferMimeType,
+  isZipSymlink,
+  manifestCompatibility,
   normalizeArchiveReference,
   referenceKind,
   styleChoices
@@ -278,7 +282,24 @@ async function loadFile(file) {
   setStatus(`Opening ${file.name}…`);
 
   try {
-    const zip = await JSZip.loadAsync(await file.arrayBuffer());
+    const archiveBuffer = await file.arrayBuffer();
+    const duplicates = duplicateZipMemberNames(archiveBuffer);
+    if (duplicates.length) {
+      throw new Error(`Duplicate archive member names are not allowed: ${duplicates.join(", ")}`);
+    }
+
+    const zip = await JSZip.loadAsync(archiveBuffer);
+
+    for (const [name, entry] of Object.entries(zip.files)) {
+      const original = entry.unsafeOriginalName || name;
+      if (dangerousArchiveMember(original)) {
+        throw new Error(`Unsafe archive member path: ${original}`);
+      }
+      if (isZipSymlink(entry)) {
+        throw new Error(`Symbolic-link archive member is not allowed: ${original}`);
+      }
+    }
+
     const root = zipEntry(zip, "root.md");
     if (!root) throw new Error("This archive does not contain the required root.md.");
 
@@ -294,12 +315,19 @@ async function loadFile(file) {
       }
     }
 
+    const compatibility = manifestCompatibility(manifest);
+    const featureManifest = compatibility.supported ? manifest : null;
+
     current = {
       file,
       zip,
-      manifest,
+      manifest: featureManifest,
+      rawManifest: manifest,
+      compatibility,
       blobUrls: new Map(),
-      styles: styleChoices(manifest, Boolean(zipEntry(zip, "root.css"))),
+      styles: compatibility.supported
+        ? styleChoices(featureManifest, Boolean(zipEntry(zip, "root.css")))
+        : [],
       activeStyle: null
     };
 
@@ -317,7 +345,7 @@ async function loadFile(file) {
 
     populateStylePicker();
 
-    const initialStyleId = chooseInitialStyle(manifest, current.styles);
+    const initialStyleId = chooseInitialStyle(featureManifest, current.styles);
     const initialStyle = current.styles.find(item => item.id === initialStyleId);
     const css = initialStyle ? await loadCss(initialStyle.href) : "";
 
@@ -335,10 +363,18 @@ async function loadFile(file) {
     frame.hidden = false;
     printButton.disabled = false;
 
-    const title = manifest?.title || file.name;
+    const title = featureManifest?.title || file.name;
     const styleCount = current.styles.length;
-    setInfo(`${title} · ${styleCount} style${styleCount === 1 ? "" : "s"}`);
-    setStatus(initialStyle ? `Rendered with ${initialStyle.label}.` : "Rendered without a bundled stylesheet.");
+
+    if (!compatibility.supported) {
+      setInfo(`${file.name} · recovery mode`);
+      setStatus(
+        `Unsupported MDOCSS version ${compatibility.version || "unknown"}; showing canonical content without interpreting optional package semantics.`
+      );
+    } else {
+      setInfo(`${title} · ${styleCount} style${styleCount === 1 ? "" : "s"}`);
+      setStatus(initialStyle ? `Rendered with ${initialStyle.label}.` : "Rendered without a bundled stylesheet.");
+    }
   } catch (error) {
     revokeAssets();
     current = null;
