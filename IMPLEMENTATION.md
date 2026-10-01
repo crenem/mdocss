@@ -47,13 +47,29 @@ If `manifest.json` exists:
 
 If no manifest exists, the reader can still render `root.md` and optionally `root.css`.
 
-### 5. Determine the Markdown profile
+### 5. Negotiate the format version
+
+Treat reading compatibility and authoring conformance as separate operations.
+
+For reading:
+
+1. no manifest means the minimum container contract;
+2. an unversioned manifest is legacy 0.1 draft behavior;
+3. 0.1.x uses the 0.1 contract;
+4. 1.x uses the 1.0 reader baseline and processes understood same-major fields forward compatibly;
+5. an unsupported major enters recovery mode rather than being interpreted as understood.
+
+For exact authoring validation, require the requested target contract. In particular, a package authored to 1.0 may omit the manifest entirely, but a present manifest must declare a 1.0.x `specVersion`.
+
+See `VERSIONING.md` and the shared version cases in `conformance/cases.json`.
+
+### 6. Determine the Markdown profile
 
 If `markdownProfile` is declared and supported, use it.
 
 Otherwise use the application's documented baseline. The current reference renderer uses GFM-compatible rendering, while the MDOCSS 0.x core intentionally does not require one universal Markdown dialect.
 
-### 6. Render semantic content
+### 7. Render semantic content
 
 Render `root.md` to the application's document model.
 
@@ -65,7 +81,7 @@ Where applicable:
 
 Sanitize dangerous active content according to the host environment.
 
-### 7. Resolve local resources
+### 8. Resolve local resources
 
 Resolve relative references from the file containing the reference.
 
@@ -79,7 +95,7 @@ Never allow resolution outside the archive.
 
 A self-contained document must not require automatic network access.
 
-### 8. Enumerate stylesheets
+### 9. Enumerate stylesheets
 
 If the manifest contains `stylesheets`, validate each declared target and expose supported entries to the user.
 
@@ -87,7 +103,7 @@ If there are no declared entries but `root.css` exists, treat `root.css` as the 
 
 Choose the initial style according to the preference order in `SPEC.md`.
 
-### 9. Hot-swap presentation
+### 10. Hot-swap presentation
 
 Changing the active stylesheet should replace presentation only.
 
@@ -95,7 +111,7 @@ Do not rewrite or reparse `root.md` solely because the user selected a different
 
 A reader-local style preference may be persisted outside the package. It must not silently change the author-defined `defaultStylesheet`.
 
-### 10. Print or export
+### 11. Print or export
 
 Use the selected stylesheet's print rules when supported.
 
@@ -156,9 +172,11 @@ CSS, manifests, semantic classes, style pickers, and rich asset rendering are pr
 
 Implementations should test against:
 
-- the public corpus under `conformance/`;
+- the public corpus under `conformance/`, including target-specific generated version cases;
 - `examples/basic/`;
 - `examples/semantic-paper/`;
 - the generated multi-profile style demo.
 
 A reader claiming style-aware support should verify that switching among styles leaves canonical Markdown bytes unchanged.
+
+The repository maintains `INTEROPERABILITY.md` as the release-readiness record for multi-implementation findings.
