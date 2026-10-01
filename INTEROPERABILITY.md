@@ -25,7 +25,7 @@ Both the Node reference validator and the Python implementation execute the same
 conformance/cases.json
 ```
 
-At the time of this report, the shared corpus contains **36 cases** covering:
+At the time of this report, the shared corpus contains **38 cases** covering:
 
 - minimum valid packages;
 - optional fallback CSS;
@@ -44,7 +44,8 @@ At the time of this report, the shared corpus contains **36 cases** covering:
 - same-major newer-minor 1.x reading;
 - target-specific rejection of unversioned manifests and later-minor declarations as exact 1.0 output;
 - rejection of abbreviated two-component manifest versions so every implementation negotiates the same `MAJOR.MINOR.PATCH` syntax;
-- shared validation of RFC 3339 date-time, author email, and author URI metadata.
+- shared validation of RFC 3339 date-time, author email, and author URI metadata;
+- deterministic non-ASCII ZIP filename decoding through the ZIP UTF-8 language flag.
 
 CI runs both implementations against this inventory.
 
