@@ -72,7 +72,7 @@ For MDOCSS 1.0, **if `manifest.json` is present, it MUST declare `specVersion`**
 
 A no-manifest package containing only the minimum core files remains valid.
 
-This requirement lets a future reader select the correct manifest contract without weakening the format's minimum-document principle. A candidate schema is published as `schema/manifest-1.0-draft.schema.json` until the 1.0 contract is frozen.
+This requirement lets a future reader select the correct manifest contract without weakening the format's minimum-document principle. A candidate schema is published as `schema/manifest-1.0.schema.json` until the 1.0 contract is frozen.
 
 ## Unknown fields and files
 
@@ -114,7 +114,7 @@ Under the 1.0 target, a package without `manifest.json` remains valid, but a pre
 
 The reference repository therefore keeps these contracts separate:
 
-- `schema/manifest-1.0-draft.schema.json` — exact 1.0 authoring contract;
+- `schema/manifest-1.0.schema.json` — exact 1.0 authoring contract;
 - `schema/manifest-1.x-reader.schema.json` — 1.0-baseline reader contract for same-major 1.x forward compatibility.
 
 This distinction prevents a reader from rejecting safe same-major evolution while still allowing writers and CI systems to prove that emitted packages conform to a specific release contract.
