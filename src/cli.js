@@ -128,6 +128,84 @@ function ensureManifestObject(value) {
   return value;
 }
 
+const MANIFEST_SCHEMAS = {
+  "0.1": new URL("../schema/manifest.schema.json", import.meta.url),
+  "1.0": new URL("../schema/manifest-1.0-draft.schema.json", import.meta.url)
+};
+
+function parseSpecVersion(value) {
+  if (value == null || value === "") return null;
+  const match = /^(\d+)\.(\d+)(?:\.(\d+))?$/.exec(String(value));
+  if (!match) return { invalid: true, raw: String(value) };
+
+  return {
+    raw: String(value),
+    major: Number(match[1]),
+    minor: Number(match[2]),
+    patch: match[3] == null ? 0 : Number(match[3])
+  };
+}
+
+function validationFamilyForTarget(target) {
+  if (!target) return null;
+  if (target === "0.1" || target === "0.1.0") return "0.1";
+  if (target === "1.0" || target === "1.0.0") return "1.0";
+  return null;
+}
+
+function manifestValidationPlan(manifest, target = null) {
+  const requestedFamily = validationFamilyForTarget(target);
+  if (target && !requestedFamily) {
+    return { error: `Unsupported validation target: ${target}` };
+  }
+
+  const parsed = parseSpecVersion(manifest?.specVersion);
+  if (parsed?.invalid) {
+    return { error: `Invalid specVersion: ${parsed.raw}` };
+  }
+
+  if (requestedFamily) {
+    if (parsed) {
+      const matchesTarget =
+        requestedFamily === "0.1"
+          ? parsed.major === 0 && parsed.minor === 1
+          : parsed.major === 1 && parsed.minor === 0;
+
+      if (!matchesTarget) {
+        return {
+          error: `specVersion ${parsed.raw} does not match validation target ${requestedFamily}`
+        };
+      }
+    }
+
+    return { family: requestedFamily, version: parsed?.raw ?? null };
+  }
+
+  if (!parsed) {
+    return { family: "0.1", version: null, mode: "legacy-unversioned" };
+  }
+
+  if (parsed.major === 0 && parsed.minor === 1) {
+    return { family: "0.1", version: parsed.raw, mode: "supported" };
+  }
+
+  if (parsed.major === 1) {
+    return {
+      family: "1.0",
+      version: parsed.raw,
+      mode: parsed.minor === 0 ? "supported" : "forward-compatible"
+    };
+  }
+
+  return { unsupportedVersion: parsed.raw };
+}
+
+async function manifestSchema(family) {
+  const source = MANIFEST_SCHEMAS[family];
+  if (!source) throw new Error(`No manifest schema available for ${family}`);
+  return JSON.parse(await fs.readFile(source, "utf8"));
+}
+
 async function loadArchive(file) {
   const buffer = await fs.readFile(file);
   const duplicates = duplicateCentralDirectoryNames(buffer);
@@ -147,8 +225,9 @@ async function readManifest(zip) {
   return ensureManifestObject(JSON.parse(await utf8Text(file)));
 }
 
-async function validateZip(zip) {
+async function validateZip(zip, options = {}) {
   const errors = [];
+  let unsupportedVersion = null;
   const names = Object.keys(zip.files);
   if (!zip.file("root.md")) errors.push("Missing required root.md");
 
@@ -179,59 +258,70 @@ async function validateZip(zip) {
   if (manifestFile) {
     try {
       const data = ensureManifestObject(JSON.parse(await utf8Text(manifestFile)));
-      const schema = JSON.parse(
-        await fs.readFile(new URL("../schema/manifest.schema.json", import.meta.url), "utf8")
-      );
-      const ajv = new Ajv2020({ allErrors: true, strict: false });
-      addFormats(ajv);
-      const check = ajv.compile(schema);
+      const plan = manifestValidationPlan(data, options.target ?? null);
 
-      if (!check(data)) {
-        for (const err of check.errors ?? []) {
-          errors.push(`manifest.json ${err.instancePath || "/"} ${err.message}`);
-        }
-      }
+      if (plan.error) {
+        errors.push(plan.error);
+      } else if (plan.unsupportedVersion) {
+        unsupportedVersion = plan.unsupportedVersion;
+      } else {
+        const schema = await manifestSchema(plan.family);
+        const ajv = new Ajv2020({ allErrors: true, strict: false });
+        addFormats(ajv);
+        const check = ajv.compile(schema);
 
-      const styles = declaredStyles(data);
-      const ids = new Set();
-
-      for (const style of styles) {
-        if (ids.has(style.id)) errors.push(`Duplicate stylesheet id: ${style.id}`);
-        ids.add(style.id);
-
-        if (dangerous(style.href)) {
-          errors.push(`Dangerous stylesheet path: ${style.href}`);
-          continue;
+        if (!check(data)) {
+          for (const err of check.errors ?? []) {
+            errors.push(`manifest.json ${err.instancePath || "/"} ${err.message}`);
+          }
         }
 
-        if (!style.href.toLowerCase().endsWith(".css")) {
-          errors.push(`Stylesheet does not reference a .css file: ${style.href}`);
+        const styles = declaredStyles(data);
+        const ids = new Set();
+
+        for (const style of styles) {
+          if (ids.has(style.id)) errors.push(`Duplicate stylesheet id: ${style.id}`);
+          ids.add(style.id);
+
+          if (dangerous(style.href)) {
+            errors.push(`Dangerous stylesheet path: ${style.href}`);
+            continue;
+          }
+
+          if (!style.href.toLowerCase().endsWith(".css")) {
+            errors.push(`Stylesheet does not reference a .css file: ${style.href}`);
+          }
+
+          const styleFile = zip.file(style.href);
+          if (!styleFile) {
+            errors.push(`Declared stylesheet not found: ${style.href}`);
+          } else {
+            try { await utf8Text(styleFile); }
+            catch { errors.push(`Stylesheet is not valid UTF-8: ${style.href}`); }
+          }
         }
 
-        const styleFile = zip.file(style.href);
-        if (!styleFile) {
-          errors.push(`Declared stylesheet not found: ${style.href}`);
-        } else {
-          try { await utf8Text(styleFile); }
-          catch { errors.push(`Stylesheet is not valid UTF-8: ${style.href}`); }
+        if (data.defaultStylesheet && !ids.has(data.defaultStylesheet)) {
+          errors.push(
+            `defaultStylesheet does not match a declared stylesheet id: ${data.defaultStylesheet}`
+          );
         }
-      }
-
-      if (data.defaultStylesheet && !ids.has(data.defaultStylesheet)) {
-        errors.push(
-          `defaultStylesheet does not match a declared stylesheet id: ${data.defaultStylesheet}`
-        );
       }
     } catch (error) {
       errors.push(`Invalid manifest.json: ${error.message}`);
     }
   }
 
-  return errors;
+  return { errors, unsupportedVersion };
 }
 
 async function requireValid(zip, context = "MDOCSS document") {
-  const errors = await validateZip(zip);
+  const { errors, unsupportedVersion } = await validateZip(zip);
+  if (unsupportedVersion) {
+    throw new Error(
+      `${context} declares unsupported MDOCSS major version ${unsupportedVersion}`
+    );
+  }
   if (errors.length) {
     throw new Error(`${context} is not conforming:\n${errors.map(e => `- ${e}`).join("\n")}`);
   }
@@ -508,15 +598,27 @@ program.command("rename-style")
 
 program.command("validate")
   .argument("<file>")
-  .action(async file => {
+  .option("--target <version>", "Validate authoring conformance for 0.1 or 1.0")
+  .action(async (file, options) => {
     const zip = await loadArchive(file);
-    const errors = await validateZip(zip);
+    const { errors, unsupportedVersion } = await validateZip(zip, {
+      target: options.target ?? null
+    });
 
     if (errors.length) {
       console.error(errors.map(error => `- ${error}`).join("\n"));
       process.exitCode = 1;
+    } else if (unsupportedVersion) {
+      console.error(
+        `Unsupported MDOCSS major version ${unsupportedVersion}; root.md may still be safely recoverable`
+      );
+      process.exitCode = 2;
     } else {
-      console.log("Valid MDOCSS 0.1 document");
+      console.log(
+        options.target
+          ? `Valid MDOCSS ${options.target} document`
+          : "Valid MDOCSS document"
+      );
     }
   });
 
