@@ -1,0 +1,38 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://mdocss.org/schema/manifest-0.1.schema.json",
+  "title": "MDOCSS 0.1 Manifest",
+  "type": "object",
+  "properties": {
+    "specVersion": {
+      "type": "string",
+      "pattern": "^0\\.1(?:\\.\\d+)?$"
+    },
+    "title": { "type": "string" },
+    "language": { "type": "string" },
+    "markdownProfile": { "type": "string" },
+    "entrypoint": { "const": "root.md" },
+    "stylesheet": { "const": "root.css" },
+    "created": { "type": "string", "format": "date-time" },
+    "modified": { "type": "string", "format": "date-time" },
+    "authors": {
+      "type": "array",
+      "items": {
+        "oneOf": [
+          { "type": "string" },
+          {
+            "type": "object",
+            "required": ["name"],
+            "properties": {
+              "name": { "type": "string" },
+              "email": { "type": "string", "format": "email" },
+              "url": { "type": "string", "format": "uri" }
+            },
+            "additionalProperties": true
+          }
+        ]
+      }
+    }
+  },
+  "additionalProperties": true
+}

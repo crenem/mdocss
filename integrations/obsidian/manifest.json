@@ -1,0 +1,9 @@
+{
+  "id": "mdocss",
+  "name": "MDOCSS",
+  "version": "0.1.0",
+  "minAppVersion": "1.5.0",
+  "description": "Open and render .mdocss document containers in Obsidian.",
+  "author": "Jason Seaux",
+  "isDesktopOnly": false
+}

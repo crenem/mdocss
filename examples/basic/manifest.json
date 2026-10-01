@@ -1,0 +1,11 @@
+{
+  "specVersion": "0.1.0",
+  "title": "Hello, MDOCSS",
+  "language": "en",
+  "markdownProfile": "CommonMark",
+  "entrypoint": "root.md",
+  "stylesheet": "root.css",
+  "authors": [
+    { "name": "Jason Seaux" }
+  ]
+}
