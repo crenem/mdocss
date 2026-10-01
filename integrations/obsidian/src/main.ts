@@ -70,10 +70,13 @@ function manifestCompatibility(manifest: Manifest | null): { supported: boolean;
 }
 
 function dangerousArchiveMember(name: string): boolean {
-  if (!name || name.includes("\0")) return true;
+  if (!name || /[\x00-\x1f\x7f]/.test(name)) return true;
   if (name.startsWith("/") || name.startsWith("\\")) return true;
   if (/^[A-Za-z]:/.test(name) || name.includes("\\")) return true;
-  return name.split("/").includes("..");
+
+  const parts = name.split("/");
+  if (parts.includes("..") || parts.includes(".")) return true;
+  return parts.slice(0, -1).includes("");
 }
 
 function zipInteroperabilityIssues(input: ArrayBuffer): string[] {
