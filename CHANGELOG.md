@@ -44,13 +44,14 @@
 - Added package-level tests covering legacy manifests, 1.0 output, newer 1.x minor versions, unsupported future majors, and the no-manifest 1.0 minimum-document rule.
 - Froze the planned media-type registration path as vendor-tree `application/vnd.mdocss+zip`, with IANA submission deferred until a stable 1.0 specification URL and durable contact/change-controller details exist.
 - Added an independently authored, standard-library-only Python validator/recovery implementation and made CI run it against the same public corpus as the Node reference implementation.
-- Expanded the shared conformance inventory to 36 cases, including exact 1.0 authoring, no-manifest 1.0 minimum documents, same-major 1.x reading, target-specific version failures, abbreviated-version rejection, metadata-format validation, BZIP2 rejection, and ZIP64 rejection.
+- Expanded the shared conformance inventory to 38 cases, including exact 1.0 authoring, no-manifest 1.0 minimum documents, same-major 1.x reading, target-specific version failures, abbreviated-version rejection, metadata-format validation, ZIP filename-encoding cases, BZIP2 rejection, and ZIP64 rejection.
 - Aligned schemas and all implementations on exact three-component `MAJOR.MINOR.PATCH` manifest versions.
 - Changed `.mdocss` from a byte-level conformance requirement to the recommended filename extension, allowing filename-independent streams and stores to carry conforming packages.
 - Made all ZIP-member encryption nonconforming in core 1.0, matching the explicit no-encryption scope and validator behavior.
 - Removed provisional schema `$id` values until a stable versioned publication URI exists.
 - Added field-by-field manifest semantics, including BCP 47 language guidance and RFC 3339/JSON-Schema metadata formats.
 - Aligned the IANA registration draft with the core ZIP interoperability and no-encryption rules.
+- Standardized non-ASCII ZIP member names on UTF-8 with the ZIP language-encoding flag and recommended NFC for writer portability.
 - Defined a narrow ZIP interoperability profile: single-disk, non-ZIP64, unencrypted core members using Store or Deflate only.
 - Added `INTEROPERABILITY.md` to record multi-implementation evidence, resolved ambiguities, and remaining third-party/runtime validation work.
 - Stated explicitly in `SPEC.md` that compatible implementations do not require project-maintainer permission and that conformance does not require the reference implementation.
