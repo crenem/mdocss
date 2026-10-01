@@ -93,6 +93,109 @@ export function duplicateZipMemberNames(input) {
   return duplicates;
 }
 
+export function zipInteroperabilityIssues(input) {
+  const bytes = input instanceof Uint8Array ? input : new Uint8Array(input);
+  const issues = [];
+  if (bytes.byteLength < 22) return issues;
+
+  const view = new DataView(bytes.buffer, bytes.byteOffset, bytes.byteLength);
+  const lowest = Math.max(0, bytes.byteLength - 22 - 0xffff);
+  let eocd = -1;
+
+  for (let offset = bytes.byteLength - 22; offset >= lowest; offset -= 1) {
+    if (view.getUint32(offset, true) === 0x06054b50) {
+      eocd = offset;
+      break;
+    }
+  }
+
+  if (eocd < 0) return issues;
+
+  const diskNumber = view.getUint16(eocd + 4, true);
+  const centralDisk = view.getUint16(eocd + 6, true);
+  const entriesOnDisk = view.getUint16(eocd + 8, true);
+  const totalEntries = view.getUint16(eocd + 10, true);
+  const centralSize = view.getUint32(eocd + 12, true);
+  const centralOffset = view.getUint32(eocd + 16, true);
+
+  if (diskNumber !== 0 || centralDisk !== 0 || entriesOnDisk !== totalEntries) {
+    issues.push("Multi-disk/spanned ZIP archives are not allowed");
+  }
+
+  let zip64 =
+    entriesOnDisk === 0xffff ||
+    totalEntries === 0xffff ||
+    centralSize === 0xffffffff ||
+    centralOffset === 0xffffffff ||
+    (eocd >= 20 && view.getUint32(eocd - 20, true) === 0x07064b50);
+
+  if (zip64 || centralOffset >= bytes.byteLength) {
+    if (zip64) issues.push("ZIP64 features are not allowed by the MDOCSS ZIP profile");
+    return issues;
+  }
+
+  let cursor = centralOffset;
+
+  for (let index = 0; index < totalEntries; index += 1) {
+    if (cursor + 46 > bytes.byteLength || view.getUint32(cursor, true) !== 0x02014b50) {
+      break;
+    }
+
+    const flags = view.getUint16(cursor + 8, true);
+    const method = view.getUint16(cursor + 10, true);
+    const compressedSize = view.getUint32(cursor + 20, true);
+    const uncompressedSize = view.getUint32(cursor + 24, true);
+    const filenameLength = view.getUint16(cursor + 28, true);
+    const extraLength = view.getUint16(cursor + 30, true);
+    const commentLength = view.getUint16(cursor + 32, true);
+    const diskStart = view.getUint16(cursor + 34, true);
+    const localOffset = view.getUint32(cursor + 42, true);
+    const start = cursor + 46;
+    const end = start + filenameLength;
+    const extraEnd = end + extraLength;
+
+    if (extraEnd > bytes.byteLength) break;
+
+    const raw = bytes.slice(start, end);
+    const display = (flags & 0x0800)
+      ? new TextDecoder("utf-8").decode(raw)
+      : new TextDecoder("windows-1252").decode(raw);
+
+    if ((flags & 0x0001) !== 0) {
+      issues.push(`Encrypted ZIP member is not allowed: ${display}`);
+    }
+
+    if (method !== 0 && method !== 8) {
+      issues.push(`Unsupported ZIP compression method ${method}: ${display}`);
+    }
+
+    if (
+      compressedSize === 0xffffffff ||
+      uncompressedSize === 0xffffffff ||
+      diskStart === 0xffff ||
+      localOffset === 0xffffffff
+    ) {
+      zip64 = true;
+    }
+
+    let extraCursor = end;
+    while (extraCursor + 4 <= extraEnd) {
+      const headerId = view.getUint16(extraCursor, true);
+      const dataSize = view.getUint16(extraCursor + 2, true);
+      if (headerId === 0x0001) zip64 = true;
+      extraCursor += 4 + dataSize;
+    }
+
+    cursor = extraEnd + commentLength;
+  }
+
+  if (zip64 && !issues.some(issue => issue.startsWith("ZIP64 features"))) {
+    issues.push("ZIP64 features are not allowed by the MDOCSS ZIP profile");
+  }
+
+  return issues;
+}
+
 export function isZipSymlink(entry) {
   const raw = entry?.unixPermissions;
   const mode =
