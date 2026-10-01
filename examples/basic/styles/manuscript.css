@@ -1,0 +1,12 @@
+body {
+  max-width: 42rem;
+  margin: 4rem auto;
+  padding: 0 2rem;
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 12pt;
+  line-height: 2;
+}
+
+h1, h2 { line-height: 1.25; }
+
+p { text-indent: 0.5in; }
