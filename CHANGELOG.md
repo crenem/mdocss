@@ -16,5 +16,9 @@
 - Added path traversal and active-content security requirements.
 - Added manifest JSON Schema.
 - Added reference Node.js CLI.
+- Added a 20-case public conformance corpus covering valid documents, malformed manifests, stylesheet errors, malformed UTF-8, path attacks, and forward-compatible unknown content.
+- Added round-trip preservation testing for unknown members and manifest fields.
+- Added security guidance for ZIP extraction, decompression limits, CSS isolation, external resources, and strict UTF-8 handling.
+- Hardened the reference validator for original ZIP member names, Windows-style paths, and strict UTF-8 decoding.
 - Added CI workflow.
 - Added initial Obsidian integration scaffold.
