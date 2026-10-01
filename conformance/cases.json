@@ -138,5 +138,63 @@
     "expected": "unsupported",
     "purpose": "A future unsupported major version is not valid for this validator, but canonical root.md remains safely recoverable.",
     "recoverRoot": true
+  },
+  {
+    "id": "V005",
+    "expected": "valid",
+    "target": "1.0",
+    "generated": {
+      "root": "# MDOCSS 1.0\\n",
+      "manifest": {
+        "specVersion": "1.0.0",
+        "title": "Exact 1.0 authoring package"
+      }
+    },
+    "purpose": "A manifest-bearing 1.0 package declares specVersion and satisfies the exact 1.0 authoring target."
+  },
+  {
+    "id": "V006",
+    "expected": "valid",
+    "generated": {
+      "root": "# Forward compatible 1.x\\n",
+      "manifest": {
+        "specVersion": "1.7.0",
+        "title": "Newer minor in the same stable major"
+      }
+    },
+    "purpose": "A 1.0-baseline reader accepts understood fields from a newer 1.x minor version."
+  },
+  {
+    "id": "V007",
+    "expected": "valid",
+    "target": "1.0",
+    "generated": {
+      "root": "# Minimal 1.0 package\\n"
+    },
+    "purpose": "The 1.0 authoring target still permits the minimum package with no manifest."
+  },
+  {
+    "id": "I019",
+    "expected": "invalid",
+    "target": "1.0",
+    "generated": {
+      "root": "# Missing version\\n",
+      "manifest": {
+        "title": "Manifest present without specVersion"
+      }
+    },
+    "purpose": "A manifest-bearing package authored to 1.0 must declare specVersion."
+  },
+  {
+    "id": "I020",
+    "expected": "invalid",
+    "target": "1.0",
+    "generated": {
+      "root": "# Not exact 1.0 output\\n",
+      "manifest": {
+        "specVersion": "1.1.0"
+      }
+    },
+    "purpose": "A 1.1 declaration is readable by a 1.0-baseline reader but is not exact 1.0-authored output."
   }
 ]
