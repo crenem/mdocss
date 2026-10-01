@@ -5,9 +5,11 @@
 
 The exact MDOCSS media type is not currently registered with IANA. This document prepares the information needed for a future registration and MUST NOT be treated as evidence that registration has occurred.
 
-The vendor tree is a plausible registration path because RFC 6838 permits vendor-tree registrations for publicly available products and explicitly construes “vendor”/“producer” broadly enough to include non-commercial entities that are not recognized standards organizations.
+The registration strategy is the **vendor tree**. RFC 6838 permits vendor-tree registrations for publicly available products and explicitly construes “vendor”/“producer” broadly enough to include non-commercial entities that are not recognized standards organizations. Vendor-tree requests are submitted directly to IANA and undergo Expert Review.
 
-The `+zip` suffix is already registered in the IANA Structured Syntax Suffix registry.
+The `+zip` suffix is already registered in the IANA Structured Syntax Suffix registry. Its registered fragment behavior delegates to `application/zip` when generic ZIP fragment semantics exist; currently `application/zip` defines no generic fragment syntax.
+
+The current IANA application form separates the tree prefix from the subtype text. For this registration, select the `vnd.` prefix and enter `mdocss+zip` as the subtype value.
 
 ## IANA form draft
 
@@ -24,13 +26,13 @@ application
 
 ### Subtype Name
 
-Vendor-tree prefix:
+Vendor-tree prefix selection:
 
 ```text
 vnd.
 ```
 
-Subtype field:
+Subtype text field:
 
 ```text
 mdocss+zip
@@ -119,7 +121,7 @@ Reference implementations include a standalone browser viewer, a CLI, and an Obs
 
 ### Fragment Identifier Considerations
 
-MDOCSS 1.0 is not expected to define additional media-type-level fragment identifier semantics.
+MDOCSS 1.0 does not define additional media-type-level fragment identifier semantics.
 
 The `+zip` structured syntax suffix follows the fragment-identifier considerations defined for that suffix. At present, `application/zip` does not define a generic fragment syntax.
 
@@ -128,6 +130,8 @@ Links and fragment identifiers inside rendered Markdown are document-level seman
 ### Restrictions on Usage
 
 N/A.
+
+MDOCSS does not require network retrieval to interpret its core package. Canonical Markdown, declared stylesheets, metadata, and required local resources are package members. Documents may contain ordinary hyperlinks, but a conforming reader does not need to dereference those links to identify or recover the media type.
 
 ### Provisional Registration
 
@@ -171,17 +175,31 @@ https://github.com/crenem/mdocss
 
 Confirm the final change-controller wording and contact details before submission.
 
+## Registration path decision
+
+The planned registration is:
+
+```text
+application/vnd.mdocss+zip
+```
+
+Tree: vendor  
+Review policy: Expert Review  
+Structured syntax suffix: `+zip`  
+Provisional registration: No
+
+This strategy is frozen for the 1.0 release candidate unless IANA Expert Review identifies a reason to change it.
+
 ## Pre-submission checklist
 
 Before filing the IANA form:
 
-1. freeze the 1.0 media-type spelling;
-2. publish a stable versioned specification URL;
-3. complete registrant and contact identity fields;
-4. review security text against the final 1.0 specification;
-5. confirm the change controller;
-6. request community/media-types review if useful;
-7. submit through the IANA media-type application form;
-8. update `SPEC.md` only after actual registration status is known.
+1. publish a stable versioned 1.0 specification URL;
+2. complete registrant and contact identity fields;
+3. review security text against the final 1.0 specification;
+4. finalize the named author/change controller and durable contact path;
+5. optionally request pre-submission review through the media-types discussion channel;
+6. submit through the IANA media-type application form;
+7. update `SPEC.md` only after actual registration status is known.
 
 Tracking issue: https://github.com/crenem/mdocss/issues/3
