@@ -66,7 +66,7 @@ MDOCSS uses ZIP as its underlying representation.
 
 ### Security Considerations
 
-MDOCSS is a ZIP-based document container and inherits security concerns associated with processing ZIP archives, including path traversal, ambiguous or duplicate entries, symbolic links, decompression/resource-exhaustion attacks, malformed archive metadata, and potentially encrypted entries.
+MDOCSS is a ZIP-based document container and inherits security concerns associated with processing ZIP archives, including path traversal, ambiguous or duplicate entries, symbolic links, decompression/resource-exhaustion attacks, malformed archive metadata, and unsupported archive features.
 
 A conforming MDOCSS core document contains canonical Markdown in `root.md` and may contain JSON metadata, CSS stylesheets, and arbitrary local assets.
 
@@ -85,13 +85,13 @@ Implementations are expected to:
 
 The MDOCSS core format does not provide confidentiality, authentication, digital signatures, or integrity protection. Those services, when required, must be provided by the transport, storage system, or another external security mechanism.
 
-The core specification does not define ZIP-level encryption and does not require readers to support encrypted entries.
+The core specification makes encrypted ZIP members nonconforming. It also restricts conforming packages to single-disk, non-ZIP64 archives whose regular file members use Store or Deflate compression.
 
 See `SECURITY.md` in the published specification repository.
 
 ### Interoperability Considerations
 
-An MDOCSS file is a conforming ZIP archive containing exactly one root-level `root.md` as canonical semantic content.
+An MDOCSS file is a conforming single-disk, non-ZIP64 ZIP archive containing exactly one root-level `root.md` as canonical semantic content. Core packages use only Store or Deflate compression for regular members and contain no encrypted members.
 
 A minimal document has no required manifest or stylesheet.
 
