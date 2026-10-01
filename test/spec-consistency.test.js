@@ -73,3 +73,73 @@ test("media type text does not claim the candidate MDOCSS subtype is registered"
   assert.match(spec, /not registered with IANA/i);
   assert.match(spec, /application\/zip/);
 });
+
+
+test("versioned schemas agree on exact three-component version syntax", async () => {
+  const draft01 = JSON.parse(await fs.readFile("schema/manifest.schema.json", "utf8"));
+  const exact10 = JSON.parse(await fs.readFile("schema/manifest-1.0-draft.schema.json", "utf8"));
+  const reader1x = JSON.parse(await fs.readFile("schema/manifest-1.x-reader.schema.json", "utf8"));
+
+  const ajv = new Ajv2020({ allErrors: true, strict: false });
+  addFormats(ajv);
+
+  const validate01 = ajv.compile(draft01);
+  const validate10 = ajv.compile(exact10);
+  const validate1x = ajv.compile(reader1x);
+
+  assert.equal(validate01({ specVersion: "0.1.0" }), true);
+  assert.equal(validate01({ specVersion: "0.1" }), false);
+
+  assert.equal(validate10({ specVersion: "1.0.0" }), true);
+  assert.equal(validate10({ specVersion: "1.0" }), false);
+  assert.equal(validate10({ specVersion: "1.1.0" }), false);
+
+  assert.equal(validate1x({ specVersion: "1.0.0" }), true);
+  assert.equal(validate1x({ specVersion: "1.9.4" }), true);
+  assert.equal(validate1x({ specVersion: "1.9" }), false);
+  assert.equal(validate1x({ specVersion: "2.0.0" }), false);
+});
+
+test("1.0 schema metadata formats are executable constraints", async () => {
+  const schema = JSON.parse(
+    await fs.readFile("schema/manifest-1.0-draft.schema.json", "utf8")
+  );
+  const ajv = new Ajv2020({ allErrors: true, strict: false });
+  addFormats(ajv);
+  const validate = ajv.compile(schema);
+
+  assert.equal(validate({
+    specVersion: "1.0.0",
+    created: "2026-10-01T15:00:00Z",
+    authors: [{
+      name: "Example",
+      email: "author@example.com",
+      url: "https://example.com/author"
+    }]
+  }), true);
+
+  assert.equal(validate({
+    specVersion: "1.0.0",
+    created: "2026-10-01 15:00:00"
+  }), false);
+
+  assert.equal(validate({
+    specVersion: "1.0.0",
+    authors: [{ name: "Example", email: "not-an-email" }]
+  }), false);
+
+  assert.equal(validate({
+    specVersion: "1.0.0",
+    authors: [{ name: "Example", url: "not a uri" }]
+  }), false);
+});
+
+test("specification names the portable ZIP and version profiles", async () => {
+  const spec = await fs.readFile("SPEC.md", "utf8");
+
+  assert.match(spec, /ZIP interoperability profile/);
+  assert.match(spec, /MUST NOT require ZIP64/);
+  assert.match(spec, /method 0 \(Store\).*method 8 \(Deflate\)/s);
+  assert.match(spec, /MAJOR\.MINOR\.PATCH/);
+  assert.match(spec, /abbreviated forms such as `1\.0` are not valid/i);
+});
