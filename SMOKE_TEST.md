@@ -14,7 +14,9 @@ Its `mdocss-smoke-kit.zip` contains the browser viewer, Obsidian plugin, style d
 
 The CI artifact also exposes the viewer ZIP, Obsidian ZIP, and style-demo package separately for convenience.
 
-Record:
+Record results in `SMOKE_RESULTS_TEMPLATE.md`. The kit's `SMOKE-METADATA.json` records the CI commit when available.
+
+At minimum record:
 
 - operating system;
 - browser and version;
