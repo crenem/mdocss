@@ -28,3 +28,6 @@
 - Added CLI commands to add, rename/move, and remove bundled stylesheet declarations.
 - Added tests proving unknown members/manifest fields survive edits and invalid edits do not replace the original archive.
 - Added CI packaging and downloadable artifact generation for the Obsidian reader.
+- Added seven reference style profiles: APA 7 student, MLA 9, Chicago 18 manuscript, business report, clean reading, dark reading, and accessible large print.
+- Added a generated multi-style demonstration MDOCSS artifact and CI validation.
+- Added accessibility guidance, print/paged-media guidance, forced-colors support, reduced-motion guidance, and print fallbacks across the reference styles.
