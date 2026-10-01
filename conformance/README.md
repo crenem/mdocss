@@ -29,6 +29,12 @@ The valid fixtures cover:
 
 The unknown-content case also checks round-trip preservation by unpacking, repacking, and revalidating the archive.
 
+## Unsupported-version case
+
+The corpus includes a package that declares a deliberately unsupported future major version.
+
+The current 0.1 validator is expected to reject that package as unsupported, while the harness separately verifies that safe extraction still recovers `root.md`. This exercises the forward-compatibility rule without pretending the current reader understands future semantics.
+
 ## Invalid cases
 
 The invalid fixtures cover:
