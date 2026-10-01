@@ -32,7 +32,8 @@ Remaining work:
 - exact 1.0 authoring and forward-compatible 1.x reader schemas are now separate artifacts, avoiding ambiguity between conformance and compatibility;
 - both reference readers accept same-major 1.x evolution while retaining recovery mode for unsupported higher majors;
 - all schemas and implementations now require the documented three-component `MAJOR.MINOR.PATCH` manifest version syntax;
-- shared corpus cases now exercise JSON Schema date-time, email, and URI metadata formats across Node and Python implementations.
+- shared corpus cases now exercise JSON Schema date-time, email, and URI metadata formats across Node and Python implementations;
+- non-ASCII ZIP member names now have deterministic UTF-8 flag semantics across implementations.
 
 ## Security
 
@@ -136,6 +137,6 @@ The current blockers to calling a release v0.9 RC are:
 4. obtain independent-party review/implementation evidence and conduct the documented RC feedback period — issue #5;
 5. perform the final normative/security/schema audit after runtime and outside-review findings are available.
 
-The in-repository implementation/versioning review, shared 36-case dual-language conformance exercise, and second-pass review of `IMPLEMENTATION.md`, `VERSIONING.md`, and `MIGRATION.md` are complete.
+The in-repository implementation/versioning review, shared 38-case dual-language conformance exercise, and second-pass review of `IMPLEMENTATION.md`, `VERSIONING.md`, and `MIGRATION.md` are complete.
 
 Do not mark v0.9 or v1.0 complete while these remain unresolved.
