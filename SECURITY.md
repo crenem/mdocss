@@ -11,6 +11,7 @@ Implementations MUST prevent archive members from escaping the intended extracti
 At minimum, reject or safely neutralize:
 
 - ambiguous legacy encoding of non-ASCII ZIP member names;
+- control characters, dot segments, and empty interior path segments that can produce inconsistent normalization;
 - `..` path traversal;
 - absolute slash-prefixed paths;
 - backslash-separated archive paths;
