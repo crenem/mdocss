@@ -15,6 +15,19 @@ function cli(args) {
   });
 }
 
+async function checkRootRecovery(fixture) {
+  const tmp = await fs.mkdtemp(path.join(os.tmpdir(), "mdocss-recovery-"));
+  const unpacked = path.join(tmp, "unpacked");
+
+  const result = cli(["unpack", fixture, unpacked]);
+  if (result.status !== 0) {
+    throw new Error(`safe recovery unpack failed: ${result.stderr || result.stdout}`);
+  }
+
+  const root = await fs.readFile(path.join(unpacked, "root.md"), "utf8");
+  if (!root.trim()) throw new Error("recovered root.md was empty");
+}
+
 async function checkPreservation(fixture) {
   const tmp = await fs.mkdtemp(path.join(os.tmpdir(), "mdocss-conformance-"));
   const unpacked = path.join(tmp, "unpacked");
@@ -47,6 +60,15 @@ for (const testCase of cases) {
   const expectedAccepted = testCase.expected === "valid";
   let ok = accepted === expectedAccepted;
   let detail = "";
+
+  if (ok && testCase.recoverRoot) {
+    try {
+      await checkRootRecovery(fixture);
+    } catch (error) {
+      ok = false;
+      detail = error.message;
+    }
+  }
 
   if (ok && testCase.preservation) {
     try {
