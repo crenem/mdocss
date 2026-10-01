@@ -31,3 +31,7 @@
 - Added seven reference style profiles: APA 7 student, MLA 9, Chicago 18 manuscript, business report, clean reading, dark reading, and accessible large print.
 - Added a generated multi-style demonstration MDOCSS artifact and CI validation.
 - Added accessibility guidance, print/paged-media guidance, forced-colors support, reduced-motion guidance, and print fallbacks across the reference styles.
+- Added implementation, versioning, migration, release-audit, and runtime smoke-test documentation for v0.9 preparation.
+- Tightened BCP 14 normative language and clarified that `application/vnd.mdocss+zip` is only a candidate media type until IANA registration.
+- Added schema/spec/example consistency tests and full semantic-role exercise coverage.
+- Added CI packaging for the standalone browser viewer to support cross-render runtime testing.
