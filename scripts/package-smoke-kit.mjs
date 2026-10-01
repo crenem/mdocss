@@ -94,10 +94,24 @@ kit.file("README-FIRST.md", [
   "- documents/remote-resource.mdocss",
   "- hostile/ representative invalid fixtures",
   "- ROOT-SHA256.txt baseline for canonical-content checks",
+  "- SMOKE_RESULTS_TEMPLATE.md for recording the test",
+  "- SMOKE-METADATA.json with the CI commit when available",
   ""
 ].join("\n"));
 kit.file("SMOKE_TEST.md", await fs.readFile(path.join(repoPath, "SMOKE_TEST.md")));
+kit.file(
+  "SMOKE_RESULTS_TEMPLATE.md",
+  await fs.readFile(path.join(repoPath, "SMOKE_RESULTS_TEMPLATE.md"))
+);
 kit.file("INTEROPERABILITY.md", await fs.readFile(path.join(repoPath, "INTEROPERABILITY.md")));
+kit.file(
+  "SMOKE-METADATA.json",
+  JSON.stringify({
+    commit: process.env.GITHUB_SHA || null,
+    node: process.version,
+    artifact: "mdocss-smoke-kit.zip"
+  }, null, 2) + "\n"
+);
 kit.file("browser/mdocss-reference-viewer.zip", await fs.readFile(viewerZip));
 kit.file("obsidian/" + obsidianName, await fs.readFile(path.join(artifactsPath, obsidianName)));
 kit.file("documents/mdocss-style-demo.mdocss", styleDemo);
