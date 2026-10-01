@@ -58,8 +58,13 @@ function manifestCompatibility(manifest: Manifest | null): { supported: boolean;
   const match = /^(\d+)\.(\d+)(?:\.(\d+))?$/.exec(String(version));
   if (!match) return { supported: false, version: String(version) };
 
+  const major = Number(match[1]);
+  const minor = Number(match[2]);
+
   return {
-    supported: Number(match[1]) === 0 && Number(match[2]) === 1,
+    supported:
+      (major === 0 && minor === 1) ||
+      major === 1,
     version: String(version)
   };
 }
