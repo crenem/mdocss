@@ -90,6 +90,8 @@ Milestones are release gates rather than branch names. The current draft PR alre
 
 ## v0.6 — Round-trip editing
 
+**Draft status:** reference CLI editing path is implemented and covered by preservation/atomicity tests. Rich in-app editing remains future UX work, but the release-gate behaviors are present in reference tooling.
+
 **Goal:** make MDOCSS a working document, not merely a publication bundle.
 
 - edit `root.md`
@@ -101,7 +103,7 @@ Milestones are release gates rather than branch names. The current draft PR alre
 - recovery behavior for interrupted writes
 - tests proving no unrelated content is lost during save
 
-**Exit condition:** open → edit → save → reopen preserves both known and unknown package content.
+**Exit condition:** open → edit → save → reopen preserves both known and unknown package content. **Met in the current reference CLI tests.**
 
 ## v0.7 — Standard style library
 
