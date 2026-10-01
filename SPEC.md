@@ -232,8 +232,14 @@ Archive member paths:
 - if a path contains non-ASCII characters, its ZIP filename bytes MUST be UTF-8 and the ZIP language-encoding (UTF-8) flag MUST be set;
 - MUST be relative;
 - MUST NOT begin with `/`;
-- MUST NOT escape the archive root through `..` traversal;
+- MUST NOT contain ASCII control characters or DEL;
+- MUST NOT contain `.` or `..` path segments;
+- MUST NOT contain empty interior path segments such as `assets//image.png`;
 - MUST NOT be symbolic-link entries.
+
+A directory entry MAY end with a trailing slash. These canonical member-name rules do not prohibit normal relative references inside Markdown or CSS: references such as `./assets/image.png` or `../assets/image.png` may be resolved and normalized by the reader as long as resolution remains inside the archive.
+
+Archive member-name and stylesheet-ID comparisons are case-sensitive. The required canonical file is exactly `root.md`.
 
 A conforming archive MUST NOT contain duplicate member names. Readers MUST reject or safely disambiguate ambiguous duplicate entries before interpreting canonical files.
 
