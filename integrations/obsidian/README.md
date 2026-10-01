@@ -1,38 +1,64 @@
 # MDOCSS for Obsidian
 
-This directory is the reference-integration scaffold for opening MDOCSS documents from Obsidian.
+This directory contains the reference Obsidian integration for MDOCSS.
 
-## Intended behavior
+It registers the `.mdocss` extension with a custom Obsidian `FileView`, opens the ZIP container directly from the vault, renders `root.md`, resolves bundled resources, and exposes named stylesheets through a hot-swap picker.
 
-The plugin will:
+## Current behavior
 
-1. register the `.mdocss` extension;
-2. open the ZIP container without permanently extracting it into the vault;
-3. render `root.md` using Obsidian's Markdown renderer;
-4. add the standard `mdocss-document` rendering wrapper;
-5. preserve/expose MDOCSS semantic classes;
-6. enumerate named stylesheets from `manifest.json`;
-7. expose a style picker when multiple presentations are available;
-8. hot-swap the active stylesheet without rewriting `root.md`;
-9. scope document CSS to the MDOCSS rendering surface;
-10. resolve bundled relative assets safely;
-11. remember an optional user-local style preference without changing the archive default;
-12. eventually support editing and atomic repacking while preserving unknown files.
+The plugin:
 
-If no named stylesheets are declared, the plugin should use `root.css` when present. If no document stylesheet exists, Markdown should render with Obsidian's normal presentation.
+1. registers the `.mdocss` extension with Obsidian;
+2. opens an archive directly from the vault without permanent extraction;
+3. reads UTF-8 `root.md` and optional `manifest.json`;
+4. sanitizes rendered Markdown/HTML;
+5. preserves MDOCSS semantic classes;
+6. enumerates named stylesheets;
+7. hot-swaps the active stylesheet without rewriting `root.md`;
+8. resolves bundled CSS `@import`, images, media, fonts, and other CSS resources;
+9. blocks automatic remote document-resource fetching;
+10. isolates document rendering in a sandboxed iframe;
+11. remembers a per-file local style preference in plugin data;
+12. migrates that preference when an MDOCSS file is renamed;
+13. provides browser print preview.
 
-## Style selection versus document defaults
+A reader-local style choice does not rewrite `defaultStylesheet` in the document.
 
-Choosing a style while reading is presentation state. The plugin should not change `defaultStylesheet` merely because the user selected another style.
+## Build
 
-Changing the author-defined default is a separate explicit editing action.
+From the repository root:
 
-## Semantic classes
+```bash
+npm install
+npm run build:obsidian
+```
 
-The plugin should follow `SEMANTICS.md` rather than inventing Obsidian-specific document roles. Application-specific wrapper classes may exist for implementation purposes, but portable styles should not depend on them for essential formatting.
+This produces:
+
+```text
+integrations/obsidian/main.js
+```
+
+The plugin files for a manual installation are:
+
+```text
+main.js
+manifest.json
+styles.css
+```
+
+Place those files in:
+
+```text
+<Vault>/.obsidian/plugins/mdocss/
+```
+
+then reload Obsidian and enable the **MDOCSS** community plugin.
 
 ## Status
 
-The integration is experimental while the core specification stabilizes.
+This is a reference implementation for the draft format, not yet a published Community directory release.
 
-The core format does **not** depend on Obsidian. This plugin is one reference implementation among potentially many.
+The source type-checks and bundles against the current Obsidian API in CI. Before the roadmap's v0.5 gate is considered complete, it still needs a manual smoke test inside Obsidian on representative MDOCSS fixtures.
+
+The core MDOCSS format does **not** depend on Obsidian.
