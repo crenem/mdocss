@@ -7,9 +7,15 @@ The exact MDOCSS media type is not currently registered with IANA. This document
 
 The registration strategy is the **vendor tree**. RFC 6838 permits vendor-tree registrations for publicly available products and explicitly construes “vendor”/“producer” broadly enough to include non-commercial entities that are not recognized standards organizations. Vendor-tree requests are submitted directly to IANA and undergo Expert Review.
 
+Official process references:
+
+- IANA media-type application form: https://www.iana.org/form/media-types
+- RFC 6838 registration procedures: https://www.rfc-editor.org/rfc/rfc6838
+- IANA Structured Syntax Suffix registry: https://www.iana.org/assignments/media-type-structured-suffix
+
 The `+zip` suffix is already registered in the IANA Structured Syntax Suffix registry. Its registered fragment behavior delegates to `application/zip` when generic ZIP fragment semantics exist; currently `application/zip` defines no generic fragment syntax.
 
-The current IANA application form separates the tree prefix from the subtype text. For this registration, select the `vnd.` prefix and enter `mdocss+zip` as the subtype value.
+The current IANA application form separates the tree prefix from the subtype text and instructs registrants to omit the selected prefix from the subtype text field. For this registration, select the `vnd.` prefix and enter `mdocss+zip` as the subtype value.
 
 ## IANA form draft
 
@@ -198,8 +204,8 @@ Before filing the IANA form:
 2. complete registrant and contact identity fields;
 3. review security text against the final 1.0 specification;
 4. finalize the named author/change controller and durable contact path;
-5. optionally request pre-submission review through the media-types discussion channel;
-6. submit through the IANA media-type application form;
+5. optionally request pre-submission review through the media-types discussion channel described by RFC 6838;
+6. submit through https://www.iana.org/form/media-types;
 7. update `SPEC.md` only after actual registration status is known.
 
 Tracking issue: https://github.com/crenem/mdocss/issues/3
