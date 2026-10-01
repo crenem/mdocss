@@ -55,7 +55,7 @@ function manifestCompatibility(manifest: Manifest | null): { supported: boolean;
   const version = manifest?.specVersion;
   if (version == null || version === "") return { supported: true, version: null };
 
-  const match = /^(\d+)\.(\d+)(?:\.(\d+))?$/.exec(String(version));
+  const match = /^(\d+)\.(\d+)\.(\d+)$/.exec(String(version));
   if (!match) return { supported: false, version: String(version) };
 
   const major = Number(match[1]);
