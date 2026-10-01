@@ -4,7 +4,24 @@
   "language": "en",
   "markdownProfile": "CommonMark",
   "entrypoint": "root.md",
-  "stylesheet": "root.css",
+  "stylesheets": [
+    {
+      "id": "default",
+      "label": "Default",
+      "href": "root.css"
+    },
+    {
+      "id": "dark",
+      "label": "Dark",
+      "href": "styles/dark.css"
+    },
+    {
+      "id": "manuscript",
+      "label": "Manuscript",
+      "href": "styles/manuscript.css"
+    }
+  ],
+  "defaultStylesheet": "default",
   "authors": [
     { "name": "Jason Seaux" }
   ]
