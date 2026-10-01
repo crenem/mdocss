@@ -133,13 +133,19 @@ Expected: Electron/browser print preview opens with the active stylesheet's prin
 
 ## Safety cases
 
-Attempt to open representative invalid fixtures from the smoke kit's `hostile/` directory:
+Attempt to open representative invalid fixtures from the smoke kit's `hostile/` directory, including:
 
 - `invalid-path-traversal.mdocss`
 - `invalid-absolute-path.mdocss`
 - `invalid-backslash-path.mdocss`
 - `invalid-root-utf8.mdocss`
 - `invalid-manifest-json.mdocss`
+- `conformance-I021.mdocss` — unsupported BZIP2 compression
+- `conformance-I022.mdocss` — ZIP64
+- `conformance-I028.mdocss` — ambiguous legacy non-ASCII filename encoding
+- `conformance-I029.mdocss` / `I030` / `I031` — noncanonical archive paths
+
+Also open `documents/conformance-V009.mdocss` and verify that the correctly UTF-8-flagged non-ASCII member-name package is accepted.
 
 Expected:
 
