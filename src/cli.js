@@ -26,8 +26,17 @@ function dangerous(name) {
   return parts.includes("..");
 }
 
+function declaredStyles(manifest) {
+  return Array.isArray(manifest?.stylesheets) ? manifest.stylesheets : [];
+}
+
 async function loadArchive(file) {
   return JSZip.loadAsync(await fs.readFile(file));
+}
+
+async function readManifest(zip) {
+  const file = zip.file("manifest.json");
+  return file ? JSON.parse(await file.async("string")) : null;
 }
 
 async function validateZip(zip) {
@@ -55,6 +64,28 @@ async function validateZip(zip) {
       const check = ajv.compile(schema);
       if (!check(data)) {
         for (const err of check.errors ?? []) errors.push(`manifest.json ${err.instancePath || "/"} ${err.message}`);
+      }
+
+      const styles = declaredStyles(data);
+      const ids = new Set();
+      for (const style of styles) {
+        if (ids.has(style.id)) errors.push(`Duplicate stylesheet id: ${style.id}`);
+        ids.add(style.id);
+
+        if (dangerous(style.href)) {
+          errors.push(`Dangerous stylesheet path: ${style.href}`);
+          continue;
+        }
+
+        if (!style.href.toLowerCase().endsWith(".css")) {
+          errors.push(`Stylesheet does not reference a .css file: ${style.href}`);
+        }
+
+        if (!zip.file(style.href)) errors.push(`Declared stylesheet not found: ${style.href}`);
+      }
+
+      if (data.defaultStylesheet && !ids.has(data.defaultStylesheet)) {
+        errors.push(`defaultStylesheet does not match a declared stylesheet id: ${data.defaultStylesheet}`);
       }
     } catch (e) {
       errors.push(`Invalid manifest.json: ${e.message}`);
@@ -95,14 +126,33 @@ program.command("inspect")
   .argument("<file>")
   .action(async file => {
     const zip = await loadArchive(file);
-    const manifest = zip.file("manifest.json")
-      ? JSON.parse(await zip.file("manifest.json").async("string"))
-      : null;
+    const manifest = await readManifest(zip);
     console.log(JSON.stringify({
       format: "MDOCSS",
       members: Object.keys(zip.files),
       manifest
     }, null, 2));
+  });
+
+program.command("styles")
+  .description("List named hot-swappable stylesheets")
+  .argument("<file>")
+  .action(async file => {
+    const zip = await loadArchive(file);
+    const manifest = await readManifest(zip);
+    const styles = declaredStyles(manifest);
+
+    if (!styles.length) {
+      if (zip.file("root.css")) console.log("* fallback\troot.css\tRoot stylesheet");
+      else console.log("No document stylesheets declared.");
+      return;
+    }
+
+    const defaultId = manifest?.defaultStylesheet;
+    for (const style of styles) {
+      const marker = style.id === defaultId ? "*" : " ";
+      console.log(`${marker} ${style.id}\t${style.href}\t${style.label}`);
+    }
   });
 
 program.command("validate")
