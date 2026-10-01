@@ -3,6 +3,7 @@ import os from "node:os";
 import path from "node:path";
 import process from "node:process";
 import { spawnSync } from "node:child_process";
+import JSZip from "jszip";
 
 const here = path.dirname(new URL(import.meta.url).pathname);
 const repo = path.resolve(here, "..");
@@ -13,6 +14,36 @@ function cli(args) {
     cwd: repo,
     encoding: "utf8"
   });
+}
+
+async function fixtureFor(testCase) {
+  if (testCase.file) return path.join(here, "fixtures", testCase.file);
+
+  const generated = testCase.generated;
+  if (!generated || typeof generated !== "object") {
+    throw new Error(`Conformance case ${testCase.id} has no file or generated fixture`);
+  }
+
+  const tmp = await fs.mkdtemp(path.join(os.tmpdir(), "mdocss-generated-"));
+  const fixture = path.join(tmp, `${testCase.id}.mdocss`);
+  const zip = new JSZip();
+
+  zip.file("root.md", generated.root ?? "# Generated MDOCSS fixture\n");
+
+  if (Object.prototype.hasOwnProperty.call(generated, "manifest")) {
+    zip.file("manifest.json", JSON.stringify(generated.manifest, null, 2) + "\n");
+  }
+
+  for (const [name, content] of Object.entries(generated.files ?? {})) {
+    zip.file(name, String(content));
+  }
+
+  await fs.writeFile(
+    fixture,
+    await zip.generateAsync({ type: "nodebuffer", compression: "DEFLATE" })
+  );
+
+  return fixture;
 }
 
 async function checkRootRecovery(fixture) {
@@ -54,8 +85,10 @@ async function checkPreservation(fixture) {
 let failures = 0;
 
 for (const testCase of cases) {
-  const fixture = path.join(here, "fixtures", testCase.file);
-  const result = cli(["validate", fixture]);
+  const fixture = await fixtureFor(testCase);
+  const validateArgs = ["validate", fixture];
+  if (testCase.target) validateArgs.push("--target", testCase.target);
+  const result = cli(validateArgs);
   const expectedStatus =
     testCase.expected === "valid"
       ? 0
@@ -89,9 +122,13 @@ for (const testCase of cases) {
       detail =
         (result.stderr || result.stdout || `validator exited ${result.status}; expected ${expectedStatus}`).trim();
     }
-    console.error(`FAIL ${testCase.id} ${testCase.file}: ${detail}`);
+    console.error(
+      `FAIL ${testCase.id} ${testCase.file ?? "[generated]"}: ${detail}`
+    );
   } else {
-    console.log(`PASS ${testCase.id} ${testCase.file} (${testCase.expected})`);
+    console.log(
+      `PASS ${testCase.id} ${testCase.file ?? "[generated]"} (${testCase.expected})`
+    );
   }
 }
 
