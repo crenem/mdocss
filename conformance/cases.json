@@ -196,5 +196,21 @@
       }
     },
     "purpose": "A 1.1 declaration is readable by a 1.0-baseline reader but is not exact 1.0-authored output."
+  },
+  {
+    "id": "I021",
+    "expected": "invalid",
+    "generated": {
+      "rawBase64": "UEsDBC4AAAAMAEp/QV0le1BqMwAAAAgAAAAHAAAAcm9vdC5tZEJaaDkxQVkmU1l9zNNOAAABXgAAEEgAEAAQIEAQIAAiGmh6EMCG8/QILuSKcKEg+5mmnFBLAQIuAy4AAAAMAEp/QV0le1BqMwAAAAgAAAAHAAAAAAAAAAAAAACAAQAAAAByb290Lm1kUEsFBgAAAAABAAEANQAAAFgAAAAAAA=="
+    },
+    "purpose": "Archive uses ZIP BZIP2 compression instead of Store or Deflate."
+  },
+  {
+    "id": "I022",
+    "expected": "invalid",
+    "generated": {
+      "rawBase64": "UEsDBC0AAAAAAAAAIQCAHoSV//////////8HABQAcm9vdC5tZAEAEAAIAAAAAAAAAAgAAAAAAAAAIyBaSVA2NApQSwECLQMtAAAAAAAAACEAgB6ElQgAAAAIAAAABwAAAAAAAAAAAAAAgAEAAAAAcm9vdC5tZFBLBQYAAAAAAQABADUAAABBAAAAAAA="
+    },
+    "purpose": "Archive uses a ZIP64 local entry even though the document is small."
   }
 ]
