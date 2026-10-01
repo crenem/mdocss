@@ -7,11 +7,11 @@ This document tracks issues that should be settled before the core format is dec
 
 ## Normative language
 
-Current status: **in progress**
+Current status: **first-pass audit complete; final RC review pending**
 
 - `SPEC.md` uses MUST/SHOULD/MAY terminology.
-- The specification should explicitly reference BCP 14 / RFC 2119 and RFC 8174 before the release candidate.
-- Normative rules should remain in `SPEC.md`; implementation guidance belongs in companion documents.
+- `SPEC.md` now explicitly references BCP 14 / RFC 2119 and RFC 8174.
+- Normative rules remain in `SPEC.md`; implementation guidance is separated into companion documents.
 
 ## Schema/spec consistency
 
@@ -24,8 +24,8 @@ Current status: **strong, still under audit**
 
 Remaining work:
 
-- add an explicit schema/example consistency test across every checked-in manifest;
-- review whether `specVersion` becomes mandatory when a manifest exists in 1.0;
+- explicit schema/example/package-reference consistency tests now run in CI;
+- decide whether `specVersion` becomes mandatory when a manifest exists in 1.0 (issue #4);
 - publish a 1.0 schema only after the versioning decision is frozen.
 
 ## Security
@@ -58,6 +58,8 @@ The exact subtype `application/vnd.mdocss+zip` is **not currently registered wit
 
 Until registration is completed, MDOCSS tools should use `application/zip` as the interoperable fallback when a registered media type is required. Documentation may describe `application/vnd.mdocss+zip` as the candidate registration, but MUST NOT represent it as already registered.
 
+Tracked in issue #3.
+
 Before 1.0:
 
 - prepare the IANA media-type registration;
@@ -70,7 +72,7 @@ Current status: **small and intentionally conservative**
 
 The profile avoids redundant classes for native headings, paragraphs, lists, links, and normal tables.
 
-Before 1.0, review each core class for demonstrated use in at least one fixture or reference style. Remove unnecessary roles rather than expanding the vocabulary speculatively.
+Every authored core role is now exercised by the generated style-demo source, and CI checks that coverage. The renderer-generated `mdocss-document` shell is checked in both reference readers. Continue to remove unnecessary roles rather than expanding the vocabulary speculatively.
 
 ## Rendering interoperability
 
@@ -81,9 +83,9 @@ Implemented:
 - standalone browser reference viewer;
 - Obsidian custom `.mdocss` reader.
 
-Both build in CI and share the same format contract. The browser viewer and Obsidian reader still require manual runtime smoke testing with the same representative packages before the v0.4/v0.5 exit gates are marked complete.
+Both build in CI and share the same format contract. CI now packages both the browser viewer and the Obsidian reader for manual testing. `SMOKE_TEST.md` defines the cross-render procedure; completion is tracked in issue #2.
 
-A genuinely independent third-party implementation would provide stronger evidence than two code paths maintained in this repository.
+A genuinely independent third-party implementation would provide stronger evidence than two code paths maintained in this repository. That work and the RC feedback period are tracked in issue #5.
 
 ## Round-trip editing
 
@@ -117,14 +119,11 @@ The repository currently uses the MIT License. Before 1.0, the project should st
 
 The current blockers to calling a release v0.9 RC are:
 
-1. manual browser-viewer smoke test;
-2. manual Obsidian in-app smoke test;
-3. final version-negotiation decision for 1.0;
-4. media-type registration strategy;
-5. normative-language audit;
-6. schema/spec consistency audit;
-7. implementation guide review;
-8. migration-note review;
-9. release-candidate feedback period.
+1. complete the browser/Obsidian runtime smoke test — issue #2;
+2. finalize media-type registration strategy — issue #3;
+3. freeze the 1.0 `specVersion` rule — issue #4;
+4. independent implementation/interoperability exercise and RC feedback — issue #5;
+5. perform final review of `IMPLEMENTATION.md`, `VERSIONING.md`, and `MIGRATION.md`;
+6. perform a final normative/security/schema audit after the versioning decision.
 
 Do not mark v0.9 or v1.0 complete while these remain unresolved.
