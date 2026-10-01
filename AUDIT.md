@@ -128,16 +128,28 @@ The repository uses the MIT License, and `SPEC.md` now states explicitly that co
 
 No broader patent or third-party-rights representation is implied by that statement.
 
-## Release-candidate blockers
+## Release gates
 
-The current blockers to calling a release v0.9 RC are:
+### Entry into v0.9 release-candidate phase
+
+The current blockers to publishing the first v0.9 RC are:
 
 1. complete the browser/Obsidian runtime smoke test — issue #2;
-2. complete the stable-spec/contact prerequisites and submit the frozen media-type registration path when appropriate — issue #3;
-3. perform final RC review and promote the candidate exact-1.0 manifest schema from `-draft` status — issue #4;
-4. obtain independent-party review/implementation evidence and conduct the documented RC feedback period — issue #5;
-5. perform the final normative/security/schema audit after runtime and outside-review findings are available.
+2. perform final in-repository RC review of the candidate exact-1.0 manifest schema and freeze its RC form — issue #4;
+3. complete the final pre-RC normative/security/schema audit after the runtime findings are available.
+
+The media-type registration strategy is already frozen. Submission itself depends on a stable versioned specification URL plus registrant/contact details and does not block publishing an RC.
 
 The in-repository implementation/versioning review, shared 41-case dual-language conformance exercise, and second-pass review of `IMPLEMENTATION.md`, `VERSIONING.md`, and `MIGRATION.md` are complete.
 
-Do not mark v0.9 or v1.0 complete while these remain unresolved.
+### Exit from RC to stable 1.0
+
+Before stable 1.0:
+
+1. obtain independent-party review or implementation evidence — issue #5;
+2. conduct and document the RC feedback period — issue #5;
+3. resolve or disposition interoperability/security findings;
+4. finalize the stable schema publication URI and media-type registration prerequisites — issues #3/#4;
+5. perform the final post-feedback normative/security/schema audit.
+
+Do not mark v1.0 complete while these remain unresolved.
