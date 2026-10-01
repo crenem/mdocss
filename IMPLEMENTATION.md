@@ -12,6 +12,8 @@ Treat the file as a ZIP container.
 
 Do not infer conformance from the `.mdocss` extension alone. A conforming document must satisfy the structural and safety rules in `SPEC.md`.
 
+For core interoperability, reject packages that require split/spanned ZIP volumes, ZIP64 features, encryption, or compression methods other than Store (0) and Deflate (8). This narrow ZIP profile is intentional: an MDOCSS reader should not need a specialist archive stack merely to recover a document.
+
 ### 2. Inspect archive member names before extraction
 
 Validate original ZIP member names when the ZIP library exposes them.
