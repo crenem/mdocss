@@ -24,3 +24,7 @@
 - Added browser reference renderer with local asset resolution, sanitized HTML, sandboxed CSS, runtime style switching, and print preview.
 - Added a working Obsidian reader MVP with `.mdocss` extension registration, hot-swappable styles, local style preference, local asset resolution, and sandboxed rendering.
 - Added CI builds/type checks for both the reference viewer and Obsidian integration.
+- Added atomic CLI editing for `root.md` and `manifest.json`.
+- Added CLI commands to add, rename/move, and remove bundled stylesheet declarations.
+- Added tests proving unknown members/manifest fields survive edits and invalid edits do not replace the original archive.
+- Added CI packaging and downloadable artifact generation for the Obsidian reader.
