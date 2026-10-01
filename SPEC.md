@@ -46,7 +46,7 @@ A reader MAY offer safe canonical-content recovery from a package outside this Z
 
 ### 3.1 root.md
 
-`/root.md` is REQUIRED.
+`root.md` at the archive root is REQUIRED.
 
 It MUST:
 
@@ -62,7 +62,7 @@ MDOCSS 0.1 does not mandate one Markdown dialect. A manifest MAY declare `markdo
 
 ### 4.1 root.css
 
-`/root.css` is OPTIONAL.
+`root.css` at the archive root is OPTIONAL.
 
 If present, it MUST be UTF-8 CSS text.
 
@@ -148,7 +148,7 @@ Ordinary Markdown structures SHOULD continue to use native rendered elements suc
 
 ## 6. Manifest
 
-`/manifest.json` is OPTIONAL.
+`manifest.json` at the archive root is OPTIONAL.
 
 If present, it MUST:
 
@@ -188,9 +188,9 @@ Unknown manifest fields SHOULD be preserved by editors and MUST NOT cause reject
 
 ## 7. Assets and path resolution
 
-Supporting resources SHOULD be stored beneath `/assets/`.
+Supporting resources SHOULD be stored beneath `assets/`.
 
-Alternate presentation styles SHOULD be stored beneath `/styles/`.
+Alternate presentation styles SHOULD be stored beneath `styles/`.
 
 Relative references in `root.md` are resolved relative to `root.md`. Relative references in a CSS file are resolved relative to that CSS file.
 
