@@ -10,6 +10,20 @@ import { chromium } from "playwright";
 const repo = path.resolve(path.dirname(new URL(import.meta.url).pathname), "..");
 const viewerUrl = pathToFileURL(path.join(repo, "viewer", "index.html")).href;
 
+async function writeRawCase(caseId) {
+  const cases = JSON.parse(
+    await fs.readFile(path.join(repo, "conformance", "cases.json"), "utf8")
+  );
+  const testCase = cases.find(item => item.id === caseId);
+  const rawBase64 = testCase?.generated?.rawBase64;
+  if (!rawBase64) throw new Error(`Conformance case ${caseId} has no rawBase64 fixture`);
+
+  const dir = await fs.mkdtemp(path.join(os.tmpdir(), "mdocss-browser-raw-"));
+  const file = path.join(dir, `${caseId}.mdocss`);
+  await fs.writeFile(file, Buffer.from(rawBase64, "base64"));
+  return file;
+}
+
 async function writePackage(name, build) {
   const dir = await fs.mkdtemp(path.join(os.tmpdir(), "mdocss-browser-"));
   const file = path.join(dir, name);
@@ -153,10 +167,8 @@ try {
   assert.equal(await page.locator("#document-frame").isHidden(), true);
 
   // ZIP-profile violation rejects safely.
-  await loadFile(
-    page,
-    path.join(repo, "conformance", "fixtures", "invalid-bzip2-compression.mdocss")
-  );
+  const bzipFixture = await writeRawCase("I021");
+  await loadFile(page, bzipFixture);
   await page.waitForFunction(() =>
     document.querySelector("#status")?.textContent?.startsWith("Could not open document:")
   );
