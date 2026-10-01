@@ -25,7 +25,7 @@ Both the Node reference validator and the Python implementation execute the same
 conformance/cases.json
 ```
 
-At the time of this report, the shared corpus contains **28 cases** covering:
+At the time of this report, the shared corpus contains **30 cases** covering:
 
 - minimum valid packages;
 - optional fallback CSS;
@@ -38,6 +38,7 @@ At the time of this report, the shared corpus contains **28 cases** covering:
 - duplicate archive members;
 - fixed `root.md` entrypoint behavior;
 - unsupported future versions with safe canonical-content recovery;
+- the restricted ZIP interoperability profile, including rejection of BZIP2-compressed and ZIP64 packages;
 - exact 1.0 authoring;
 - the no-manifest 1.0 minimum document;
 - same-major newer-minor 1.x reading;
@@ -117,7 +118,7 @@ The exercise did identify and resolve the version-negotiation ambiguity above an
 
 The automated interoperability evidence currently supports:
 
-- container structure;
+- container structure and the Store/Deflate, non-ZIP64 interoperability profile;
 - path safety;
 - strict UTF-8 handling;
 - manifest/style relationships;
