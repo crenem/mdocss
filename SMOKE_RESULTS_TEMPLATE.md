@@ -30,6 +30,9 @@ Copy this template into GitHub issue #2 after completing `SMOKE_TEST.md`.
 | Dark style prints with safe colors | ☐ Pass ☐ Fail | |
 | Large-print style remains usable | ☐ Pass ☐ Fail | |
 | Hostile fixtures fail safely | ☐ Pass ☐ Fail | |
+| BZIP2 / ZIP64 packages fail safely | ☐ Pass ☐ Fail | |
+| Legacy-encoded non-ASCII filename fails safely | ☐ Pass ☐ Fail | |
+| Correct UTF-8-flagged non-ASCII filename is accepted | ☐ Pass ☐ Fail | |
 
 ## Obsidian reader
 
