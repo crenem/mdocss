@@ -53,6 +53,7 @@
 - Aligned the IANA registration draft with the core ZIP interoperability and no-encryption rules.
 - Standardized non-ASCII ZIP member names on UTF-8 with the ZIP language-encoding flag and recommended NFC for writer portability.
 - Canonicalized archive member paths by rejecting control characters, dot segments, and empty interior segments while leaving normal relative Markdown/CSS references available.
+- Separated release-candidate entry gates from the RC feedback/independent-review work required to exit to stable 1.0.
 - Defined a narrow ZIP interoperability profile: single-disk, non-ZIP64, unencrypted core members using Store or Deflate only.
 - Added `INTEROPERABILITY.md` to record multi-implementation evidence, resolved ambiguities, and remaining third-party/runtime validation work.
 - Stated explicitly in `SPEC.md` that compatible implementations do not require project-maintainer permission and that conformance does not require the reference implementation.
