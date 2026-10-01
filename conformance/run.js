@@ -26,8 +26,13 @@ async function fixtureFor(testCase) {
 
   const tmp = await fs.mkdtemp(path.join(os.tmpdir(), "mdocss-generated-"));
   const fixture = path.join(tmp, `${testCase.id}.mdocss`);
-  const zip = new JSZip();
 
+  if (generated.rawBase64) {
+    await fs.writeFile(fixture, Buffer.from(generated.rawBase64, "base64"));
+    return fixture;
+  }
+
+  const zip = new JSZip();
   zip.file("root.md", generated.root ?? "# Generated MDOCSS fixture\n");
 
   if (Object.prototype.hasOwnProperty.call(generated, "manifest")) {
