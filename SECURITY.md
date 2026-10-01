@@ -10,6 +10,7 @@ Implementations MUST prevent archive members from escaping the intended extracti
 
 At minimum, reject or safely neutralize:
 
+- ambiguous legacy encoding of non-ASCII ZIP member names;
 - `..` path traversal;
 - absolute slash-prefixed paths;
 - backslash-separated archive paths;
@@ -89,7 +90,7 @@ It intentionally excludes actual ZIP bombs and other resource-exhaustion payload
 
 MDOCSS deliberately uses a narrower ZIP subset than the full ZIP feature set.
 
-Conforming core packages must be single-disk archives, must not require ZIP64, must not require encrypted members, and must use only Store (method 0) or Deflate (method 8) compression for regular members.
+Conforming core packages must be single-disk archives, must not require ZIP64, must not contain encrypted members, and must use only Store (method 0) or Deflate (method 8) compression for regular members. Non-ASCII member names use UTF-8 with ZIP's language-encoding flag so path identity is not dependent on a legacy code page.
 
 This reduces parser diversity and prevents an archive from being formally “ZIP” while depending on a compression or addressing feature that common document readers cannot process consistently.
 
