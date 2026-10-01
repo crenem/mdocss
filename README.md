@@ -57,6 +57,7 @@ This repository includes:
 - `VERSIONING.md` — format-version and forward-compatibility rules
 - `MIGRATION.md` — migration notes for pre-1.0 drafts
 - `AUDIT.md` — living release-readiness audit
+- `INTEROPERABILITY.md` — multi-implementation conformance findings and remaining external evidence
 - `SMOKE_TEST.md` — manual browser/Obsidian runtime test plan
 - `ACCESSIBILITY.md` — accessibility guidance for readers and stylesheet authors
 - `PRINT.md` — print and paged-media guidance
