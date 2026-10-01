@@ -305,5 +305,21 @@
       }
     },
     "purpose": "Author URL must satisfy the JSON Schema uri format."
+  },
+  {
+    "id": "V009",
+    "expected": "valid",
+    "generated": {
+      "rawBase64": "UEsDBBQAAAAAAAAAAACItn2XDQAAAA0AAAAHAAAAcm9vdC5tZCMgVVRGLTggcGF0aApQSwMEFAAACAAAAAAAAIamEDYFAAAABQAAABAAAABhc3NldHMvY2Fmw6kudHh0aGVsbG9QSwECFAAUAAAAAAAAAAAAiLZ9lw0AAAANAAAABwAAAAAAAAAAAAAAAAAAAAAAcm9vdC5tZFBLAQIUABQAAAgAAAAAAACGphA2BQAAAAUAAAAQAAAAAAAAAAAAAAAAADIAAABhc3NldHMvY2Fmw6kudHh0UEsFBgAAAAACAAIAcwAAAGUAAAAAAA=="
+    },
+    "purpose": "A non-ASCII archive member name is valid when encoded as UTF-8 with the ZIP language encoding flag."
+  },
+  {
+    "id": "I028",
+    "expected": "invalid",
+    "generated": {
+      "rawBase64": "UEsDBBQAAAAAAAAAAACM34CLCwAAAAsAAAAHAAAAcm9vdC5tZCMgRW5jb2RpbmcKUEsDBBQAAAAAAAAAAACGphA2BQAAAAUAAAAPAAAAYXNzZXRzL2NhZoIudHh0aGVsbG9QSwECFAAUAAAAAAAAAAAAjN+AiwsAAAALAAAABwAAAAAAAAAAAAAAAAAAAAAAcm9vdC5tZFBLAQIUABQAAAAAAAAAAACGphA2BQAAAAUAAAAPAAAAAAAAAAAAAAAAADAAAABhc3NldHMvY2Fmgi50eHRQSwUGAAAAAAIAAgByAAAAYgAAAAAA"
+    },
+    "purpose": "A non-ASCII archive member name without the ZIP UTF-8 language encoding flag is nonconforming."
   }
 ]
