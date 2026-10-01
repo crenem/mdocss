@@ -1,6 +1,5 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://mdocss.org/schema/manifest-1.x-reader.schema.json",
   "title": "MDOCSS 1.x Reader Baseline",
   "type": "object",
   "required": [
