@@ -70,6 +70,10 @@ test("manifest compatibility enters recovery mode for unsupported versions", () 
   assert.equal(manifestCompatibility(null).supported, true);
   assert.equal(manifestCompatibility({}).supported, true);
   assert.equal(manifestCompatibility({ specVersion: "0.1.7" }).supported, true);
+  assert.equal(manifestCompatibility({ specVersion: "1.0.0" }).supported, true);
+  assert.equal(manifestCompatibility({ specVersion: "1.4.0" }).supported, true);
+  assert.equal(manifestCompatibility({ specVersion: "1.4.0" }).mode, "forward-compatible");
+  assert.equal(manifestCompatibility({ specVersion: "2.0.0" }).supported, false);
   assert.equal(manifestCompatibility({ specVersion: "9.0.0" }).supported, false);
   assert.equal(manifestCompatibility({ specVersion: "not-a-version" }).supported, false);
 });
