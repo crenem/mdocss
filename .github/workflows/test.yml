@@ -16,6 +16,7 @@ jobs:
         with:
           python-version: "3.12"
       - run: npm install
+      - run: npx playwright install --with-deps chromium
       - run: npm test
       - run: python implementations/python/run_conformance.py
       - run: python -m unittest discover -s implementations/python -p "test_*.py"
@@ -24,6 +25,7 @@ jobs:
       - run: npm run build:obsidian
       - run: npm run package:obsidian
       - run: npm run build:style-demo
+      - run: npm run test:browser-runtime
       - run: npm run package:smoke
       - run: node src/cli.js validate artifacts/mdocss-style-demo.mdocss
       - run: npm run validate:example
