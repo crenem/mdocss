@@ -11,7 +11,8 @@ import {
   manifestCompatibility,
   normalizeArchiveReference,
   referenceKind,
-  styleChoices
+  styleChoices,
+  zipInteroperabilityIssues
 } from "../viewer/src/viewer-core.js";
 
 test("archive references resolve relative to the containing file", () => {
@@ -91,4 +92,34 @@ test("browser preflight identifies ZIP symbolic links", async () => {
   const bytes = await fs.readFile("conformance/fixtures/invalid-symlink.mdocss");
   const zip = await JSZip.loadAsync(bytes);
   assert.equal(isZipSymlink(zip.files["assets/link"]), true);
+});
+
+
+test("rich-reader ZIP preflight rejects BZIP2 and ZIP64 corpus cases", async () => {
+  const cases = JSON.parse(await fs.readFile("conformance/cases.json", "utf8"));
+
+  for (const id of ["I021", "I022"]) {
+    const entry = cases.find(item => item.id === id);
+    assert.ok(entry?.generated?.rawBase64, `missing raw fixture for ${id}`);
+
+    const bytes = Buffer.from(entry.generated.rawBase64, "base64");
+    const issues = zipInteroperabilityIssues(bytes);
+
+    assert.ok(
+      issues.length > 0,
+      `${id} should fail the rich-reader ZIP interoperability preflight`
+    );
+  }
+
+  const bzip2 = cases.find(item => item.id === "I021");
+  assert.match(
+    zipInteroperabilityIssues(Buffer.from(bzip2.generated.rawBase64, "base64")).join("\n"),
+    /Unsupported ZIP compression method/
+  );
+
+  const zip64 = cases.find(item => item.id === "I022");
+  assert.match(
+    zipInteroperabilityIssues(Buffer.from(zip64.generated.rawBase64, "base64")).join("\n"),
+    /ZIP64 features/
+  );
 });
