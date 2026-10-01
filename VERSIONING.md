@@ -64,7 +64,13 @@ During the 0.x draft period, `specVersion` remains optional for compatibility wi
 
 Authors and tools that emit a manifest SHOULD include `specVersion`.
 
-Before 1.0 is frozen, the project will decide whether a v1 manifest must declare `specVersion`. A no-manifest minimal package will remain part of the core design.
+### 1.0 decision
+
+For MDOCSS 1.0, **if `manifest.json` is present, it MUST declare `specVersion`**.
+
+A no-manifest package containing only the minimum core files remains valid.
+
+This requirement lets a future reader select the correct manifest contract without weakening the format's minimum-document principle. A candidate schema is published as `schema/manifest-1.0-draft.schema.json` until the 1.0 contract is frozen.
 
 ## Unknown fields and files
 
