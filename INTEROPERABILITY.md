@@ -65,7 +65,7 @@ A **1.0 authoring validator** must not claim that a 1.1 document is exact 1.0-au
 The project resolved this by separating the contracts:
 
 ```text
-schema/manifest-1.0-draft.schema.json
+schema/manifest-1.0.schema.json
     exact candidate 1.0 authoring contract
 
 schema/manifest-1.x-reader.schema.json
