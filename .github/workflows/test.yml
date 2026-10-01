@@ -17,6 +17,8 @@ jobs:
       - run: npm run build:viewer
       - run: npm run build:obsidian
       - run: npm run package:obsidian
+      - run: npm run build:style-demo
+      - run: node src/cli.js validate artifacts/mdocss-style-demo.mdocss
       - run: npm run validate:example
 
       - uses: actions/upload-artifact@v4
