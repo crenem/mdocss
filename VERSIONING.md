@@ -6,11 +6,13 @@ A viewer, CLI, or plugin can have its own software version. The value in `manife
 
 ## Format version syntax
 
-When present, `specVersion` uses three numeric components:
+When present, `specVersion` MUST use exactly three numeric components:
 
 ```text
 MAJOR.MINOR.PATCH
 ```
+
+Two-component abbreviations such as `1.0` or `1.7` are not valid manifest versions. Use `1.0.0`, `1.7.0`, and so on.
 
 Example:
 
