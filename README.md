@@ -88,6 +88,13 @@ node src/cli.js unpack example.mdocss extracted
 npm run conformance
 npm run build:viewer
 npm run build:obsidian
+
+# Round-trip editing
+node src/cli.js set-root example.mdocss revised.md
+node src/cli.js set-manifest example.mdocss manifest.json
+node src/cli.js add-style example.mdocss apa7.css --id apa7 --label "APA 7th Edition" --default
+node src/cli.js rename-style example.mdocss apa7 academic --label "Academic"
+node src/cli.js remove-style example.mdocss academic --delete-css
 ```
 
 ## Minimal archive
