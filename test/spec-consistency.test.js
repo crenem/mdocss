@@ -143,3 +143,13 @@ test("specification names the portable ZIP and version profiles", async () => {
   assert.match(spec, /MAJOR\.MINOR\.PATCH/);
   assert.match(spec, /abbreviated forms such as `1\.0` are not valid/i);
 });
+
+
+test("specification states the stylesheet constraints enforced by schema and package validation", async () => {
+  const spec = await fs.readFile("SPEC.md", "utf8");
+
+  assert.match(spec, /stylesheets.*MUST be a non-empty array/is);
+  assert.match(spec, /\^\[A-Za-z\]\[A-Za-z0-9\._-\]\*\$/);
+  assert.match(spec, /href.*MUST end in `\.css`/is);
+  assert.match(spec, /exactly one regular UTF-8 CSS file/is);
+});
