@@ -21,4 +21,6 @@
 - Added security guidance for ZIP extraction, decompression limits, CSS isolation, external resources, and strict UTF-8 handling.
 - Hardened the reference validator for original ZIP member names, Windows-style paths, and strict UTF-8 decoding.
 - Added CI workflow.
-- Added initial Obsidian integration scaffold.
+- Added browser reference renderer with local asset resolution, sanitized HTML, sandboxed CSS, runtime style switching, and print preview.
+- Added a working Obsidian reader MVP with `.mdocss` extension registration, hot-swappable styles, local style preference, local asset resolution, and sandboxed rendering.
+- Added CI builds/type checks for both the reference viewer and Obsidian integration.
