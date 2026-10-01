@@ -84,6 +84,9 @@ test("manifest compatibility enters recovery mode for unsupported versions", () 
 test("browser preflight detects dangerous paths and duplicate ZIP members", async () => {
   assert.equal(dangerousArchiveMember("../escape.txt"), true);
   assert.equal(dangerousArchiveMember("C:/escape.txt"), true);
+  assert.equal(dangerousArchiveMember("assets/./image.png"), true);
+  assert.equal(dangerousArchiveMember("assets//image.png"), true);
+  assert.equal(dangerousArchiveMember("assets/bad\nname.png"), true);
   assert.equal(dangerousArchiveMember("assets/image.png"), false);
 
   const duplicate = await fs.readFile("conformance/fixtures/invalid-duplicate-member.mdocss");
