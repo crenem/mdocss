@@ -27,6 +27,7 @@ Remaining work:
 - explicit schema/example/package-reference consistency tests now run in CI;
 - the 1.0 decision is now frozen: a present `manifest.json` MUST contain `specVersion`;
 - a candidate 1.0 manifest schema is published and must receive final RC review before losing its `-draft` status (issue #4);
+- draft schemas intentionally omit `$id` until a stable versioned publication URI exists, avoiding dependency on an unestablished domain;
 - the reference CLI now performs explicit version negotiation, distinguishes unsupported major versions from invalid packages, and provides strict `--target 1.0` authoring validation;
 - exact 1.0 authoring and forward-compatible 1.x reader schemas are now separate artifacts, avoiding ambiguity between conformance and compatibility;
 - both reference readers accept same-major 1.x evolution while retaining recovery mode for unsupported higher majors;
