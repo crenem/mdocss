@@ -50,6 +50,87 @@ function safeDecode(value: string): string {
   }
 }
 
+
+function manifestCompatibility(manifest: Manifest | null): { supported: boolean; version: string | null } {
+  const version = manifest?.specVersion;
+  if (version == null || version === "") return { supported: true, version: null };
+
+  const match = /^(\d+)\.(\d+)(?:\.(\d+))?$/.exec(String(version));
+  if (!match) return { supported: false, version: String(version) };
+
+  return {
+    supported: Number(match[1]) === 0 && Number(match[2]) === 1,
+    version: String(version)
+  };
+}
+
+function dangerousArchiveMember(name: string): boolean {
+  if (!name || name.includes("\0")) return true;
+  if (name.startsWith("/") || name.startsWith("\\")) return true;
+  if (/^[A-Za-z]:/.test(name) || name.includes("\\")) return true;
+  return name.split("/").includes("..");
+}
+
+function isZipSymlink(entry: JSZipObject): boolean {
+  const raw = entry.unixPermissions;
+  const mode =
+    typeof raw === "number"
+      ? raw
+      : typeof raw === "string"
+        ? Number.parseInt(raw, 8)
+        : NaN;
+
+  return Number.isFinite(mode) && (mode & 0o170000) === 0o120000;
+}
+
+function duplicateZipMemberNames(input: ArrayBuffer): string[] {
+  const bytes = new Uint8Array(input);
+  if (bytes.byteLength < 22) return [];
+
+  const view = new DataView(bytes.buffer, bytes.byteOffset, bytes.byteLength);
+  const lowest = Math.max(0, bytes.byteLength - 22 - 0xffff);
+  let eocd = -1;
+
+  for (let offset = bytes.byteLength - 22; offset >= lowest; offset -= 1) {
+    if (view.getUint32(offset, true) === 0x06054b50) {
+      eocd = offset;
+      break;
+    }
+  }
+
+  if (eocd < 0) return [];
+
+  const totalEntries = view.getUint16(eocd + 10, true);
+  const centralOffset = view.getUint32(eocd + 16, true);
+  if (totalEntries === 0xffff || centralOffset === 0xffffffff) return [];
+
+  const seen = new Map<string, number>();
+  const duplicates: string[] = [];
+  let cursor = centralOffset;
+
+  for (let index = 0; index < totalEntries; index += 1) {
+    if (cursor + 46 > bytes.byteLength || view.getUint32(cursor, true) !== 0x02014b50) break;
+
+    const filenameLength = view.getUint16(cursor + 28, true);
+    const extraLength = view.getUint16(cursor + 30, true);
+    const commentLength = view.getUint16(cursor + 32, true);
+    const start = cursor + 46;
+    const end = start + filenameLength;
+    if (end > bytes.byteLength) break;
+
+    const raw = bytes.slice(start, end);
+    const key = Array.from(raw, byte => byte.toString(16).padStart(2, "0")).join("");
+    const display = new TextDecoder("utf-8").decode(raw);
+    const count = (seen.get(key) ?? 0) + 1;
+    seen.set(key, count);
+    if (count === 2) duplicates.push(display);
+
+    cursor = end + extraLength + commentLength;
+  }
+
+  return duplicates;
+}
+
 function normalizeArchiveReference(baseFile: string, reference: string): string | null {
   if (referenceKind(reference) !== "archive") return null;
 
@@ -424,7 +505,22 @@ class MdocssView extends FileView {
 
     try {
       const bytes = await this.app.vault.readBinary(file);
+      const duplicates = duplicateZipMemberNames(bytes);
+      if (duplicates.length) {
+        throw new Error(`Duplicate archive member names are not allowed: ${duplicates.join(", ")}`);
+      }
+
       this.zip = await JSZip.loadAsync(bytes);
+
+      for (const [name, entry] of Object.entries(this.zip.files)) {
+        const original = entry.unsafeOriginalName || name;
+        if (dangerousArchiveMember(original)) {
+          throw new Error(`Unsafe archive member path: ${original}`);
+        }
+        if (isZipSymlink(entry)) {
+          throw new Error(`Symbolic-link archive member is not allowed: ${original}`);
+        }
+      }
 
       const root = safeEntry(this.zip, "root.md");
       if (!root) throw new Error("Required root.md is missing.");
@@ -432,15 +528,19 @@ class MdocssView extends FileView {
       const markdown = await decodeUtf8(root, "root.md");
 
       const manifestEntry = safeEntry(this.zip, "manifest.json");
-      this.manifest = manifestEntry
+      const parsedManifest = manifestEntry
         ? JSON.parse(await decodeUtf8(manifestEntry, "manifest.json")) as Manifest
         : null;
 
-      if (this.manifest && (Array.isArray(this.manifest) || typeof this.manifest !== "object")) {
+      if (parsedManifest && (Array.isArray(parsedManifest) || typeof parsedManifest !== "object")) {
         throw new Error("manifest.json must contain a JSON object.");
       }
 
-      this.styles = declaredStyles(this.manifest, Boolean(safeEntry(this.zip, "root.css")));
+      const compatibility = manifestCompatibility(parsedManifest);
+      this.manifest = compatibility.supported ? parsedManifest : null;
+      this.styles = compatibility.supported
+        ? declaredStyles(this.manifest, Boolean(safeEntry(this.zip, "root.css")))
+        : [];
 
       this.buildToolbar(file);
 
@@ -484,7 +584,9 @@ class MdocssView extends FileView {
 
       this.statusEl = this.contentEl.createDiv({
         cls: "mdocss-obsidian-status",
-        text: selected ? `Style: ${selected.label}` : "Rendered without a bundled stylesheet"
+        text: compatibility.supported
+          ? (selected ? `Style: ${selected.label}` : "Rendered without a bundled stylesheet")
+          : `Unsupported MDOCSS version ${compatibility.version || "unknown"}; canonical-content recovery mode`
       });
     } catch (error) {
       this.zip = null;
