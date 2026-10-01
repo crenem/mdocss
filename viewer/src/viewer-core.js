@@ -33,10 +33,13 @@ export function manifestCompatibility(manifest) {
 
 export function dangerousArchiveMember(name) {
   const value = String(name ?? "");
-  if (!value || value.includes("\0")) return true;
+  if (!value || /[\x00-\x1f\x7f]/.test(value)) return true;
   if (value.startsWith("/") || value.startsWith("\\")) return true;
   if (DRIVE_RE.test(value) || value.includes("\\")) return true;
-  return value.split("/").includes("..");
+
+  const parts = value.split("/");
+  if (parts.includes("..") || parts.includes(".")) return true;
+  return parts.slice(0, -1).includes("");
 }
 
 export function duplicateZipMemberNames(input) {
