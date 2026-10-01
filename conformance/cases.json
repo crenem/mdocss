@@ -212,5 +212,28 @@
       "rawBase64": "UEsDBC0AAAAAAAAAIQCAHoSV//////////8HABQAcm9vdC5tZAEAEAAIAAAAAAAAAAgAAAAAAAAAIyBaSVA2NApQSwECLQMtAAAAAAAAACEAgB6ElQgAAAAIAAAABwAAAAAAAAAAAAAAgAEAAAAAcm9vdC5tZFBLBQYAAAAAAQABADUAAABBAAAAAAA="
     },
     "purpose": "Archive uses a ZIP64 local entry even though the document is small."
+  },
+  {
+    "id": "I023",
+    "expected": "invalid",
+    "target": "1.0",
+    "generated": {
+      "root": "# Abbreviated version\\n",
+      "manifest": {
+        "specVersion": "1.0"
+      }
+    },
+    "purpose": "Manifest specVersion must use three numeric components; 1.0 is not valid 1.0-authored metadata."
+  },
+  {
+    "id": "I024",
+    "expected": "invalid",
+    "generated": {
+      "root": "# Abbreviated newer minor\\n",
+      "manifest": {
+        "specVersion": "1.7"
+      }
+    },
+    "purpose": "Reader version negotiation rejects abbreviated two-component specVersion values."
   }
 ]
