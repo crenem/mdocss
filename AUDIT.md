@@ -39,6 +39,7 @@ Covered:
 
 - ZIP traversal and absolute-path attacks;
 - duplicate archive member names and symbolic-link members;
+- a narrow single-disk, non-ZIP64 Store/Deflate ZIP interoperability profile;
 - strict UTF-8;
 - active-content prohibition;
 - CSS isolation guidance;
@@ -132,6 +133,6 @@ The current blockers to calling a release v0.9 RC are:
 4. obtain independent-party review/implementation evidence and conduct the documented RC feedback period — issue #5;
 5. perform the final normative/security/schema audit after runtime and outside-review findings are available.
 
-The in-repository implementation/versioning review, shared 28-case dual-language conformance exercise, and second-pass review of `IMPLEMENTATION.md`, `VERSIONING.md`, and `MIGRATION.md` are complete.
+The in-repository implementation/versioning review, shared 30-case dual-language conformance exercise, and second-pass review of `IMPLEMENTATION.md`, `VERSIONING.md`, and `MIGRATION.md` are complete.
 
 Do not mark v0.9 or v1.0 complete while these remain unresolved.
