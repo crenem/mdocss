@@ -116,9 +116,11 @@ Guidance covers keyboard operation, focus visibility, image alternative text, co
 
 ## Licensing
 
-Current status: **MIT repository license**
+Current status: **documented**
 
-The repository currently uses the MIT License. Before 1.0, the project should state unambiguously in the stable specification that independent implementations may implement the format royalty-free.
+The repository uses the MIT License, and `SPEC.md` now states explicitly that compatible implementations may be created without permission from the project maintainers and that conformance does not require the reference implementation.
+
+No broader patent or third-party-rights representation is implied by that statement.
 
 ## Release-candidate blockers
 
