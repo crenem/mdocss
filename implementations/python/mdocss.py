@@ -12,6 +12,7 @@ import argparse
 import json
 import re
 import stat
+import struct
 import sys
 import zipfile
 from dataclasses import dataclass
@@ -62,6 +63,72 @@ def dangerous_path(name: str) -> bool:
 def is_symlink(info: zipfile.ZipInfo) -> bool:
     mode = (info.external_attr >> 16) & 0xFFFF
     return stat.S_IFMT(mode) == stat.S_IFLNK
+
+
+def _extra_has_zip64(extra: bytes) -> bool:
+    cursor = 0
+    while cursor + 4 <= len(extra):
+        header_id, size = struct.unpack_from("<HH", extra, cursor)
+        if header_id == 0x0001:
+            return True
+        cursor += 4 + size
+    return False
+
+
+def zip_profile_errors(path: str | Path, infos: Iterable[zipfile.ZipInfo]) -> list[str]:
+    errors: list[str] = []
+    raw = Path(path).read_bytes()
+
+    eocd = raw.rfind(b"PK\x05\x06", max(0, len(raw) - 22 - 0xFFFF))
+    if eocd >= 0 and eocd + 22 <= len(raw):
+        disk_number, central_disk, entries_disk, total_entries = struct.unpack_from(
+            "<HHHH", raw, eocd + 4
+        )
+        central_size, central_offset = struct.unpack_from("<II", raw, eocd + 12)
+
+        if disk_number != 0 or central_disk != 0 or entries_disk != total_entries:
+            errors.append("Multi-disk/spanned ZIP archives are not allowed")
+
+        if (
+            entries_disk == 0xFFFF
+            or total_entries == 0xFFFF
+            or central_size == 0xFFFFFFFF
+            or central_offset == 0xFFFFFFFF
+            or (eocd >= 20 and raw[eocd - 20:eocd - 16] == b"PK\x06\x07")
+        ):
+            errors.append("ZIP64 features are not allowed by the MDOCSS 1.0 ZIP profile")
+
+    zip64_seen = False
+    for info in infos:
+        if info.compress_type not in (zipfile.ZIP_STORED, zipfile.ZIP_DEFLATED):
+            errors.append(
+                f"Unsupported ZIP compression method {info.compress_type}: {info.filename}"
+            )
+        if info.flag_bits & 0x0001:
+            errors.append(f"Encrypted ZIP member is not allowed: {info.filename}")
+
+        if _extra_has_zip64(info.extra):
+            zip64_seen = True
+
+        offset = info.header_offset
+        if offset + 30 <= len(raw) and raw[offset:offset + 4] == b"PK\x03\x04":
+            compressed_size, uncompressed_size = struct.unpack_from("<II", raw, offset + 18)
+            name_len, extra_len = struct.unpack_from("<HH", raw, offset + 26)
+            extra_start = offset + 30 + name_len
+            extra_end = extra_start + extra_len
+            local_extra = raw[extra_start:extra_end]
+
+            if (
+                compressed_size == 0xFFFFFFFF
+                or uncompressed_size == 0xFFFFFFFF
+                or _extra_has_zip64(local_extra)
+            ):
+                zip64_seen = True
+
+    if zip64_seen and not any("ZIP64 features" in error for error in errors):
+        errors.append("ZIP64 features are not allowed by the MDOCSS 1.0 ZIP profile")
+
+    return errors
 
 
 def read_utf8(zf: zipfile.ZipFile, name: str) -> str:
@@ -216,7 +283,7 @@ def validate_package(path: str | Path, target: str | None = None) -> ValidationR
     try:
         with zipfile.ZipFile(path, "r") as zf:
             infos = zf.infolist()
-            names = [info.filename for info in infos]
+            errors.extend(zip_profile_errors(path, infos))
 
             seen: set[str] = set()
             for info in infos:
@@ -327,6 +394,9 @@ def recover_root(path: str | Path) -> str:
     """Recover canonical Markdown without interpreting unsupported semantics."""
     with zipfile.ZipFile(path, "r") as zf:
         infos = zf.infolist()
+        profile_errors = zip_profile_errors(path, infos)
+        if profile_errors:
+            raise InvalidDocument(profile_errors[0])
 
         seen: set[str] = set()
         for info in infos:
