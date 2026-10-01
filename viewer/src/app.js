@@ -10,7 +10,8 @@ import {
   manifestCompatibility,
   normalizeArchiveReference,
   referenceKind,
-  styleChoices
+  styleChoices,
+  zipInteroperabilityIssues
 } from "./viewer-core.js";
 
 const fileInput = document.querySelector("#file-input");
@@ -286,6 +287,11 @@ async function loadFile(file) {
     const duplicates = duplicateZipMemberNames(archiveBuffer);
     if (duplicates.length) {
       throw new Error(`Duplicate archive member names are not allowed: ${duplicates.join(", ")}`);
+    }
+
+    const zipIssues = zipInteroperabilityIssues(archiveBuffer);
+    if (zipIssues.length) {
+      throw new Error(zipIssues.join("; "));
     }
 
     const zip = await JSZip.loadAsync(archiveBuffer);
