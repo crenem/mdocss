@@ -235,5 +235,75 @@
       }
     },
     "purpose": "Reader version negotiation rejects abbreviated two-component specVersion values."
+  },
+  {
+    "id": "V008",
+    "expected": "valid",
+    "target": "1.0",
+    "generated": {
+      "root": "# Metadata formats\\n",
+      "manifest": {
+        "specVersion": "1.0.0",
+        "created": "2026-10-01T15:00:00Z",
+        "modified": "2026-10-01T10:00:00-05:00",
+        "authors": [
+          {
+            "name": "Example Author",
+            "email": "author@example.com",
+            "url": "https://example.com/author"
+          }
+        ]
+      }
+    },
+    "purpose": "Valid RFC 3339 date-times, author email, and author URI metadata."
+  },
+  {
+    "id": "I025",
+    "expected": "invalid",
+    "target": "1.0",
+    "generated": {
+      "root": "# Invalid date-time\\n",
+      "manifest": {
+        "specVersion": "1.0.0",
+        "created": "2026-10-01 15:00:00"
+      }
+    },
+    "purpose": "created must satisfy the JSON Schema date-time format."
+  },
+  {
+    "id": "I026",
+    "expected": "invalid",
+    "target": "1.0",
+    "generated": {
+      "root": "# Invalid email\\n",
+      "manifest": {
+        "specVersion": "1.0.0",
+        "authors": [
+          {
+            "name": "Example",
+            "email": "not-an-email"
+          }
+        ]
+      }
+    },
+    "purpose": "Author email must satisfy the JSON Schema email format."
+  },
+  {
+    "id": "I027",
+    "expected": "invalid",
+    "target": "1.0",
+    "generated": {
+      "root": "# Invalid URI\\n",
+      "manifest": {
+        "specVersion": "1.0.0",
+        "authors": [
+          {
+            "name": "Example",
+            "url": "not a uri"
+          }
+        ]
+      }
+    },
+    "purpose": "Author URL must satisfy the JSON Schema uri format."
   }
 ]
