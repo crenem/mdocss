@@ -64,7 +64,9 @@ The invalid fixtures cover:
 - stylesheet traversal outside the archive;
 - symbolic-link archive members;
 - duplicate archive member names;
-- an invalid v0.1 entrypoint.
+- an invalid v0.1 entrypoint;
+- unsupported ZIP compression methods;
+- ZIP64 features outside the core interoperability profile.
 
 ## Resource-exhaustion cases
 
