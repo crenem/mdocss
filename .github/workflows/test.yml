@@ -16,4 +16,11 @@ jobs:
       - run: npm test
       - run: npm run build:viewer
       - run: npm run build:obsidian
+      - run: npm run package:obsidian
       - run: npm run validate:example
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: mdocss-obsidian-${{ github.sha }}
+          path: artifacts/mdocss-obsidian-*.zip
+          if-no-files-found: error
