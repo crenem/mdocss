@@ -93,12 +93,14 @@ test("1.x reader baseline accepts same-major newer-minor declarations", async ()
     specVersion: "1.7.0",
     title: "Forward-compatible 1.x document"
   }), true);
+  assert.equal(validate({ specVersion: "1.7" }), false);
 });
 
 test("exact 1.0 authoring schema rejects later 1.x minor declarations", async () => {
   const validate = await validator();
 
   assert.equal(validate({ specVersion: "1.0.4" }), true);
+  assert.equal(validate({ specVersion: "1.0" }), false);
   assert.equal(validate({ specVersion: "1.1.0" }), false);
 });
 
@@ -143,4 +145,17 @@ test("CLI target validation enforces the 1.0 authoring contract", async () => {
 
   const legacy = await packageWithManifest({ specVersion: "0.1.0" });
   assert.equal(cli(["validate", legacy, "--target", "1.0"]).status, 1);
+});
+
+
+test("CLI rejects abbreviated manifest versions", async () => {
+  const abbreviated10 = await packageWithManifest({ specVersion: "1.0" });
+  const first = cli(["validate", abbreviated10]);
+  assert.equal(first.status, 1);
+  assert.match(first.stderr, /Invalid specVersion: 1\.0/);
+
+  const abbreviated17 = await packageWithManifest({ specVersion: "1.7" });
+  const second = cli(["validate", abbreviated17]);
+  assert.equal(second.status, 1);
+  assert.match(second.stderr, /Invalid specVersion: 1\.7/);
 });
