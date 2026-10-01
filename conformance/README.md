@@ -43,6 +43,8 @@ The invalid fixtures cover:
 - archive path traversal;
 - absolute, backslash, and drive-letter paths;
 - stylesheet traversal outside the archive;
+- symbolic-link archive members;
+- duplicate archive member names;
 - an invalid v0.1 entrypoint.
 
 ## Resource-exhaustion cases
