@@ -1,7 +1,7 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://mdocss.org/schema/manifest-1.0-draft.schema.json",
-  "title": "MDOCSS 1.x Manifest (1.0 baseline draft)",
+  "title": "MDOCSS 1.0 Draft Manifest",
   "type": "object",
   "required": [
     "specVersion"
@@ -9,8 +9,7 @@
   "properties": {
     "specVersion": {
       "type": "string",
-      "pattern": "^1\\.(?:0|[1-9]\\d*)(?:\\.\\d+)?$",
-      "description": "MDOCSS 1.x format version. The 1.0 baseline accepts same-major newer-minor declarations for forward-compatible reading; authoring to an exact 1.0 target is enforced by the validator."
+      "pattern": "^1\\.0(?:\\.\\d+)?$"
     },
     "title": {
       "type": "string"
