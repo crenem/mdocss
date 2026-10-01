@@ -4,7 +4,7 @@
 **Version:** 0.1.0  
 **File extension:** `.mdocss`
 
-The key words **MUST**, **MUST NOT**, **REQUIRED**, **SHOULD**, **SHOULD NOT**, and **MAY** are normative.
+The key words **MUST**, **MUST NOT**, **REQUIRED**, **SHOULD**, **SHOULD NOT**, and **MAY** in this document are to be interpreted as described in BCP 14 (RFC 2119 and RFC 8174) when, and only when, they appear in all capitals.
 
 ## 1. Purpose
 
@@ -159,6 +159,8 @@ Recognized fields include:
 
 For MDOCSS 0.1, `entrypoint`, if supplied, MUST equal `root.md`.
 
+During the 0.x draft period, `specVersion` is OPTIONAL. Authors and tools that emit a manifest SHOULD include it. The version-compatibility model is defined in `VERSIONING.md`.
+
 Unknown manifest fields SHOULD be preserved by editors and MUST NOT cause rejection unless they violate a security or conformance requirement.
 
 ## 7. Assets and path resolution
@@ -231,13 +233,23 @@ If raw HTML is supported in Markdown, readers SHOULD sanitize dangerous HTML and
 
 ## 11. Media type
 
-The proposed media type is:
+MDOCSS uses ZIP as its underlying representation. The registered `+zip` structured syntax suffix is therefore appropriate for a future MDOCSS-specific media-type registration.
+
+The candidate media type is:
 
 ```text
 application/vnd.mdocss+zip
 ```
 
-Until formally registered, implementations MAY use `application/zip` while identifying MDOCSS by extension or archive contents.
+This exact MDOCSS subtype is **not registered with IANA in the 0.1 draft** and MUST NOT be represented as registered.
+
+Until an MDOCSS-specific media type is formally registered, implementations SHOULD use:
+
+```text
+application/zip
+```
+
+when a registered media type is required, while identifying MDOCSS through the `.mdocss` extension and package conformance checks.
 
 ## 12. Conformance
 
@@ -279,7 +291,11 @@ A style-aware editor SHOULD distinguish temporary active-style selection from an
 
 Readers MUST NOT reject a document solely because it contains unknown files or unknown manifest properties.
 
-If `manifest.json` declares a future major specification version, a reader SHOULD warn the user but SHOULD still offer access to `root.md` when safe.
+Version negotiation follows `VERSIONING.md`.
+
+A reader that supports the same major version SHOULD process fields it understands and preserve or ignore unknown safe additions.
+
+If `manifest.json` declares a future unsupported major specification version, a reader SHOULD warn the user, SHOULD avoid pretending to understand unknown package semantics, and SHOULD still offer safe access to `root.md` when archive and text safety checks permit.
 
 ## 14. Example
 
@@ -335,3 +351,12 @@ MDOCSS MUST degrade gracefully.
 Loss of MDOCSS-specific presentation support may reduce visual fidelity, but MUST NOT prevent recovery of canonical Markdown.
 
 Presentation MUST remain separable from semantic content: changing a stylesheet MUST NOT require changing `root.md`.
+
+
+## 16. References
+
+- RFC 2119, *Key words for use in RFCs to Indicate Requirement Levels*: https://www.rfc-editor.org/rfc/rfc2119
+- RFC 8174, *Ambiguity of Uppercase vs Lowercase in RFC 2119 Key Words*: https://www.rfc-editor.org/rfc/rfc8174
+- RFC 6838, *Media Type Specifications and Registration Procedures*: https://www.rfc-editor.org/rfc/rfc6838
+- RFC 6839, *Additional Media Type Structured Syntax Suffixes*: https://www.rfc-editor.org/rfc/rfc6839
+- IANA Structured Syntax Suffix Registry: https://www.iana.org/assignments/media-type-structured-suffix/
