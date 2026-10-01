@@ -2,18 +2,21 @@
 
 This directory is the public conformance corpus for the MDOCSS draft specification.
 
-The corpus is intentionally small and explicit. Each fixture tests one interoperability or safety rule that an independent implementation should be able to reproduce.
+The corpus is intentionally small and explicit. Each case tests one interoperability, compatibility, or safety rule that an independent implementation should be able to reproduce.
 
 ## Contents
 
 - `cases.json` — machine-readable case inventory and expected result.
 - `fixtures/` — committed `.mdocss` archives, including malformed and hostile examples.
-- `run.js` — reference harness that executes the MDOCSS CLI against the corpus.
+- generated cases in `cases.json` — small deterministic packages used for version-negotiation rules where committing another binary fixture adds little value.
+- `run.js` — reference harness that executes the Node MDOCSS CLI against the corpus.
+- `../implementations/python/run_conformance.py` — independent standard-library Python implementation running the same case inventory.
 
-Run the corpus with:
+Run both implementations with:
 
 ```bash
 npm run conformance
+python3 implementations/python/run_conformance.py
 ```
 
 The harness exits nonzero if the reference validator accepts a fixture marked invalid, rejects a fixture marked valid, or fails the preservation check.
@@ -28,6 +31,16 @@ The valid fixtures cover:
 - unknown archive members and unknown manifest properties.
 
 The unknown-content case also checks round-trip preservation by unpacking, repacking, and revalidating the archive.
+
+## Version-negotiation cases
+
+The corpus also exercises the frozen 1.0 compatibility model:
+
+- exact 1.0 authoring with a declared `specVersion`;
+- a minimal no-manifest package under the 1.0 authoring target;
+- same-major newer-minor 1.x reading;
+- rejection of a manifest without `specVersion` under an exact 1.0 authoring target;
+- rejection of a 1.1 declaration as exact 1.0-authored output.
 
 ## Unsupported-version case
 
