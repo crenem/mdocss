@@ -234,7 +234,7 @@ function ensureManifestObject(value) {
 
 const MANIFEST_SCHEMAS = {
   "0.1": new URL("../schema/manifest.schema.json", import.meta.url),
-  "1.0": new URL("../schema/manifest-1.0-draft.schema.json", import.meta.url),
+  "1.0": new URL("../schema/manifest-1.0.schema.json", import.meta.url),
   "1.x": new URL("../schema/manifest-1.x-reader.schema.json", import.meta.url)
 };
 
