@@ -75,6 +75,22 @@ Current conformance tooling rejects malformed UTF-8 in required/declared text fi
 
 A package that depended on permissive replacement-character decoding or unsafe path normalization is not conforming and should be rebuilt from clean source files.
 
+## 0.1 manifest → 1.0 manifest
+
+The planned 1.0 rule requires `specVersion` whenever `manifest.json` exists.
+
+A 0.1 package with a manifest that omits `specVersion` can migrate by adding:
+
+```json
+{
+  "specVersion": "1.0.0"
+}
+```
+
+after confirming that its manifest fields otherwise satisfy the final 1.0 schema.
+
+A minimal package without `manifest.json` does not need a version field and remains compatible with the minimum-container design.
+
 ## Moving toward 1.0
 
 Every intentional draft-format break before 1.0 should receive:
