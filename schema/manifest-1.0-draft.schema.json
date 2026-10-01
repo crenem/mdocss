@@ -9,7 +9,7 @@
   "properties": {
     "specVersion": {
       "type": "string",
-      "pattern": "^1\\.0(?:\\.\\d+)?$"
+      "pattern": "^1\\.0\\.\\d+$"
     },
     "title": {
       "type": "string"
