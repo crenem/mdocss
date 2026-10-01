@@ -1,6 +1,17 @@
 const SCHEME_RE = /^[A-Za-z][A-Za-z0-9+.-]*:/;
 const DRIVE_RE = /^[A-Za-z]:/;
 
+export function escapeHtmlAttribute(value) {
+  return String(value ?? "").replace(/[&<>"']/g, character => ({
+    "&": "&amp;",
+    "<": "&lt;",
+    ">": "&gt;",
+    '"': "&quot;",
+    "'": "&#39;"
+  })[character]);
+}
+
+
 
 export function manifestCompatibility(manifest) {
   const version = manifest?.specVersion;
