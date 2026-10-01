@@ -157,9 +157,23 @@ export function zipInteroperabilityIssues(input) {
     if (extraEnd > bytes.byteLength) break;
 
     const raw = bytes.slice(start, end);
-    const display = (flags & 0x0800)
-      ? new TextDecoder("utf-8").decode(raw)
-      : new TextDecoder("windows-1252").decode(raw);
+    let display;
+
+    if ((flags & 0x0800) !== 0) {
+      try {
+        display = new TextDecoder("utf-8", { fatal: true }).decode(raw);
+      } catch {
+        display = Array.from(raw, byte => byte.toString(16).padStart(2, "0")).join("");
+        issues.push(`ZIP member name marked UTF-8 is not valid UTF-8: ${display}`);
+      }
+    } else {
+      display = new TextDecoder("windows-1252").decode(raw);
+      if (raw.some(byte => byte >= 0x80)) {
+        issues.push(
+          `Non-ASCII ZIP member name must set the UTF-8 language flag: ${display}`
+        );
+      }
+    }
 
     if ((flags & 0x0001) !== 0) {
       issues.push(`Encrypted ZIP member is not allowed: ${display}`);
