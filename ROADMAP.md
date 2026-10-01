@@ -38,7 +38,7 @@ Milestones are release gates rather than branch names. The current draft PR alre
 
 ## v0.3 — Conformance corpus
 
-**Draft status:** implemented; the committed 20-case corpus currently passes the reference CLI in CI.
+**Draft status:** implemented; the committed 22-case corpus currently passes the reference CLI in CI.
 
 **Goal:** make independent implementations predictable.
 
