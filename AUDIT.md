@@ -81,7 +81,7 @@ Every authored core role is now exercised by the generated style-demo source, an
 
 ## Rendering interoperability
 
-Current status: **two reference code paths implemented, runtime verification pending**
+Current status: **multiple implementation paths present; runtime and third-party verification pending**
 
 Implemented:
 
@@ -90,7 +90,7 @@ Implemented:
 
 Both build in CI and share the same format contract. CI now packages both the browser viewer and the Obsidian reader for manual testing. `SMOKE_TEST.md` defines the cross-render procedure; completion is tracked in issue #2.
 
-A genuinely independent third-party implementation would provide stronger evidence than two code paths maintained in this repository. That work and the RC feedback period are tracked in issue #5.
+The repository now also contains a standard-library Python validator/recovery reader written from the specification rather than ported from the Node implementation. CI runs both implementations against the same public corpus. This provides implementation-language independence, but not independent-party review. A genuinely third-party implementation or external code review would still provide stronger evidence and remains tracked with the RC feedback period in issue #5.
 
 ## Round-trip editing
 
