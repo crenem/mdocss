@@ -49,6 +49,8 @@
 - Changed `.mdocss` from a byte-level conformance requirement to the recommended filename extension, allowing filename-independent streams and stores to carry conforming packages.
 - Made all ZIP-member encryption nonconforming in core 1.0, matching the explicit no-encryption scope and validator behavior.
 - Removed provisional schema `$id` values until a stable versioned publication URI exists.
+- Added field-by-field manifest semantics, including BCP 47 language guidance and RFC 3339/JSON-Schema metadata formats.
+- Aligned the IANA registration draft with the core ZIP interoperability and no-encryption rules.
 - Defined a narrow ZIP interoperability profile: single-disk, non-ZIP64, unencrypted core members using Store or Deflate only.
 - Added `INTEROPERABILITY.md` to record multi-implementation evidence, resolved ambiguities, and remaining third-party/runtime validation work.
 - Stated explicitly in `SPEC.md` that compatible implementations do not require project-maintainer permission and that conformance does not require the reference implementation.
