@@ -20,12 +20,15 @@ Validate original ZIP member names when the ZIP library exposes them.
 
 Reject or safely handle:
 
+- non-ASCII ZIP member names that are not marked with ZIP's UTF-8 language-encoding flag;
 - absolute paths;
 - `..` traversal;
 - backslash-separated paths;
 - drive-letter paths;
 - NUL-containing names;
 - symbolic-link or platform-specific escape mechanisms.
+
+When writing non-ASCII member names, use UTF-8 and set the ZIP UTF-8 flag. Writers should prefer NFC-normalized path text while readers should still treat the exact decoded path as authoritative.
 
 Apply resource ceilings before or during decompression. See `SECURITY.md`.
 
