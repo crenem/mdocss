@@ -47,7 +47,9 @@ jobs:
         with:
           node-version: 20
       - run: npm install
-      - run: npx playwright install --with-deps chromium
+      - run: google-chrome --version
       - run: npm run build:viewer
       - run: npm run build:style-demo
       - run: npm run test:browser-runtime
+        env:
+          MDOCSS_PLAYWRIGHT_CHANNEL: chrome
