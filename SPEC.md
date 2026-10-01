@@ -361,7 +361,15 @@ Loss of MDOCSS-specific presentation support may reduce visual fidelity, but MUS
 Presentation MUST remain separable from semantic content: changing a stylesheet MUST NOT require changing `root.md`.
 
 
-## 16. References
+## 16. Implementability and licensing
+
+The MDOCSS specification and reference materials in this repository are published under the repository's MIT License.
+
+Implementers do not need permission from the MDOCSS project maintainers to create compatible readers, writers, validators, editors, converters, stylesheet libraries, or other implementations of the documented format.
+
+Conformance does not require use of the reference implementation.
+
+## 17. References
 
 - RFC 2119, *Key words for use in RFCs to Indicate Requirement Levels*: https://www.rfc-editor.org/rfc/rfc2119
 - RFC 8174, *Ambiguity of Uppercase vs Lowercase in RFC 2119 Key Words*: https://www.rfc-editor.org/rfc/rfc8174
