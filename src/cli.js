@@ -23,11 +23,14 @@ async function walk(dir, base = dir) {
 }
 
 function dangerous(name) {
-  if (!name || name.includes("\0")) return true;
+  if (!name || /[\x00-\x1f\x7f]/.test(name)) return true;
   if (name.startsWith("/") || name.startsWith("\\")) return true;
   if (/^[A-Za-z]:/.test(name)) return true;
   if (name.includes("\\")) return true;
-  return name.split("/").includes("..");
+
+  const parts = name.split("/");
+  if (parts.includes("..") || parts.includes(".")) return true;
+  return parts.slice(0, -1).includes("");
 }
 
 function isSymbolicLink(item) {
