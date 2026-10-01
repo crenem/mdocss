@@ -38,6 +38,8 @@ Milestones are release gates rather than branch names. The current draft PR alre
 
 ## v0.3 — Conformance corpus
 
+**Draft status:** implemented; the committed 20-case corpus currently passes the reference CLI in CI.
+
 **Goal:** make independent implementations predictable.
 
 - valid minimal fixtures
@@ -51,7 +53,7 @@ Milestones are release gates rather than branch names. The current draft PR alre
 - unknown-file and unknown-manifest-field preservation tests
 - documented expected behavior for each fixture
 
-**Exit condition:** reference CLI passes the complete public conformance corpus.
+**Exit condition:** reference CLI passes the complete public conformance corpus. **Met in the current draft.**
 
 ## v0.4 — Reference renderer
 
