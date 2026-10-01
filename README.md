@@ -57,6 +57,8 @@ This repository includes:
 - `src/cli.js` — reference CLI for pack/unpack/inspect/validate/style listing
 - `examples/basic/` — example source document with multiple styles
 - `integrations/obsidian/` — initial Obsidian integration scaffold
+- `conformance/` — public valid/invalid fixture corpus and executable harness
+- `SECURITY.md` — implementation security guidance
 - `.github/workflows/test.yml` — CI
 
 ## Design goals
@@ -82,6 +84,7 @@ node src/cli.js validate example.mdocss
 node src/cli.js inspect example.mdocss
 node src/cli.js styles example.mdocss
 node src/cli.js unpack example.mdocss extracted
+npm run conformance
 ```
 
 ## Minimal archive
