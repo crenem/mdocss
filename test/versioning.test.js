@@ -9,10 +9,8 @@ import Ajv2020 from "ajv/dist/2020.js";
 import addFormats from "ajv-formats";
 import JSZip from "jszip";
 
-async function validator() {
-  const schema = JSON.parse(
-    await fs.readFile("schema/manifest-1.0-draft.schema.json", "utf8")
-  );
+async function validator(schemaPath = "schema/manifest-1.0-draft.schema.json") {
+  const schema = JSON.parse(await fs.readFile(schemaPath, "utf8"));
   const ajv = new Ajv2020({ allErrors: true, strict: false });
   addFormats(ajv);
   return ajv.compile(schema);
@@ -88,13 +86,20 @@ function cli(args) {
   });
 }
 
-test("1.0 baseline schema accepts same-major newer-minor declarations for reading", async () => {
-  const validate = await validator();
+test("1.x reader baseline accepts same-major newer-minor declarations", async () => {
+  const validate = await validator("schema/manifest-1.x-reader.schema.json");
 
   assert.equal(validate({
     specVersion: "1.7.0",
     title: "Forward-compatible 1.x document"
   }), true);
+});
+
+test("exact 1.0 authoring schema rejects later 1.x minor declarations", async () => {
+  const validate = await validator();
+
+  assert.equal(validate({ specVersion: "1.0.4" }), true);
+  assert.equal(validate({ specVersion: "1.1.0" }), false);
 });
 
 test("CLI auto-negotiates legacy, 1.x, and unsupported major versions", async () => {
