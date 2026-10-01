@@ -21,6 +21,8 @@ Validate original ZIP member names when the ZIP library exposes them.
 Reject or safely handle:
 
 - non-ASCII ZIP member names that are not marked with ZIP's UTF-8 language-encoding flag;
+- ASCII control characters in member names;
+- `.`, `..`, and empty interior path segments;
 - absolute paths;
 - `..` traversal;
 - backslash-separated paths;
