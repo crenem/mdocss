@@ -5,6 +5,7 @@ import JSZip from "jszip";
 import {
   chooseInitialStyle,
   dangerousArchiveMember,
+  escapeHtmlAttribute,
   duplicateZipMemberNames,
   inferMimeType,
   isZipSymlink,
@@ -145,5 +146,17 @@ test("rich-reader ZIP preflight requires UTF-8 flag for non-ASCII member names",
       Buffer.from(invalid.generated.rawBase64, "base64")
     ).join("\n"),
     /Non-ASCII ZIP member name must set the UTF-8 language flag/
+  );
+});
+
+
+test("manifest metadata is escaped before insertion into generated HTML attributes", () => {
+  assert.equal(
+    escapeHtmlAttribute('en" autofocus onfocus="alert(1)'),
+    "en&quot; autofocus onfocus=&quot;alert(1)"
+  );
+  assert.equal(
+    escapeHtmlAttribute("<script>&'"),
+    "&lt;script&gt;&amp;&#39;"
   );
 });
