@@ -65,3 +65,18 @@
 .mdocss-document a {
   text-underline-offset: 0.14em;
 }
+
+@media print {
+  .mdocss-document {
+    max-width: none;
+    padding: 0;
+    color: #000;
+    background: #fff;
+    font-size: 12pt;
+    line-height: 1.5;
+  }
+
+  .mdocss-title-page {
+    border-color: #000;
+  }
+}

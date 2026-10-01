@@ -69,3 +69,30 @@
   padding-left: 1.5rem;
   text-indent: -1.5rem;
 }
+
+@media print {
+  .mdocss-document {
+    max-width: none;
+    padding: 0;
+    color: #000;
+    background: #fff;
+    font-size: 12pt;
+    line-height: 1.5;
+  }
+
+  .mdocss-title,
+  .mdocss-subtitle,
+  .mdocss-title-page p,
+  .mdocss-document h1,
+  .mdocss-document h2,
+  .mdocss-document h3,
+  .mdocss-document blockquote,
+  .mdocss-document a {
+    color: #000;
+  }
+
+  .mdocss-title-page,
+  .mdocss-document blockquote {
+    border-color: #000;
+  }
+}

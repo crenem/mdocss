@@ -74,3 +74,20 @@
 .mdocss-figure {
   margin: 1.5rem 0;
 }
+
+@media print {
+  .mdocss-document {
+    max-width: none;
+    padding: 0;
+    color: #000;
+    background: #fff;
+  }
+
+  .mdocss-title-page {
+    border-color: #000;
+  }
+
+  .mdocss-abstract {
+    background: transparent;
+  }
+}

@@ -75,3 +75,31 @@
   padding: 0.5em;
   border: 2px solid #000;
 }
+
+@media (forced-colors: active) {
+  .mdocss-document,
+  .mdocss-title-page,
+  .mdocss-document th,
+  .mdocss-document td {
+    forced-color-adjust: auto;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mdocss-document *,
+  .mdocss-document *::before,
+  .mdocss-document *::after {
+    animation: none !important;
+    transition: none !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+@media print {
+  .mdocss-document {
+    max-width: none;
+    padding: 0;
+    color: #000;
+    background: #fff;
+  }
+}

@@ -86,3 +86,11 @@
     box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.08);
   }
 }
+
+@media print {
+  .mdocss-document {
+    max-width: none;
+    padding: 0;
+    box-shadow: none;
+  }
+}
