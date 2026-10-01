@@ -38,7 +38,7 @@ Milestones are release gates rather than branch names. The current draft PR alre
 
 ## v0.3 — Conformance corpus
 
-**Draft status:** implemented; the 38-case public corpus currently passes both the Node reference validator and the independent Python implementation in CI, including safe canonical-content recovery from an unsupported future major version and target-specific 1.0/1.x negotiation cases.
+**Draft status:** implemented; the 41-case public corpus currently passes both the Node reference validator and the independent Python implementation in CI, including safe canonical-content recovery from an unsupported future major version and target-specific 1.0/1.x negotiation cases.
 
 **Goal:** make independent implementations predictable.
 
