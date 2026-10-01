@@ -161,7 +161,7 @@ Reference academic styles are implementation aids, not claims of endorsement by 
 - at least two independently functioning reader implementations or code paths tested against the same corpus — implemented in Node and independently authored Python validation/recovery code; third-party review remains desirable
 - release-candidate feedback period
 
-**RC entry gate:** automated conformance/build gates are green, the browser/Obsidian runtime smoke test passes, the candidate 1.0 schema receives final in-repository review, and no known issue already requires a breaking core change.
+**RC entry gate:** automated conformance/build gates are green, the browser/Obsidian runtime smoke test passes, the exact 1.0 manifest schema is frozen in-repository, and no known issue already requires a breaking core change.
 
 **Exit condition to v1.0:** the documented RC feedback period and independent-party interoperability review are complete, findings are dispositioned, and no known breaking changes are required for ordinary RC documents to become 1.0 documents.
 
