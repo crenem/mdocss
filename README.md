@@ -56,7 +56,8 @@ This repository includes:
 - `schema/manifest.schema.json` — JSON Schema for `manifest.json`
 - `src/cli.js` — reference CLI for pack/unpack/inspect/validate/style listing
 - `examples/basic/` — example source document with multiple styles
-- `integrations/obsidian/` — initial Obsidian integration scaffold
+- `viewer/` — browser reference renderer with hot-swappable styles and print support
+- `integrations/obsidian/` — working Obsidian reader MVP source and build configuration
 - `conformance/` — public valid/invalid fixture corpus and executable harness
 - `SECURITY.md` — implementation security guidance
 - `.github/workflows/test.yml` — CI
@@ -85,6 +86,8 @@ node src/cli.js inspect example.mdocss
 node src/cli.js styles example.mdocss
 node src/cli.js unpack example.mdocss extracted
 npm run conformance
+npm run build:viewer
+npm run build:obsidian
 ```
 
 ## Minimal archive
