@@ -6,13 +6,13 @@ Related tracking issue: https://github.com/crenem/mdocss/issues/2
 
 ## Test artifacts
 
-Use the latest successful CI artifacts from the `spec-v0.1` branch:
+Use the latest successful CI artifact from the `spec-v0.1` branch:
 
-- `mdocss-reference-viewer.zip`
-- `mdocss-obsidian-0.1.0.zip`
-- `mdocss-style-demo.mdocss`
+- `mdocss-runtime-smoke-<commit>`
 
-Also use selected fixtures from `conformance/fixtures/`.
+Its `mdocss-smoke-kit.zip` contains the browser viewer, Obsidian plugin, style demo, basic and semantic example packages, local-asset and remote-resource test packages, representative hostile fixtures, this checklist, and a SHA-256 baseline for the style demo's canonical `root.md`.
+
+The CI artifact also exposes the viewer ZIP, Obsidian ZIP, and style-demo package separately for convenience.
 
 Record:
 
@@ -27,7 +27,7 @@ Record:
 
 1. Extract `mdocss-reference-viewer.zip`.
 2. Open `index.html`.
-3. Open `mdocss-style-demo.mdocss`.
+3. Open `documents/mdocss-style-demo.mdocss` from the smoke kit.
 
 Expected:
 
@@ -80,7 +80,7 @@ Expected:
 
 ### Network isolation
 
-Open a controlled test document containing a remote image URL or use browser developer tools while opening a hostile/external-resource fixture.
+Open `documents/remote-resource.mdocss` and, where practical, watch the browser's network panel.
 
 Expected:
 
@@ -99,7 +99,7 @@ Expected:
 
 ### File association
 
-Copy `mdocss-style-demo.mdocss` into the vault and open it.
+Copy `documents/mdocss-style-demo.mdocss` into the vault and open it.
 
 Expected:
 
@@ -131,7 +131,7 @@ Expected: Electron/browser print preview opens with the active stylesheet's prin
 
 ## Safety cases
 
-Attempt to open representative invalid fixtures:
+Attempt to open representative invalid fixtures from the smoke kit's `hostile/` directory:
 
 - `invalid-path-traversal.mdocss`
 - `invalid-absolute-path.mdocss`
@@ -148,7 +148,7 @@ Expected:
 
 ## Cross-render comparison
 
-Render `mdocss-style-demo.mdocss` with the same profile in both the browser viewer and Obsidian.
+Render `documents/mdocss-style-demo.mdocss` with the same profile in both the browser viewer and Obsidian.
 
 Compare:
 
