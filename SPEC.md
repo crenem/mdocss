@@ -36,7 +36,7 @@ To keep MDOCSS implementable with ordinary ZIP libraries, a conforming MDOCSS co
 - MUST be a single-disk ZIP archive and MUST NOT use split/spanned ZIP volumes;
 - MUST NOT require ZIP64 features;
 - MUST use only ZIP compression method 0 (Store) or method 8 (Deflate) for regular file members;
-- MUST NOT encrypt members required to interpret the core package.
+- MUST NOT contain encrypted ZIP members.
 
 This intentionally trades extreme archive size and uncommon compression methods for broad interoperability. The classic ZIP limits are ample for the intended document-container use case.
 
@@ -230,7 +230,7 @@ Archive member paths:
 
 A conforming archive MUST NOT contain duplicate member names. Readers MUST reject or safely disambiguate ambiguous duplicate entries before interpreting canonical files.
 
-The MDOCSS 0.1 core defines no ZIP-level encryption. A conforming core document MUST NOT require encrypted ZIP entries to access `root.md`, `manifest.json`, declared stylesheets, or other content necessary to interpret the package. Readers MAY reject encrypted archives or encrypted members.
+The MDOCSS 0.1 core defines no ZIP-level encryption. A conforming core document MUST NOT contain encrypted ZIP members. Encryption, if standardized in the future, requires a separate extension or later specification rather than implicit use of ZIP encryption features.
 
 Writers SHOULD avoid archive paths that differ only by case when those files could collide on case-insensitive filesystems. Extracting readers SHOULD defend against platform-normalized path collisions.
 
