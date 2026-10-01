@@ -51,7 +51,8 @@ Covered:
 - local-resource resolution;
 - network-resource restrictions;
 - decompression/resource-limit guidance;
-- preservation of unknown content without executing it.
+- preservation of unknown content without executing it;
+- manifest-derived metadata escaping before insertion into generated iframe markup.
 
 Remaining work:
 
@@ -94,7 +95,7 @@ Implemented:
 - standalone browser reference viewer;
 - Obsidian custom `.mdocss` reader.
 
-Both build in CI and share the same format contract. CI now packages both the browser viewer and the Obsidian reader for manual testing. `SMOKE_TEST.md` defines the cross-render procedure; completion is tracked in issue #2.
+Both build in CI and share the same format contract. CI packages both the browser viewer and the Obsidian reader for manual testing. The browser path also has a real headless-Chromium runtime gate covering style switching, content invariance, local/remote resource handling, print delegation, unsafe ZIP rejection, and generated-markup metadata escaping. `SMOKE_TEST.md` defines the remaining cross-render/Obsidian procedure; completion is tracked in issue #2.
 
 The repository now also contains a standard-library Python validator/recovery reader written from the specification rather than ported from the Node implementation. CI runs both implementations against the same public corpus. This provides implementation-language independence, but not independent-party review. A genuinely third-party implementation or external code review would still provide stronger evidence and remains tracked with the RC feedback period in issue #5.
 
