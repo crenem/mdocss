@@ -48,7 +48,8 @@ function centralDirectoryProfile(buffer) {
     zip64: false,
     multiDisk: false,
     encrypted: [],
-    unsupportedCompression: []
+    unsupportedCompression: [],
+    invalidFilenameEncoding: []
   };
 
   const minimumEocdSize = 22;
@@ -118,9 +119,24 @@ function centralDirectoryProfile(buffer) {
 
     const rawName = buffer.subarray(start, end);
     const key = rawName.toString("hex");
-    const displayName = (flags & 0x0800)
-      ? rawName.toString("utf8")
-      : rawName.toString("latin1");
+    let displayName;
+    if ((flags & 0x0800) !== 0) {
+      try {
+        displayName = new TextDecoder("utf-8", { fatal: true }).decode(rawName);
+      } catch {
+        displayName = rawName.toString("hex");
+        result.invalidFilenameEncoding.push(
+          `ZIP member name marked UTF-8 is not valid UTF-8: ${displayName}`
+        );
+      }
+    } else {
+      displayName = rawName.toString("latin1");
+      if ([...rawName].some(byte => byte >= 0x80)) {
+        result.invalidFilenameEncoding.push(
+          `Non-ASCII ZIP member name must set the UTF-8 language flag: ${displayName}`
+        );
+      }
+    }
 
     const count = (seen.get(key)?.count ?? 0) + 1;
     seen.set(key, { count, displayName });
@@ -311,6 +327,7 @@ async function loadArchive(file) {
       `Unsupported ZIP compression method ${entry.method}: ${entry.name}`
     );
   }
+  profileErrors.push(...profile.invalidFilenameEncoding);
 
   if (profileErrors.length) {
     throw new Error(profileErrors.join("\n"));
