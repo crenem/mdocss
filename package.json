@@ -13,7 +13,8 @@
     "conformance": "node conformance/run.js",
     "build:viewer": "node scripts/build-viewer.mjs",
     "test:viewer": "node --test test/viewer-core.test.js",
-    "build:obsidian": "tsc -p integrations/obsidian/tsconfig.json --noEmit && node integrations/obsidian/esbuild.config.mjs"
+    "build:obsidian": "tsc -p integrations/obsidian/tsconfig.json --noEmit && node integrations/obsidian/esbuild.config.mjs",
+    "package:obsidian": "npm run build:obsidian && node scripts/package-obsidian.mjs"
   },
   "dependencies": {
     "ajv": "^8.17.1",
