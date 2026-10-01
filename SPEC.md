@@ -209,7 +209,13 @@ Archive member paths:
 - MUST be relative;
 - MUST NOT begin with `/`;
 - MUST NOT escape the archive root through `..` traversal;
-- MUST NOT rely on symbolic links.
+- MUST NOT be symbolic-link entries.
+
+A conforming archive MUST NOT contain duplicate member names. Readers MUST reject or safely disambiguate ambiguous duplicate entries before interpreting canonical files.
+
+The MDOCSS 0.1 core defines no ZIP-level encryption. A conforming core document MUST NOT require encrypted ZIP entries to access `root.md`, `manifest.json`, declared stylesheets, or other content necessary to interpret the package. Readers MAY reject encrypted archives or encrypted members.
+
+Writers SHOULD avoid archive paths that differ only by case when those files could collide on case-insensitive filesystems. Extracting readers SHOULD defend against platform-normalized path collisions.
 
 Readers MUST defend against ZIP-slip/path-traversal attacks.
 
