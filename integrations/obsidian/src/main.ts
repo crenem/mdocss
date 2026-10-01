@@ -166,6 +166,36 @@ function zipInteroperabilityIssues(input: ArrayBuffer): string[] {
       extraCursor += 4 + dataSize;
     }
 
+    if (
+      localOffset + 30 <= bytes.byteLength &&
+      view.getUint32(localOffset, true) === 0x04034b50
+    ) {
+      const localCompressedSize = view.getUint32(localOffset + 18, true);
+      const localUncompressedSize = view.getUint32(localOffset + 22, true);
+      const localNameLength = view.getUint16(localOffset + 26, true);
+      const localExtraLength = view.getUint16(localOffset + 28, true);
+      const localExtraStart = localOffset + 30 + localNameLength;
+      const localExtraEnd = localExtraStart + localExtraLength;
+
+      if (
+        localCompressedSize === 0xffffffff ||
+        localUncompressedSize === 0xffffffff
+      ) {
+        zip64 = true;
+      }
+
+      let localExtraCursor = localExtraStart;
+      while (
+        localExtraCursor + 4 <= localExtraEnd &&
+        localExtraEnd <= bytes.byteLength
+      ) {
+        const headerId = view.getUint16(localExtraCursor, true);
+        const dataSize = view.getUint16(localExtraCursor + 2, true);
+        if (headerId === 0x0001) zip64 = true;
+        localExtraCursor += 4 + dataSize;
+      }
+    }
+
     cursor = extraEnd + commentLength;
   }
 
