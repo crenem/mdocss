@@ -107,6 +107,8 @@ Milestones are release gates rather than branch names. The current draft PR alre
 
 ## v0.7 — Standard style library
 
+**Draft status:** implemented with seven reference profiles plus a generated multi-style demonstration archive validated in CI.
+
 **Goal:** demonstrate the value of semantic/presentation separation.
 
 Candidate reference styles:
@@ -123,9 +125,11 @@ Style-profile identifiers SHOULD be stable and implementation-neutral. Bundled C
 
 Reference academic styles are implementation aids, not claims of endorsement by the organizations associated with those style guides.
 
-**Exit condition:** standard fixtures can switch among academic and general-purpose profiles without changing semantic content.
+**Exit condition:** standard fixtures can switch among academic and general-purpose profiles without changing semantic content. **Met in the generated style-library demo.**
 
 ## v0.8 — Accessibility and print interoperability
+
+**Draft status:** accessibility and print guidance are documented and represented in the reference style library; CI checks the large-print, print-fallback, and no-remote-resource expectations.
 
 **Goal:** ensure style flexibility does not sacrifice usability.
 
@@ -138,7 +142,7 @@ Reference academic styles are implementation aids, not claims of endorsement by 
 - image alternative-text guidance using normal Markdown semantics
 - graceful fallback when fonts or advanced CSS features are unavailable
 
-**Exit condition:** accessibility and print requirements are documented and represented in test/example styles.
+**Exit condition:** accessibility and print requirements are documented and represented in test/example styles. **Met in the current draft.**
 
 ## v0.9 — Release candidate
 
