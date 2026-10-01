@@ -1,0 +1,23 @@
+[
+  {"id":"V001","file":"valid-minimal.mdocss","expected":"valid","purpose":"Minimal archive containing only UTF-8 root.md."},
+  {"id":"V002","file":"valid-fallback-style.mdocss","expected":"valid","purpose":"Conventional root.css without a manifest."},
+  {"id":"V003","file":"valid-multi-style.mdocss","expected":"valid","purpose":"Three declared hot-swappable styles with a valid default."},
+  {"id":"V004","file":"valid-unknown-members.mdocss","expected":"valid","purpose":"Unknown manifest fields and archive members do not invalidate the document.","preservation":true},
+
+  {"id":"I001","file":"invalid-missing-root.mdocss","expected":"invalid","purpose":"Required root.md is absent."},
+  {"id":"I002","file":"invalid-manifest-json.mdocss","expected":"invalid","purpose":"manifest.json is malformed JSON."},
+  {"id":"I003","file":"invalid-manifest-top-level.mdocss","expected":"invalid","purpose":"manifest.json top level is not an object."},
+  {"id":"I004","file":"invalid-duplicate-style-id.mdocss","expected":"invalid","purpose":"Declared stylesheet IDs are not unique."},
+  {"id":"I005","file":"invalid-missing-style.mdocss","expected":"invalid","purpose":"Declared stylesheet target is absent."},
+  {"id":"I006","file":"invalid-default-style.mdocss","expected":"invalid","purpose":"defaultStylesheet does not name a declared stylesheet."},
+  {"id":"I007","file":"invalid-style-extension.mdocss","expected":"invalid","purpose":"Declared stylesheet href does not identify a CSS file."},
+  {"id":"I008","file":"invalid-root-utf8.mdocss","expected":"invalid","purpose":"root.md contains malformed UTF-8."},
+  {"id":"I009","file":"invalid-manifest-utf8.mdocss","expected":"invalid","purpose":"manifest.json contains malformed UTF-8."},
+  {"id":"I010","file":"invalid-style-utf8.mdocss","expected":"invalid","purpose":"A declared stylesheet contains malformed UTF-8."},
+  {"id":"I011","file":"invalid-path-traversal.mdocss","expected":"invalid","purpose":"Archive contains ../ path traversal."},
+  {"id":"I012","file":"invalid-absolute-path.mdocss","expected":"invalid","purpose":"Archive contains an absolute slash-prefixed path."},
+  {"id":"I013","file":"invalid-backslash-path.mdocss","expected":"invalid","purpose":"Archive member uses backslash path syntax."},
+  {"id":"I014","file":"invalid-drive-path.mdocss","expected":"invalid","purpose":"Archive member resembles a Windows drive path."},
+  {"id":"I015","file":"invalid-style-traversal.mdocss","expected":"invalid","purpose":"Stylesheet href attempts to escape the archive root."},
+  {"id":"I016","file":"invalid-entrypoint.mdocss","expected":"invalid","purpose":"MDOCSS 0.1 entrypoint is not root.md."}
+]
