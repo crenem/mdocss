@@ -66,7 +66,9 @@ The invalid fixtures cover:
 - duplicate archive member names;
 - an invalid v0.1 entrypoint;
 - unsupported ZIP compression methods;
-- ZIP64 features outside the core interoperability profile.
+- ZIP64 features outside the core interoperability profile;
+- abbreviated manifest versions;
+- invalid date-time, email, and URI metadata formats.
 
 ## Resource-exhaustion cases
 
