@@ -20,7 +20,7 @@ from pathlib import Path
 from typing import Any, Iterable
 
 
-VERSION_RE = re.compile(r"^(\d+)\.(\d+)(?:\.(\d+))?$")
+VERSION_RE = re.compile(r"^(\d+)\.(\d+)\.(\d+)$")
 STYLE_ID_RE = re.compile(r"^[A-Za-z][A-Za-z0-9._-]*$")
 DRIVE_RE = re.compile(r"^[A-Za-z]:")
 
@@ -160,7 +160,7 @@ def parse_version(value: Any) -> tuple[int, int, int, str] | None:
     return (
         int(match.group(1)),
         int(match.group(2)),
-        int(match.group(3) or 0),
+        int(match.group(3)),
         value,
     )
 
