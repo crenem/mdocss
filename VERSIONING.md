@@ -91,6 +91,27 @@ A reader can use the following practical algorithm:
 5. newer unsupported major: warn and fall back to safe canonical-content access;
 6. older supported major: use the corresponding compatibility path.
 
+## Reference validation behavior
+
+The reference CLI distinguishes **reading compatibility** from **authoring conformance**.
+
+With no target option, `mdocss validate` negotiates the package version:
+
+- unversioned manifests are treated as legacy 0.1 draft manifests;
+- 0.1.x manifests use the 0.1 schema;
+- 1.x manifests use the 1.0 baseline contract, including same-major newer-minor forward compatibility;
+- unsupported higher major versions return a distinct unsupported-version result while preserving safe `root.md` recovery.
+
+For authoring, an implementation may validate against an exact target contract. The reference CLI supports:
+
+```text
+mdocss validate document.mdocss --target 1.0
+```
+
+Under the 1.0 target, a package without `manifest.json` remains valid, but a present manifest MUST declare a 1.0.x `specVersion`. A 1.1 or later declaration is not valid *as 1.0-authored output*, even though a 1.0 reader may process its understood fields forward-compatibly.
+
+This distinction prevents a reader from rejecting safe same-major evolution while still allowing writers and CI systems to prove that emitted packages conform to a specific release contract.
+
 ## Implementation versions
 
 Reference implementation releases may use semantic software versions independently from `specVersion`.
