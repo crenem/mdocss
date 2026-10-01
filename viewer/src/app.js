@@ -3,6 +3,7 @@ import { marked } from "marked";
 import DOMPurify from "dompurify";
 import {
   chooseInitialStyle,
+  escapeHtmlAttribute,
   dangerousArchiveMember,
   duplicateZipMemberNames,
   inferMimeType,
@@ -223,7 +224,7 @@ function makeFrameDocument(contentHtml, documentCss = "") {
   ].join("; ");
 
   return `<!doctype html>
-<html lang="${current?.manifest?.language || "en"}">
+<html lang="${escapeHtmlAttribute(current?.manifest?.language || "en")}">
 <head>
   <meta charset="utf-8">
   <meta http-equiv="Content-Security-Policy" content="${csp}">
