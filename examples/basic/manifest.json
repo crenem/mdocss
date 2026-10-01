@@ -2,7 +2,6 @@
   "specVersion": "0.1.0",
   "title": "Hello, MDOCSS",
   "language": "en",
-  "markdownProfile": "CommonMark",
   "entrypoint": "root.md",
   "stylesheets": [
     {
@@ -23,6 +22,8 @@
   ],
   "defaultStylesheet": "default",
   "authors": [
-    { "name": "Jason Seaux" }
+    {
+      "name": "Jason Seaux"
+    }
   ]
 }
