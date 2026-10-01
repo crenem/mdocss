@@ -56,9 +56,13 @@ let failures = 0;
 for (const testCase of cases) {
   const fixture = path.join(here, "fixtures", testCase.file);
   const result = cli(["validate", fixture]);
-  const accepted = result.status === 0;
-  const expectedAccepted = testCase.expected === "valid";
-  let ok = accepted === expectedAccepted;
+  const expectedStatus =
+    testCase.expected === "valid"
+      ? 0
+      : testCase.expected === "unsupported"
+        ? 2
+        : 1;
+  let ok = result.status === expectedStatus;
   let detail = "";
 
   if (ok && testCase.recoverRoot) {
@@ -82,9 +86,8 @@ for (const testCase of cases) {
   if (!ok) {
     failures += 1;
     if (!detail) {
-      detail = expectedAccepted
-        ? (result.stderr || result.stdout || "validator rejected valid fixture").trim()
-        : "validator accepted fixture expected to be invalid";
+      detail =
+        (result.stderr || result.stdout || `validator exited ${result.status}; expected ${expectedStatus}`).trim();
     }
     console.error(`FAIL ${testCase.id} ${testCase.file}: ${detail}`);
   } else {
