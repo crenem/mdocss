@@ -30,6 +30,75 @@ function dangerous(name) {
   return name.split("/").includes("..");
 }
 
+function isSymbolicLink(item) {
+  const raw = item?.unixPermissions;
+  const mode =
+    typeof raw === "number"
+      ? raw
+      : typeof raw === "string"
+        ? Number.parseInt(raw, 8)
+        : NaN;
+
+  return Number.isFinite(mode) && (mode & 0o170000) === 0o120000;
+}
+
+function duplicateCentralDirectoryNames(buffer) {
+  const minimumEocdSize = 22;
+  if (buffer.length < minimumEocdSize) return [];
+
+  const lowest = Math.max(0, buffer.length - minimumEocdSize - 0xffff);
+  let eocd = -1;
+
+  for (let offset = buffer.length - minimumEocdSize; offset >= lowest; offset -= 1) {
+    if (buffer.readUInt32LE(offset) === 0x06054b50) {
+      eocd = offset;
+      break;
+    }
+  }
+
+  if (eocd < 0) return [];
+
+  const totalEntries = buffer.readUInt16LE(eocd + 10);
+  const centralOffset = buffer.readUInt32LE(eocd + 16);
+
+  // ZIP64 uses sentinel values here. JSZip may still parse such an archive,
+  // but this lightweight duplicate-name preflight does not attempt ZIP64 parsing.
+  if (totalEntries === 0xffff || centralOffset === 0xffffffff) return [];
+
+  const seen = new Map();
+  const duplicates = [];
+  let cursor = centralOffset;
+
+  for (let index = 0; index < totalEntries; index += 1) {
+    if (cursor + 46 > buffer.length || buffer.readUInt32LE(cursor) !== 0x02014b50) {
+      break;
+    }
+
+    const flags = buffer.readUInt16LE(cursor + 8);
+    const filenameLength = buffer.readUInt16LE(cursor + 28);
+    const extraLength = buffer.readUInt16LE(cursor + 30);
+    const commentLength = buffer.readUInt16LE(cursor + 32);
+    const start = cursor + 46;
+    const end = start + filenameLength;
+
+    if (end > buffer.length) break;
+
+    const rawName = buffer.subarray(start, end);
+    const key = rawName.toString("hex");
+    const displayName = (flags & 0x0800)
+      ? rawName.toString("utf8")
+      : rawName.toString("latin1");
+
+    const count = (seen.get(key)?.count ?? 0) + 1;
+    seen.set(key, { count, displayName });
+    if (count === 2) duplicates.push(displayName);
+
+    cursor = end + extraLength + commentLength;
+  }
+
+  return duplicates;
+}
+
 async function utf8Text(item) {
   const bytes = await item.async("uint8array");
   return new TextDecoder("utf-8", { fatal: true }).decode(bytes);
@@ -60,7 +129,16 @@ function ensureManifestObject(value) {
 }
 
 async function loadArchive(file) {
-  return JSZip.loadAsync(await fs.readFile(file));
+  const buffer = await fs.readFile(file);
+  const duplicates = duplicateCentralDirectoryNames(buffer);
+  const zip = await JSZip.loadAsync(buffer);
+  Object.defineProperty(zip, "__mdocssDuplicateNames", {
+    value: duplicates,
+    enumerable: false,
+    configurable: false,
+    writable: false
+  });
+  return zip;
 }
 
 async function readManifest(zip) {
@@ -74,10 +152,15 @@ async function validateZip(zip) {
   const names = Object.keys(zip.files);
   if (!zip.file("root.md")) errors.push("Missing required root.md");
 
+  for (const duplicate of zip.__mdocssDuplicateNames ?? []) {
+    errors.push(`Duplicate archive member name: ${duplicate}`);
+  }
+
   for (const name of names) {
     const item = zip.files[name];
     const original = originalName(name, item);
     if (dangerous(original)) errors.push(`Dangerous archive path: ${original}`);
+    if (isSymbolicLink(item)) errors.push(`Symbolic-link archive member is not allowed: ${original}`);
   }
 
   const root = zip.file("root.md");
@@ -212,10 +295,18 @@ program.command("unpack")
   .action(async (file, directory) => {
     const zip = await loadArchive(file);
 
+    const duplicates = zip.__mdocssDuplicateNames ?? [];
+    if (duplicates.length) {
+      throw new Error(`Refusing archive with duplicate member names: ${duplicates.join(", ")}`);
+    }
+
     for (const [name, item] of Object.entries(zip.files)) {
       const original = originalName(name, item);
       if (dangerous(original)) {
         throw new Error(`Refusing dangerous archive path: ${original}`);
+      }
+      if (isSymbolicLink(item)) {
+        throw new Error(`Refusing symbolic-link archive member: ${original}`);
       }
       if (item.dir) continue;
 
