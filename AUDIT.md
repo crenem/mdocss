@@ -26,7 +26,9 @@ Remaining work:
 
 - explicit schema/example/package-reference consistency tests now run in CI;
 - the 1.0 decision is now frozen: a present `manifest.json` MUST contain `specVersion`;
-- a candidate 1.0 manifest schema is published and must receive final RC review before losing its `-draft` status (issue #4).
+- a candidate 1.0 manifest schema is published and must receive final RC review before losing its `-draft` status (issue #4);
+- the reference CLI now performs explicit version negotiation, distinguishes unsupported major versions from invalid packages, and provides strict `--target 1.0` authoring validation;
+- both reference readers accept same-major 1.x evolution while retaining recovery mode for unsupported higher majors.
 
 ## Security
 
