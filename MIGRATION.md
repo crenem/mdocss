@@ -75,6 +75,26 @@ Current conformance tooling rejects malformed UTF-8 in required/declared text fi
 
 A package that depended on permissive replacement-character decoding or unsafe path normalization is not conforming and should be rebuilt from clean source files.
 
+## Three-component specVersion syntax
+
+Early draft tooling temporarily accepted abbreviated values such as:
+
+```json
+{
+  "specVersion": "1.0"
+}
+```
+
+The pre-1.0 audit aligned implementation behavior with the documented version model. Manifest versions now use exactly three numeric components:
+
+```json
+{
+  "specVersion": "1.0.0"
+}
+```
+
+Draft packages using two-component values should add an explicit patch component.
+
 ## 0.1 manifest → 1.0 manifest
 
 The planned 1.0 rule requires `specVersion` whenever `manifest.json` exists.
