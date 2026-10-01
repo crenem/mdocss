@@ -57,6 +57,16 @@ class VersioningTests(unittest.TestCase):
         )
         self.assertEqual(result.status, "valid")
 
+    def test_reader_rejects_abbreviated_manifest_versions(self):
+        self.assertEqual(
+            validate_package(self.make_package({"specVersion": "1.0"})).status,
+            "invalid",
+        )
+        self.assertEqual(
+            validate_package(self.make_package({"specVersion": "1.8"})).status,
+            "invalid",
+        )
+
     def test_reader_marks_future_major_unsupported_but_recovers_root(self):
         path = self.make_package({"specVersion": "9.0.0"})
         result = validate_package(path)
