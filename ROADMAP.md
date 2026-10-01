@@ -2,6 +2,8 @@
 
 This roadmap keeps the project intentionally narrow: a portable Markdown document container with separable, hot-swappable CSS presentation, open metadata, assets, and predictable interoperability.
 
+Milestones are release gates rather than branch names. The current draft PR already implements much of the v0.1 and v0.2 scope; features are not considered complete until their exit conditions and conformance tests are satisfied.
+
 ## v0.1 — Container foundation
 
 **Goal:** establish the smallest viable open format.
