@@ -221,14 +221,14 @@ const MANIFEST_SCHEMAS = {
 
 function parseSpecVersion(value) {
   if (value == null || value === "") return null;
-  const match = /^(\d+)\.(\d+)(?:\.(\d+))?$/.exec(String(value));
+  const match = /^(\d+)\.(\d+)\.(\d+)$/.exec(String(value));
   if (!match) return { invalid: true, raw: String(value) };
 
   return {
     raw: String(value),
     major: Number(match[1]),
     minor: Number(match[2]),
-    patch: match[3] == null ? 0 : Number(match[3])
+    patch: Number(match[3])
   };
 }
 
