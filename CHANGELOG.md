@@ -42,3 +42,4 @@
 - Added explicit CLI version negotiation with distinct unsupported-major handling and strict `--target 1.0` authoring validation.
 - Extended the 1.0 baseline schema and both reference readers for same-major 1.x forward compatibility.
 - Added package-level tests covering legacy manifests, 1.0 output, newer 1.x minor versions, unsupported future majors, and the no-manifest 1.0 minimum-document rule.
+- Froze the planned media-type registration path as vendor-tree `application/vnd.mdocss+zip`, with IANA submission deferred until a stable 1.0 specification URL and durable contact/change-controller details exist.
