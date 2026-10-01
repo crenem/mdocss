@@ -3,6 +3,7 @@
 
 from __future__ import annotations
 
+import base64
 import json
 import sys
 import tempfile
@@ -28,6 +29,10 @@ def fixture_for(case: dict) -> Path:
 
     directory = Path(tempfile.mkdtemp(prefix="mdocss-py-generated-"))
     fixture = directory / f"{case['id']}.mdocss"
+
+    if generated.get("rawBase64"):
+        fixture.write_bytes(base64.b64decode(generated["rawBase64"]))
+        return fixture
 
     with zipfile.ZipFile(fixture, "w", compression=zipfile.ZIP_DEFLATED) as zf:
         zf.writestr(
