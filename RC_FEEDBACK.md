@@ -1,6 +1,6 @@
 # MDOCSS Release-Candidate Feedback Guide
 
-Use this guide when reviewing an MDOCSS 1.0 release candidate.
+Use this guide after an MDOCSS v0.9 / candidate-1.0 release has been published.
 
 The goal of RC feedback is to find ambiguities or interoperability failures in the **format contract**, not merely cosmetic differences among applications.
 
