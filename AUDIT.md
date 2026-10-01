@@ -35,6 +35,7 @@ Current status: **documented and tested, no external security review**
 Covered:
 
 - ZIP traversal and absolute-path attacks;
+- duplicate archive member names and symbolic-link members;
 - strict UTF-8;
 - active-content prohibition;
 - CSS isolation guidance;
@@ -50,7 +51,7 @@ Remaining work:
 
 ## Media type
 
-Current status: **registration pending**
+Current status: **registration preparation pending**
 
 The `+zip` structured syntax suffix is registered for ZIP-based media types.
 
