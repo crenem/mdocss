@@ -157,18 +157,24 @@ If present, it MUST:
 - contain a top-level object;
 - conform to the schema for the declared specification version.
 
-Recognized fields include:
+Recognized fields are:
 
-- `specVersion`
-- `title`
-- `language`
-- `markdownProfile`
-- `entrypoint`
-- `stylesheets`
-- `defaultStylesheet`
-- `created`
-- `modified`
-- `authors`
+| Field | Meaning |
+| --- | --- |
+| `specVersion` | MDOCSS format contract used by the manifest |
+| `title` | Human-readable document title; does not replace canonical content |
+| `language` | Primary document language; SHOULD be a BCP 47 language tag |
+| `markdownProfile` | Identifier or name of the Markdown syntax profile expected by the document |
+| `entrypoint` | Canonical Markdown entrypoint; when present in 0.1/1.0 it MUST equal `root.md` |
+| `stylesheets` | Ordered array of named selectable stylesheet declarations defined in Section 4.2 |
+| `defaultStylesheet` | Author-defined default stylesheet ID |
+| `created` | Document creation time as an RFC 3339 / JSON Schema `date-time` string |
+| `modified` | Document modification time as an RFC 3339 / JSON Schema `date-time` string |
+| `authors` | Ordered array of author strings or author objects |
+
+An author object MUST contain a string `name` and MAY contain `email` and `url` strings. When supplied, `email` and `url` MUST satisfy the JSON Schema `email` and `uri` formats used by the manifest schema.
+
+The `created` and `modified` values describe document metadata and are not required to match ZIP member timestamps.
 
 For MDOCSS 0.1, `entrypoint`, if supplied, MUST equal `root.md`.
 
@@ -272,7 +278,7 @@ Until an MDOCSS-specific media type is formally registered, implementations SHOU
 application/zip
 ```
 
-when a registered media type is required, while identifying MDOCSS through the `.mdocss` extension and package conformance checks.
+when a registered media type is required. When a filename is available, the `.mdocss` extension can assist discovery, but package conformance checks remain authoritative.
 
 ## 12. Conformance
 
@@ -391,3 +397,5 @@ Conformance does not require use of the reference implementation.
 - RFC 6838, *Media Type Specifications and Registration Procedures*: https://www.rfc-editor.org/rfc/rfc6838
 - RFC 6839, *Additional Media Type Structured Syntax Suffixes*: https://www.rfc-editor.org/rfc/rfc6839
 - IANA Structured Syntax Suffix Registry: https://www.iana.org/assignments/media-type-structured-suffix/
+- BCP 47, *Tags for Identifying Languages*: https://www.rfc-editor.org/info/bcp47
+- RFC 3339, *Date and Time on the Internet: Timestamps*: https://www.rfc-editor.org/rfc/rfc3339
