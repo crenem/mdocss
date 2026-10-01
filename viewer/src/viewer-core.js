@@ -8,7 +8,7 @@ export function manifestCompatibility(manifest) {
     return { supported: true, mode: "unversioned", version: null };
   }
 
-  const match = /^(\d+)\.(\d+)(?:\.(\d+))?$/.exec(String(version));
+  const match = /^(\d+)\.(\d+)\.(\d+)$/.exec(String(version));
   if (!match) {
     return { supported: false, mode: "invalid-version", version: String(version) };
   }
