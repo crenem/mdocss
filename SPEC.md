@@ -29,6 +29,19 @@ An MDOCSS document:
 
 Readers MUST NOT depend on ZIP member ordering.
 
+### 2.1 ZIP interoperability profile
+
+To keep MDOCSS implementable with ordinary ZIP libraries, a conforming MDOCSS core package:
+
+- MUST be a single-disk ZIP archive and MUST NOT use split/spanned ZIP volumes;
+- MUST NOT require ZIP64 features;
+- MUST use only ZIP compression method 0 (Store) or method 8 (Deflate) for regular file members;
+- MUST NOT encrypt members required to interpret the core package.
+
+This intentionally trades extreme archive size and uncommon compression methods for broad interoperability. The classic ZIP limits are ample for the intended document-container use case.
+
+A reader MAY offer safe canonical-content recovery from a package outside this ZIP profile, but such recovery MUST NOT be represented as successful core conformance.
+
 ## 3. Canonical content
 
 ### 3.1 root.md
@@ -265,7 +278,7 @@ when a registered media type is required, while identifying MDOCSS through the `
 
 A conforming MDOCSS 0.1 document MUST:
 
-- be a valid ZIP archive;
+- be a valid ZIP archive within the ZIP interoperability profile in Section 2.1;
 - contain exactly one root-level `root.md`;
 - satisfy the UTF-8 and path requirements;
 - use unique IDs for declared stylesheets;
