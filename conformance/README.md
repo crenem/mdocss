@@ -68,7 +68,8 @@ The invalid fixtures cover:
 - unsupported ZIP compression methods;
 - ZIP64 features outside the core interoperability profile;
 - abbreviated manifest versions;
-- invalid date-time, email, and URI metadata formats.
+- invalid date-time, email, and URI metadata formats;
+- valid UTF-8-flagged non-ASCII member names and invalid legacy-encoded non-ASCII member names.
 
 ## Resource-exhaustion cases
 
