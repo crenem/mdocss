@@ -35,3 +35,7 @@
 - Tightened BCP 14 normative language and clarified that `application/vnd.mdocss+zip` is only a candidate media type until IANA registration.
 - Added schema/spec/example consistency tests and full semantic-role exercise coverage.
 - Added CI packaging for the standalone browser viewer to support cross-render runtime testing.
+- Expanded the conformance corpus to 23 cases with duplicate-member, symbolic-link, and unsupported future-major recovery coverage.
+- Hardened browser and Obsidian readers against duplicate members, symbolic links, dangerous archive paths, and unsupported future-version semantics.
+- Froze the planned 1.0 rule that a present manifest MUST declare `specVersion`; added a candidate 1.0 manifest schema and tests.
+- Added a field-by-field draft IANA media-type registration document.
