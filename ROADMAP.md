@@ -144,11 +144,11 @@ Reference academic styles are implementation aids, not claims of endorsement by 
 
 **Exit condition:** accessibility and print requirements are documented and represented in test/example styles. **Met in the current draft.**
 
-## v0.9 — Release candidate
+## v0.9 — Release-candidate phase
 
-**Draft status:** preparation is underway. Normative wording, versioning guidance, migration notes, implementation guidance, semantic-role coverage, schema/example consistency tests, and a release-readiness audit now exist. A second standard-library Python implementation now exercises the same public conformance corpus independently of the Node reference code. Remaining blockers are tracked in GitHub issues #2–#5.
+**Draft status:** preparation is underway. Normative wording, versioning guidance, migration notes, implementation guidance, semantic-role coverage, schema/example consistency tests, and a release-readiness audit now exist. A second standard-library Python implementation exercises the same public conformance corpus independently of the Node reference code.
 
-**Goal:** freeze the 1.0 contract and search for interoperability failures.
+**Goal:** freeze a candidate 1.0 contract, publish an RC, and use the RC period to search for interoperability failures.
 
 - normative-language audit
 - security review
@@ -161,7 +161,9 @@ Reference academic styles are implementation aids, not claims of endorsement by 
 - at least two independently functioning reader implementations or code paths tested against the same corpus — implemented in Node and independently authored Python validation/recovery code; third-party review remains desirable
 - release-candidate feedback period
 
-**Exit condition:** no known breaking changes required for ordinary 0.9 documents to become 1.0 documents.
+**RC entry gate:** automated conformance/build gates are green, the browser/Obsidian runtime smoke test passes, the candidate 1.0 schema receives final in-repository review, and no known issue already requires a breaking core change.
+
+**Exit condition to v1.0:** the documented RC feedback period and independent-party interoperability review are complete, findings are dispositioned, and no known breaking changes are required for ordinary RC documents to become 1.0 documents.
 
 # v1.0 — Stable MDOCSS Core
 
