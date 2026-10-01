@@ -89,7 +89,11 @@ const remoteResource = await writePackage("remote-resource.mdocss", async zip =>
   );
 });
 
-const browser = await chromium.launch({ headless: true });
+const browserChannel = process.env.MDOCSS_PLAYWRIGHT_CHANNEL || undefined;
+const browser = await chromium.launch({
+  headless: true,
+  ...(browserChannel ? { channel: browserChannel } : {})
+});
 const page = await browser.newPage();
 const network = [];
 page.on("request", request => network.push(request.url()));
