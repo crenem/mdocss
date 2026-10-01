@@ -1,0 +1,168 @@
+:root {
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  color-scheme: light dark;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  min-height: 100%;
+}
+
+body {
+  background: Canvas;
+  color: CanvasText;
+}
+
+button,
+select,
+input {
+  font: inherit;
+}
+
+.app-shell {
+  min-height: 100vh;
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+}
+
+.toolbar {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  justify-content: space-between;
+  padding: 0.8rem 1rem;
+  border-bottom: 1px solid color-mix(in srgb, CanvasText 18%, transparent);
+  background: Canvas;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.brand {
+  display: flex;
+  gap: 0.55rem;
+  align-items: baseline;
+  white-space: nowrap;
+}
+
+.brand span {
+  opacity: 0.7;
+}
+
+.controls {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 0.65rem;
+}
+
+.file-button {
+  display: inline-flex;
+  cursor: pointer;
+  align-items: center;
+  padding: 0.5rem 0.75rem;
+  border: 1px solid color-mix(in srgb, CanvasText 25%, transparent);
+  border-radius: 0.4rem;
+}
+
+.file-button:hover {
+  background: color-mix(in srgb, CanvasText 7%, Canvas);
+}
+
+.file-button input {
+  position: absolute;
+  inline-size: 1px;
+  block-size: 1px;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.style-control {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+}
+
+select,
+button {
+  padding: 0.45rem 0.6rem;
+  border: 1px solid color-mix(in srgb, CanvasText 25%, transparent);
+  border-radius: 0.4rem;
+  background: Canvas;
+  color: CanvasText;
+}
+
+button:not(:disabled) {
+  cursor: pointer;
+}
+
+.drop-zone {
+  min-height: 0;
+  position: relative;
+  background: color-mix(in srgb, CanvasText 3%, Canvas);
+}
+
+.drop-zone.dragging {
+  outline: 3px dashed Highlight;
+  outline-offset: -0.6rem;
+}
+
+.empty-state {
+  max-width: 42rem;
+  margin: 12vh auto;
+  padding: 2rem;
+  text-align: center;
+}
+
+.empty-state h1 {
+  margin-block-start: 0;
+}
+
+.muted {
+  opacity: 0.68;
+}
+
+.document-frame {
+  display: block;
+  inline-size: 100%;
+  block-size: calc(100vh - 7.5rem);
+  min-block-size: 32rem;
+  border: 0;
+  background: white;
+}
+
+.statusbar {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.45rem 0.8rem;
+  border-top: 1px solid color-mix(in srgb, CanvasText 18%, transparent);
+  font-size: 0.86rem;
+  background: Canvas;
+}
+
+#document-info {
+  opacity: 0.7;
+  text-align: right;
+}
+
+@media (max-width: 48rem) {
+  .toolbar {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .controls {
+    justify-content: flex-start;
+  }
+
+  .document-frame {
+    block-size: calc(100vh - 11rem);
+  }
+}
