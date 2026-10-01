@@ -57,6 +57,8 @@ Milestones are release gates rather than branch names. The current draft PR alre
 
 ## v0.4 — Reference renderer
 
+**Draft status:** browser reference implementation is present and builds in CI. Final exit verification still requires a manual cross-render smoke test against an editor integration.
+
 **Goal:** prove interoperable rendering outside the CLI.
 
 - small browser/reference viewer
@@ -71,6 +73,8 @@ Milestones are release gates rather than branch names. The current draft PR alre
 **Exit condition:** the same MDOCSS fixture renders consistently in the reference viewer and one editor integration.
 
 ## v0.5 — Obsidian reader MVP
+
+**Draft status:** reader MVP is implemented and type-checks/builds against the current Obsidian API in CI. Manual in-app smoke testing remains before this gate is marked complete.
 
 **Goal:** make MDOCSS useful in an existing Markdown ecosystem.
 
