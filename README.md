@@ -64,7 +64,7 @@ This repository includes:
 - `MEDIA_TYPE.md` — prepared IANA registration draft for the candidate MDOCSS media type
 - `styles/` — reference APA 7, MLA 9, Chicago 18, professional, reading, dark, and large-print profiles
 - `schema/manifest.schema.json` — legacy 0.1 manifest schema
-- `schema/manifest-1.0.schema.json` — strict candidate 1.0 authoring schema
+- `schema/manifest-1.0.schema.json` — frozen exact 1.0 authoring schema for the release candidate
 - `schema/manifest-1.x-reader.schema.json` — forward-compatible 1.x reader baseline
 - `src/cli.js` — reference CLI for pack/unpack/inspect/validate/style listing
 - `examples/basic/` — example source document with multiple styles
