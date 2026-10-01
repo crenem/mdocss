@@ -26,8 +26,8 @@ Remaining work:
 
 - explicit schema/example/package-reference consistency tests now run in CI;
 - the 1.0 decision is now frozen: a present `manifest.json` MUST contain `specVersion`;
-- a candidate 1.0 manifest schema is published and must receive final RC review before losing its `-draft` status (issue #4);
-- draft schemas intentionally omit `$id` until a stable versioned publication URI exists, avoiding dependency on an unestablished domain;
+- the exact 1.0 manifest schema has completed in-repository RC review and is frozen at `schema/manifest-1.0.schema.json`;
+- pre-stable schemas intentionally omit `$id` until a stable versioned publication URI exists, avoiding dependency on an unestablished domain; adding that identifier later will not change the validation contract;
 - the reference CLI now performs explicit version negotiation, distinguishes unsupported major versions from invalid packages, and provides strict `--target 1.0` authoring validation;
 - exact 1.0 authoring and forward-compatible 1.x reader schemas are now separate artifacts, avoiding ambiguity between conformance and compatibility;
 - both reference readers accept same-major 1.x evolution while retaining recovery mode for unsupported higher majors;
@@ -135,8 +135,7 @@ No broader patent or third-party-rights representation is implied by that statem
 The current blockers to publishing the first v0.9 RC are:
 
 1. complete the browser/Obsidian runtime smoke test — issue #2;
-2. perform final in-repository RC review of the candidate exact-1.0 manifest schema and freeze its RC form — issue #4;
-3. complete the final pre-RC normative/security/schema audit after the runtime findings are available.
+2. complete the final pre-RC normative/security/schema audit after the runtime findings are available.
 
 The media-type registration strategy is already frozen. Submission itself depends on a stable versioned specification URL plus registrant/contact details and does not block publishing an RC.
 
@@ -149,7 +148,7 @@ Before stable 1.0:
 1. obtain independent-party review or implementation evidence — issue #5;
 2. conduct and document the RC feedback period — issue #5;
 3. resolve or disposition interoperability/security findings;
-4. finalize the stable schema publication URI and media-type registration prerequisites — issues #3/#4;
+4. finalize the stable schema publication URI and media-type registration prerequisites — issue #3;
 5. perform the final post-feedback normative/security/schema audit.
 
 Do not mark v1.0 complete while these remain unresolved.
