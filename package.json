@@ -16,7 +16,8 @@
     "build:obsidian": "tsc -p integrations/obsidian/tsconfig.json --noEmit && node integrations/obsidian/esbuild.config.mjs",
     "package:obsidian": "npm run build:obsidian && node scripts/package-obsidian.mjs",
     "build:style-demo": "node scripts/build-style-demo.mjs",
-    "package:viewer": "npm run build:viewer && node scripts/package-viewer.mjs"
+    "package:viewer": "npm run build:viewer && node scripts/package-viewer.mjs",
+    "package:smoke": "node scripts/package-smoke-kit.mjs"
   },
   "dependencies": {
     "ajv": "^8.17.1",
