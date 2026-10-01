@@ -44,7 +44,8 @@
 - Added package-level tests covering legacy manifests, 1.0 output, newer 1.x minor versions, unsupported future majors, and the no-manifest 1.0 minimum-document rule.
 - Froze the planned media-type registration path as vendor-tree `application/vnd.mdocss+zip`, with IANA submission deferred until a stable 1.0 specification URL and durable contact/change-controller details exist.
 - Added an independently authored, standard-library-only Python validator/recovery implementation and made CI run it against the same public corpus as the Node reference implementation.
-- Expanded the shared conformance inventory to 30 cases, including exact 1.0 authoring, no-manifest 1.0 minimum documents, same-major 1.x reading, target-specific version failures, BZIP2 rejection, and ZIP64 rejection.
+- Expanded the shared conformance inventory to 32 cases, including exact 1.0 authoring, no-manifest 1.0 minimum documents, same-major 1.x reading, target-specific version failures, abbreviated-version rejection, BZIP2 rejection, and ZIP64 rejection.
+- Aligned schemas and all implementations on exact three-component `MAJOR.MINOR.PATCH` manifest versions.
 - Defined a narrow ZIP interoperability profile: single-disk, non-ZIP64, unencrypted core members using Store or Deflate only.
 - Added `INTEROPERABILITY.md` to record multi-implementation evidence, resolved ambiguities, and remaining third-party/runtime validation work.
 - Stated explicitly in `SPEC.md` that compatible implementations do not require project-maintainer permission and that conformance does not require the reference implementation.
