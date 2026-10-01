@@ -146,6 +146,8 @@ Reference academic styles are implementation aids, not claims of endorsement by 
 
 ## v0.9 — Release candidate
 
+**Draft status:** preparation is underway. Normative wording, versioning guidance, migration notes, implementation guidance, semantic-role coverage, schema/example consistency tests, and a release-readiness audit now exist. Remaining blockers are tracked in GitHub issues #2–#5.
+
 **Goal:** freeze the 1.0 contract and search for interoperability failures.
 
 - normative-language audit
