@@ -67,6 +67,17 @@ const localAsset = await writePackage("local-asset.mdocss", async zip => {
   );
 });
 
+const maliciousMetadata = await writePackage("malicious-metadata.mdocss", async zip => {
+  zip.file("root.md", "# Metadata escaping test\n");
+  zip.file(
+    "manifest.json",
+    JSON.stringify({
+      specVersion: "0.1.0",
+      language: 'en" autofocus onfocus="alert(1)'
+    })
+  );
+});
+
 const remoteResource = await writePackage("remote-resource.mdocss", async zip => {
   zip.file(
     "root.md",
@@ -154,6 +165,25 @@ try {
     network.slice(networkStart).some(url => url.includes("example.invalid")),
     false,
     "document resources must not be fetched from remote origins"
+  );
+
+  // Manifest metadata must not reshape generated frame markup.
+  await loadFile(page, maliciousMetadata);
+  await waitRendered(page);
+  const metadataFrame = page.frameLocator("#document-frame");
+  assert.equal(
+    await metadataFrame.locator("html").getAttribute("lang"),
+    'en" autofocus onfocus="alert(1)'
+  );
+  assert.equal(
+    await metadataFrame.locator("html").getAttribute("autofocus"),
+    null,
+    "manifest language must not create additional HTML attributes"
+  );
+  assert.equal(
+    await metadataFrame.locator("html").getAttribute("onfocus"),
+    null,
+    "manifest language must not create event-handler attributes"
   );
 
   // Hostile package rejects safely.
