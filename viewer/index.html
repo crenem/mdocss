@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>MDOCSS Reference Viewer</title>
+  <link rel="stylesheet" href="./src/app.css">
+</head>
+<body>
+  <main class="app-shell">
+    <header class="toolbar">
+      <div class="brand">
+        <strong>MDOCSS</strong>
+        <span>Reference Viewer</span>
+      </div>
+
+      <div class="controls">
+        <label class="file-button">
+          <span>Open .mdocss</span>
+          <input id="file-input" type="file" accept=".mdocss,application/zip">
+        </label>
+
+        <label class="style-control" for="style-select">
+          <span>Style</span>
+          <select id="style-select" disabled>
+            <option>No document loaded</option>
+          </select>
+        </label>
+
+        <button id="print-button" type="button" disabled>Print</button>
+      </div>
+    </header>
+
+    <section id="drop-zone" class="drop-zone" aria-label="MDOCSS document viewer">
+      <div id="empty-state" class="empty-state">
+        <h1>Open an MDOCSS document</h1>
+        <p>Select a <code>.mdocss</code> file or drop one here.</p>
+        <p class="muted">The reference viewer runs locally in your browser and does not require document assets to be fetched from the network.</p>
+      </div>
+
+      <iframe
+        id="document-frame"
+        class="document-frame"
+        title="Rendered MDOCSS document"
+        sandbox="allow-same-origin allow-modals"
+        hidden
+      ></iframe>
+    </section>
+
+    <footer class="statusbar">
+      <span id="status" role="status" aria-live="polite">Ready.</span>
+      <span id="document-info"></span>
+    </footer>
+  </main>
+
+  <script src="./dist/app.js" defer></script>
+</body>
+</html>

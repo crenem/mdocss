@@ -1,0 +1,21 @@
+{
+  "specVersion": "0.1.0",
+  "title": "A Portable Semantic Document",
+  "entrypoint": "root.md",
+  "stylesheets": [
+    {
+      "id": "academic",
+      "label": "Academic",
+      "href": "styles/academic.css"
+    },
+    {
+      "id": "reading",
+      "label": "Reading",
+      "href": "styles/reading.css"
+    }
+  ],
+  "defaultStylesheet": "academic",
+  "authors": [
+    { "name": "Example Author" }
+  ]
+}

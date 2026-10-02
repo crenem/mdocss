@@ -1,0 +1,29 @@
+{
+  "specVersion": "0.1.0",
+  "title": "Hello, MDOCSS",
+  "language": "en",
+  "entrypoint": "root.md",
+  "stylesheets": [
+    {
+      "id": "default",
+      "label": "Default",
+      "href": "root.css"
+    },
+    {
+      "id": "dark",
+      "label": "Dark",
+      "href": "styles/dark.css"
+    },
+    {
+      "id": "manuscript",
+      "label": "Manuscript",
+      "href": "styles/manuscript.css"
+    }
+  ],
+  "defaultStylesheet": "default",
+  "authors": [
+    {
+      "name": "Jason Seaux"
+    }
+  ]
+}

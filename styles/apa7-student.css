@@ -1,0 +1,163 @@
+@page {
+  size: letter;
+  margin: 1in;
+
+  @top-right {
+    content: counter(page);
+    font-family: "Times New Roman", Times, serif;
+    font-size: 12pt;
+  }
+}
+
+.mdocss-document {
+  max-width: 6.5in;
+  margin: 0 auto;
+  padding: 1in;
+  box-sizing: content-box;
+  background: #fff;
+  color: #000;
+  font-family: "Times New Roman", Times, serif;
+  font-size: 12pt;
+  line-height: 2;
+  text-align: left;
+}
+
+.mdocss-document p {
+  margin: 0;
+  text-indent: 0.5in;
+}
+
+.mdocss-title-page {
+  min-height: 8in;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  break-after: page;
+  padding-top: 1.5in;
+  box-sizing: border-box;
+}
+
+.mdocss-title-page p {
+  text-indent: 0;
+}
+
+.mdocss-title {
+  margin: 0 0 1em;
+  font: inherit;
+  font-weight: 700;
+}
+
+.mdocss-subtitle,
+.mdocss-author,
+.mdocss-affiliation,
+.mdocss-course,
+.mdocss-instructor,
+.mdocss-date {
+  margin: 0;
+}
+
+.mdocss-abstract {
+  break-before: page;
+}
+
+.mdocss-abstract > p:first-of-type {
+  text-indent: 0;
+}
+
+.mdocss-abstract-title,
+.mdocss-references > h1,
+.mdocss-references > h2 {
+  margin: 0;
+  text-align: center;
+  font: inherit;
+  font-weight: 700;
+}
+
+.mdocss-keywords {
+  text-indent: 0;
+}
+
+.mdocss-document h1 {
+  margin: 0;
+  font: inherit;
+  font-weight: 700;
+  text-align: center;
+}
+
+.mdocss-document h2 {
+  margin: 0;
+  font: inherit;
+  font-weight: 700;
+  text-align: left;
+}
+
+.mdocss-document h3 {
+  margin: 0;
+  font: inherit;
+  font-weight: 700;
+  font-style: italic;
+  text-align: left;
+}
+
+.mdocss-document blockquote {
+  margin: 0 0 0 0.5in;
+}
+
+.mdocss-references {
+  break-before: page;
+}
+
+.mdocss-reference {
+  margin: 0;
+  padding-left: 0.5in;
+  text-indent: -0.5in !important;
+}
+
+.mdocss-figure,
+.mdocss-table {
+  break-inside: avoid;
+}
+
+@media screen {
+  .mdocss-document {
+    min-height: 9in;
+    box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.08);
+  }
+}
+
+@media print {
+  .mdocss-document h1,
+  .mdocss-document h2,
+  .mdocss-document h3 {
+    break-after: avoid;
+  }
+
+  .mdocss-document p,
+  .mdocss-document li {
+    orphans: 2;
+    widows: 2;
+  }
+
+  .mdocss-document blockquote,
+  .mdocss-reference,
+  .mdocss-figure,
+  .mdocss-table,
+  .mdocss-document tr {
+    break-inside: avoid;
+  }
+
+  .mdocss-document thead {
+    display: table-header-group;
+  }
+
+  .mdocss-appendix {
+    break-before: page;
+  }
+
+  .mdocss-document {
+    max-width: none;
+    padding: 0;
+    box-shadow: none;
+  }
+}

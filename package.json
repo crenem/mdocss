@@ -1,0 +1,38 @@
+{
+  "name": "mdocss",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Reference implementation for the MDOCSS open document format",
+  "type": "module",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "test": "node --test && node conformance/run.js",
+    "validate:example": "node src/cli.js pack examples/basic /tmp/example.mdocss && node src/cli.js validate /tmp/example.mdocss",
+    "conformance": "node conformance/run.js",
+    "build:viewer": "node scripts/build-viewer.mjs",
+    "test:viewer": "node --test test/viewer-core.test.js",
+    "build:obsidian": "tsc -p integrations/obsidian/tsconfig.json --noEmit && node integrations/obsidian/esbuild.config.mjs",
+    "package:obsidian": "npm run build:obsidian && node scripts/package-obsidian.mjs",
+    "build:style-demo": "node scripts/build-style-demo.mjs",
+    "package:viewer": "npm run build:viewer && node scripts/package-viewer.mjs",
+    "package:smoke": "node scripts/package-smoke-kit.mjs",
+    "test:browser-runtime": "node scripts/browser-runtime-smoke.mjs"
+  },
+  "dependencies": {
+    "ajv": "^8.17.1",
+    "ajv-formats": "^3.0.1",
+    "commander": "^12.1.0",
+    "jszip": "^3.10.1",
+    "marked": "^15.0.12",
+    "dompurify": "^3.2.6"
+  },
+  "devDependencies": {
+    "esbuild": "^0.25.0",
+    "obsidian": "latest",
+    "typescript": "^5.8.3",
+    "@types/node": "^22.15.17",
+    "playwright": "^1.55.0"
+  }
+}

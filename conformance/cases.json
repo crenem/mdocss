@@ -1,0 +1,349 @@
+[
+  {
+    "id": "V001",
+    "file": "valid-minimal.mdocss",
+    "expected": "valid",
+    "purpose": "Minimal archive containing only UTF-8 root.md."
+  },
+  {
+    "id": "V002",
+    "file": "valid-fallback-style.mdocss",
+    "expected": "valid",
+    "purpose": "Conventional root.css without a manifest."
+  },
+  {
+    "id": "V003",
+    "file": "valid-multi-style.mdocss",
+    "expected": "valid",
+    "purpose": "Three declared hot-swappable styles with a valid default."
+  },
+  {
+    "id": "V004",
+    "file": "valid-unknown-members.mdocss",
+    "expected": "valid",
+    "purpose": "Unknown manifest fields and archive members do not invalidate the document.",
+    "preservation": true
+  },
+  {
+    "id": "I001",
+    "file": "invalid-missing-root.mdocss",
+    "expected": "invalid",
+    "purpose": "Required root.md is absent."
+  },
+  {
+    "id": "I002",
+    "file": "invalid-manifest-json.mdocss",
+    "expected": "invalid",
+    "purpose": "manifest.json is malformed JSON."
+  },
+  {
+    "id": "I003",
+    "file": "invalid-manifest-top-level.mdocss",
+    "expected": "invalid",
+    "purpose": "manifest.json top level is not an object."
+  },
+  {
+    "id": "I004",
+    "file": "invalid-duplicate-style-id.mdocss",
+    "expected": "invalid",
+    "purpose": "Declared stylesheet IDs are not unique."
+  },
+  {
+    "id": "I005",
+    "file": "invalid-missing-style.mdocss",
+    "expected": "invalid",
+    "purpose": "Declared stylesheet target is absent."
+  },
+  {
+    "id": "I006",
+    "file": "invalid-default-style.mdocss",
+    "expected": "invalid",
+    "purpose": "defaultStylesheet does not name a declared stylesheet."
+  },
+  {
+    "id": "I007",
+    "file": "invalid-style-extension.mdocss",
+    "expected": "invalid",
+    "purpose": "Declared stylesheet href does not identify a CSS file."
+  },
+  {
+    "id": "I008",
+    "file": "invalid-root-utf8.mdocss",
+    "expected": "invalid",
+    "purpose": "root.md contains malformed UTF-8."
+  },
+  {
+    "id": "I009",
+    "file": "invalid-manifest-utf8.mdocss",
+    "expected": "invalid",
+    "purpose": "manifest.json contains malformed UTF-8."
+  },
+  {
+    "id": "I010",
+    "file": "invalid-style-utf8.mdocss",
+    "expected": "invalid",
+    "purpose": "A declared stylesheet contains malformed UTF-8."
+  },
+  {
+    "id": "I011",
+    "file": "invalid-path-traversal.mdocss",
+    "expected": "invalid",
+    "purpose": "Archive contains ../ path traversal."
+  },
+  {
+    "id": "I012",
+    "file": "invalid-absolute-path.mdocss",
+    "expected": "invalid",
+    "purpose": "Archive contains an absolute slash-prefixed path."
+  },
+  {
+    "id": "I013",
+    "file": "invalid-backslash-path.mdocss",
+    "expected": "invalid",
+    "purpose": "Archive member uses backslash path syntax."
+  },
+  {
+    "id": "I014",
+    "file": "invalid-drive-path.mdocss",
+    "expected": "invalid",
+    "purpose": "Archive member resembles a Windows drive path."
+  },
+  {
+    "id": "I015",
+    "file": "invalid-style-traversal.mdocss",
+    "expected": "invalid",
+    "purpose": "Stylesheet href attempts to escape the archive root."
+  },
+  {
+    "id": "I016",
+    "file": "invalid-entrypoint.mdocss",
+    "expected": "invalid",
+    "purpose": "MDOCSS 0.1 entrypoint is not root.md."
+  },
+  {
+    "id": "I017",
+    "file": "invalid-symlink.mdocss",
+    "expected": "invalid",
+    "purpose": "Archive contains a symbolic-link member."
+  },
+  {
+    "id": "I018",
+    "file": "invalid-duplicate-member.mdocss",
+    "expected": "invalid",
+    "purpose": "Archive contains duplicate root.md member names."
+  },
+  {
+    "id": "U001",
+    "file": "unsupported-future-major.mdocss",
+    "expected": "unsupported",
+    "purpose": "A future unsupported major version is not valid for this validator, but canonical root.md remains safely recoverable.",
+    "recoverRoot": true
+  },
+  {
+    "id": "V005",
+    "expected": "valid",
+    "target": "1.0",
+    "generated": {
+      "root": "# MDOCSS 1.0\\n",
+      "manifest": {
+        "specVersion": "1.0.0",
+        "title": "Exact 1.0 authoring package"
+      }
+    },
+    "purpose": "A manifest-bearing 1.0 package declares specVersion and satisfies the exact 1.0 authoring target."
+  },
+  {
+    "id": "V006",
+    "expected": "valid",
+    "generated": {
+      "root": "# Forward compatible 1.x\\n",
+      "manifest": {
+        "specVersion": "1.7.0",
+        "title": "Newer minor in the same stable major"
+      }
+    },
+    "purpose": "A 1.0-baseline reader accepts understood fields from a newer 1.x minor version."
+  },
+  {
+    "id": "V007",
+    "expected": "valid",
+    "target": "1.0",
+    "generated": {
+      "root": "# Minimal 1.0 package\\n"
+    },
+    "purpose": "The 1.0 authoring target still permits the minimum package with no manifest."
+  },
+  {
+    "id": "I019",
+    "expected": "invalid",
+    "target": "1.0",
+    "generated": {
+      "root": "# Missing version\\n",
+      "manifest": {
+        "title": "Manifest present without specVersion"
+      }
+    },
+    "purpose": "A manifest-bearing package authored to 1.0 must declare specVersion."
+  },
+  {
+    "id": "I020",
+    "expected": "invalid",
+    "target": "1.0",
+    "generated": {
+      "root": "# Not exact 1.0 output\\n",
+      "manifest": {
+        "specVersion": "1.1.0"
+      }
+    },
+    "purpose": "A 1.1 declaration is readable by a 1.0-baseline reader but is not exact 1.0-authored output."
+  },
+  {
+    "id": "I021",
+    "expected": "invalid",
+    "generated": {
+      "rawBase64": "UEsDBC4AAAAMAEp/QV0le1BqMwAAAAgAAAAHAAAAcm9vdC5tZEJaaDkxQVkmU1l9zNNOAAABXgAAEEgAEAAQIEAQIAAiGmh6EMCG8/QILuSKcKEg+5mmnFBLAQIuAy4AAAAMAEp/QV0le1BqMwAAAAgAAAAHAAAAAAAAAAAAAACAAQAAAAByb290Lm1kUEsFBgAAAAABAAEANQAAAFgAAAAAAA=="
+    },
+    "purpose": "Archive uses ZIP BZIP2 compression instead of Store or Deflate."
+  },
+  {
+    "id": "I022",
+    "expected": "invalid",
+    "generated": {
+      "rawBase64": "UEsDBC0AAAAAAAAAIQCAHoSV//////////8HABQAcm9vdC5tZAEAEAAIAAAAAAAAAAgAAAAAAAAAIyBaSVA2NApQSwECLQMtAAAAAAAAACEAgB6ElQgAAAAIAAAABwAAAAAAAAAAAAAAgAEAAAAAcm9vdC5tZFBLBQYAAAAAAQABADUAAABBAAAAAAA="
+    },
+    "purpose": "Archive uses a ZIP64 local entry even though the document is small."
+  },
+  {
+    "id": "I023",
+    "expected": "invalid",
+    "target": "1.0",
+    "generated": {
+      "root": "# Abbreviated version\\n",
+      "manifest": {
+        "specVersion": "1.0"
+      }
+    },
+    "purpose": "Manifest specVersion must use three numeric components; 1.0 is not valid 1.0-authored metadata."
+  },
+  {
+    "id": "I024",
+    "expected": "invalid",
+    "generated": {
+      "root": "# Abbreviated newer minor\\n",
+      "manifest": {
+        "specVersion": "1.7"
+      }
+    },
+    "purpose": "Reader version negotiation rejects abbreviated two-component specVersion values."
+  },
+  {
+    "id": "V008",
+    "expected": "valid",
+    "target": "1.0",
+    "generated": {
+      "root": "# Metadata formats\\n",
+      "manifest": {
+        "specVersion": "1.0.0",
+        "created": "2026-10-01T15:00:00Z",
+        "modified": "2026-10-01T10:00:00-05:00",
+        "authors": [
+          {
+            "name": "Example Author",
+            "email": "author@example.com",
+            "url": "https://example.com/author"
+          }
+        ]
+      }
+    },
+    "purpose": "Valid RFC 3339 date-times, author email, and author URI metadata."
+  },
+  {
+    "id": "I025",
+    "expected": "invalid",
+    "target": "1.0",
+    "generated": {
+      "root": "# Invalid date-time\\n",
+      "manifest": {
+        "specVersion": "1.0.0",
+        "created": "2026-10-01 15:00:00"
+      }
+    },
+    "purpose": "created must satisfy the JSON Schema date-time format."
+  },
+  {
+    "id": "I026",
+    "expected": "invalid",
+    "target": "1.0",
+    "generated": {
+      "root": "# Invalid email\\n",
+      "manifest": {
+        "specVersion": "1.0.0",
+        "authors": [
+          {
+            "name": "Example",
+            "email": "not-an-email"
+          }
+        ]
+      }
+    },
+    "purpose": "Author email must satisfy the JSON Schema email format."
+  },
+  {
+    "id": "I027",
+    "expected": "invalid",
+    "target": "1.0",
+    "generated": {
+      "root": "# Invalid URI\\n",
+      "manifest": {
+        "specVersion": "1.0.0",
+        "authors": [
+          {
+            "name": "Example",
+            "url": "not a uri"
+          }
+        ]
+      }
+    },
+    "purpose": "Author URL must satisfy the JSON Schema uri format."
+  },
+  {
+    "id": "V009",
+    "expected": "valid",
+    "generated": {
+      "rawBase64": "UEsDBBQAAAAAAAAAAACItn2XDQAAAA0AAAAHAAAAcm9vdC5tZCMgVVRGLTggcGF0aApQSwMEFAAACAAAAAAAAIamEDYFAAAABQAAABAAAABhc3NldHMvY2Fmw6kudHh0aGVsbG9QSwECFAAUAAAAAAAAAAAAiLZ9lw0AAAANAAAABwAAAAAAAAAAAAAAAAAAAAAAcm9vdC5tZFBLAQIUABQAAAgAAAAAAACGphA2BQAAAAUAAAAQAAAAAAAAAAAAAAAAADIAAABhc3NldHMvY2Fmw6kudHh0UEsFBgAAAAACAAIAcwAAAGUAAAAAAA=="
+    },
+    "purpose": "A non-ASCII archive member name is valid when encoded as UTF-8 with the ZIP language encoding flag."
+  },
+  {
+    "id": "I028",
+    "expected": "invalid",
+    "generated": {
+      "rawBase64": "UEsDBBQAAAAAAAAAAACM34CLCwAAAAsAAAAHAAAAcm9vdC5tZCMgRW5jb2RpbmcKUEsDBBQAAAAAAAAAAACGphA2BQAAAAUAAAAPAAAAYXNzZXRzL2NhZoIudHh0aGVsbG9QSwECFAAUAAAAAAAAAAAAjN+AiwsAAAALAAAABwAAAAAAAAAAAAAAAAAAAAAAcm9vdC5tZFBLAQIUABQAAAAAAAAAAACGphA2BQAAAAUAAAAPAAAAAAAAAAAAAAAAADAAAABhc3NldHMvY2Fmgi50eHRQSwUGAAAAAAIAAgByAAAAYgAAAAAA"
+    },
+    "purpose": "A non-ASCII archive member name without the ZIP UTF-8 language encoding flag is nonconforming."
+  },
+  {
+    "id": "I029",
+    "expected": "invalid",
+    "generated": {
+      "rawBase64": "UEsDBBQAAAAAAAAAAADZbhXBBwAAAAcAAAAHAAAAcm9vdC5tZCMgUGF0aApQSwMEFAAAAAAAAAAAAIMW3IwBAAAAAQAAAA4AAABhc3NldHMvLi94LnR4dHhQSwECFAAUAAAAAAAAAAAA2W4VwQcAAAAHAAAABwAAAAAAAAAAAAAAAAAAAAAAcm9vdC5tZFBLAQIUABQAAAAAAAAAAACDFtyMAQAAAAEAAAAOAAAAAAAAAAAAAAAAACwAAABhc3NldHMvLi94LnR4dFBLBQYAAAAAAgACAHEAAABZAAAAAAA="
+    },
+    "purpose": "Archive member paths must not contain dot segments."
+  },
+  {
+    "id": "I030",
+    "expected": "invalid",
+    "generated": {
+      "rawBase64": "UEsDBBQAAAAAAAAAAADZbhXBBwAAAAcAAAAHAAAAcm9vdC5tZCMgUGF0aApQSwMEFAAAAAAAAAAAAIMW3IwBAAAAAQAAAA0AAABhc3NldHMvL3gudHh0eFBLAQIUABQAAAAAAAAAAADZbhXBBwAAAAcAAAAHAAAAAAAAAAAAAAAAAAAAAAByb290Lm1kUEsBAhQAFAAAAAAAAAAAAIMW3IwBAAAAAQAAAA0AAAAAAAAAAAAAAAAALAAAAGFzc2V0cy8veC50eHRQSwUGAAAAAAIAAgBwAAAAWAAAAAAA"
+    },
+    "purpose": "Archive member paths must not contain empty interior path segments."
+  },
+  {
+    "id": "I031",
+    "expected": "invalid",
+    "generated": {
+      "rawBase64": "UEsDBBQAAAAAAAAAAADZbhXBBwAAAAcAAAAHAAAAcm9vdC5tZCMgUGF0aApQSwMEFAAAAAAAAAAAAIMW3IwBAAAAAQAAABMAAABhc3NldHMvYmFkCm5hbWUudHh0eFBLAQIUABQAAAAAAAAAAADZbhXBBwAAAAcAAAAHAAAAAAAAAAAAAAAAAAAAAAByb290Lm1kUEsBAhQAFAAAAAAAAAAAAIMW3IwBAAAAAQAAABMAAAAAAAAAAAAAAAAALAAAAGFzc2V0cy9iYWQKbmFtZS50eHRQSwUGAAAAAAIAAgB2AAAAXgAAAAAA"
+    },
+    "purpose": "Archive member paths must not contain ASCII control characters."
+  }
+]

@@ -1,0 +1,30 @@
+.mdocss-document {
+  max-width: 6.5in;
+  margin: 1in auto;
+  font-family: "Times New Roman", serif;
+  font-size: 12pt;
+  line-height: 2;
+}
+
+.mdocss-title-page {
+  min-height: 8in;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  text-align: center;
+  break-after: page;
+}
+
+.mdocss-title {
+  font-size: 12pt;
+  font-weight: bold;
+}
+
+.mdocss-title-page p {
+  margin: 0;
+}
+
+.mdocss-reference {
+  padding-left: 0.5in;
+  text-indent: -0.5in;
+}

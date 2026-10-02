@@ -1,0 +1,69 @@
+# Changelog
+
+## 0.1.0-draft
+
+- Froze the exact 1.0 release-candidate manifest contract at `schema/manifest-1.0.schema.json` and closed the version-negotiation design blocker.
+- Aligned `SPEC.md` with stylesheet constraints already enforced by schema/package validation: non-empty declarations, stable ASCII IDs, `.css` targets, and exact regular UTF-8 stylesheet resolution.
+- Escaped manifest-derived language metadata before inserting it into generated browser/Obsidian iframe markup.
+- Added a hosted-Chrome runtime smoke gate covering real package loading, seven-profile style switching, semantic-content invariance, source-package invariance, local assets, blocked remote resources, print delegation, hostile archive rejection, ZIP-profile rejection, and metadata-escaping behavior.
+- Fixed a browser-viewer bug discovered by the runtime gate where author CSS on `.document-frame` overrode the HTML `hidden` state and could leave stale content visible after a rejected package.
+- Completed the Windows/Obsidian runtime gate, including a sandbox fix allowing user-initiated print dialogs without enabling document scripts.
+- Defined CSS-native pagination for 1.0 using standard `@page`, margin boxes, page counters, fragmentation controls, widows/orphans, and repeated table headers.
+- Added page counters and print-fragmentation rules across all seven reference styles.
+- Added a hosted-Chrome physical-PDF pagination test using the APA reference document.
+
+- Defined ZIP-based MDOCSS container.
+- Required `root.md` canonical content.
+- Defined optional `root.css`, `manifest.json`, and asset handling.
+- Added named, hot-swappable stylesheet profiles through `stylesheets` and `defaultStylesheet`.
+- Defined runtime style selection as presentation state that does not modify `root.md`.
+- Added conventional `styles/` directory for alternate presentations.
+- Added the MDOCSS Core Semantic Class Profile in `SEMANTICS.md`.
+- Added a scoped roadmap from the current draft through v1.0.
+- Added stylesheet existence, ID, and default-reference validation to the CLI.
+- Added CLI `styles` command.
+- Added multi-style examples and tests.
+- Added path traversal and active-content security requirements.
+- Added manifest JSON Schema.
+- Added reference Node.js CLI.
+- Added a 20-case public conformance corpus covering valid documents, malformed manifests, stylesheet errors, malformed UTF-8, path attacks, and forward-compatible unknown content.
+- Added round-trip preservation testing for unknown members and manifest fields.
+- Added security guidance for ZIP extraction, decompression limits, CSS isolation, external resources, and strict UTF-8 handling.
+- Hardened the reference validator for original ZIP member names, Windows-style paths, and strict UTF-8 decoding.
+- Added CI workflow.
+- Added browser reference renderer with local asset resolution, sanitized HTML, sandboxed CSS, runtime style switching, and print preview.
+- Added a working Obsidian reader MVP with `.mdocss` extension registration, hot-swappable styles, local style preference, local asset resolution, and sandboxed rendering.
+- Added CI builds/type checks for both the reference viewer and Obsidian integration.
+- Added atomic CLI editing for `root.md` and `manifest.json`.
+- Added CLI commands to add, rename/move, and remove bundled stylesheet declarations.
+- Added tests proving unknown members/manifest fields survive edits and invalid edits do not replace the original archive.
+- Added CI packaging and downloadable artifact generation for the Obsidian reader.
+- Added seven reference style profiles: APA 7 student, MLA 9, Chicago 18 manuscript, business report, clean reading, dark reading, and accessible large print.
+- Added a generated multi-style demonstration MDOCSS artifact and CI validation.
+- Added accessibility guidance, print/paged-media guidance, forced-colors support, reduced-motion guidance, and print fallbacks across the reference styles.
+- Added implementation, versioning, migration, release-audit, and runtime smoke-test documentation for v0.9 preparation.
+- Tightened BCP 14 normative language and clarified that `application/vnd.mdocss+zip` is only a candidate media type until IANA registration.
+- Added schema/spec/example consistency tests and full semantic-role exercise coverage.
+- Added CI packaging for the standalone browser viewer to support cross-render runtime testing.
+- Expanded the conformance corpus to 23 cases with duplicate-member, symbolic-link, and unsupported future-major recovery coverage.
+- Hardened browser and Obsidian readers against duplicate members, symbolic links, dangerous archive paths, and unsupported future-version semantics.
+- Froze the planned 1.0 rule that a present manifest MUST declare `specVersion`; added a candidate 1.0 manifest schema and tests.
+- Added a field-by-field draft IANA media-type registration document.
+- Added explicit CLI version negotiation with distinct unsupported-major handling and strict `--target 1.0` authoring validation.
+- Extended the 1.0 baseline schema and both reference readers for same-major 1.x forward compatibility.
+- Added package-level tests covering legacy manifests, 1.0 output, newer 1.x minor versions, unsupported future majors, and the no-manifest 1.0 minimum-document rule.
+- Froze the planned media-type registration path as vendor-tree `application/vnd.mdocss+zip`, with IANA submission deferred until a stable 1.0 specification URL and durable contact/change-controller details exist.
+- Added an independently authored, standard-library-only Python validator/recovery implementation and made CI run it against the same public corpus as the Node reference implementation.
+- Expanded the shared conformance inventory to 41 cases, including exact 1.0 authoring, no-manifest 1.0 minimum documents, same-major 1.x reading, target-specific version failures, abbreviated-version rejection, metadata-format validation, ZIP filename/path cases, BZIP2 rejection, and ZIP64 rejection.
+- Aligned schemas and all implementations on exact three-component `MAJOR.MINOR.PATCH` manifest versions.
+- Changed `.mdocss` from a byte-level conformance requirement to the recommended filename extension, allowing filename-independent streams and stores to carry conforming packages.
+- Made all ZIP-member encryption nonconforming in core 1.0, matching the explicit no-encryption scope and validator behavior.
+- Removed provisional schema `$id` values until a stable versioned publication URI exists.
+- Added field-by-field manifest semantics, including BCP 47 language guidance and RFC 3339/JSON-Schema metadata formats.
+- Aligned the IANA registration draft with the core ZIP interoperability and no-encryption rules.
+- Standardized non-ASCII ZIP member names on UTF-8 with the ZIP language-encoding flag and recommended NFC for writer portability.
+- Canonicalized archive member paths by rejecting control characters, dot segments, and empty interior segments while leaving normal relative Markdown/CSS references available.
+- Separated release-candidate entry gates from the RC feedback/independent-review work required to exit to stable 1.0.
+- Defined a narrow ZIP interoperability profile: single-disk, non-ZIP64, unencrypted core members using Store or Deflate only.
+- Added `INTEROPERABILITY.md` to record multi-implementation evidence, resolved ambiguities, and remaining third-party/runtime validation work.
+- Stated explicitly in `SPEC.md` that compatible implementations do not require project-maintainer permission and that conformance does not require the reference implementation.
