@@ -3,15 +3,15 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>MDOCSS Studio</title>
+  <title>DocumentOne</title>
   <link rel="stylesheet" href="./src/app.css">
 </head>
 <body>
-  <main class="studio-shell">
+  <main class="documentone-shell">
     <header class="topbar">
       <div class="brand">
-        <strong>MDOCSS</strong>
-        <span>Studio</span>
+        <strong>DocumentOne</strong>
+        <span>MDOCSS Academic Editor</span>
         <span class="local-badge" title="Documents are processed in this browser">Local</span>
       </div>
 
@@ -23,152 +23,235 @@
         </label>
         <button id="save-button" type="button" disabled>Save Copy</button>
         <button id="print-button" type="button" disabled>Print</button>
+        <div class="mode-switch" aria-label="Document mode">
+          <button id="read-mode-button" type="button" disabled>Read</button>
+          <button id="edit-mode-button" class="is-active" type="button" disabled>Edit</button>
+        </div>
       </div>
     </header>
 
+    <nav id="writing-toolbar" class="writing-toolbar" aria-label="Document formatting">
+      <label class="compact-control">
+        <span class="sr-only">Paragraph style</span>
+        <select id="block-style" disabled>
+          <option value="p">Normal</option>
+          <option value="h1">Heading 1</option>
+          <option value="h2">Heading 2</option>
+          <option value="h3">Heading 3</option>
+          <option value="blockquote">Block Quote</option>
+          <option value="pre">Code Block</option>
+        </select>
+      </label>
+
+      <span class="toolbar-group">
+        <button id="bold-button" class="format-button" type="button" title="Bold" disabled><strong>B</strong></button>
+        <button id="italic-button" class="format-button" type="button" title="Italic" disabled><em>I</em></button>
+        <button id="underline-button" class="format-button" type="button" title="Underline" disabled><u>U</u></button>
+      </span>
+
+      <span class="toolbar-group">
+        <button id="bullet-button" type="button" title="Bulleted list" disabled>• List</button>
+        <button id="number-button" type="button" title="Numbered list" disabled>1. List</button>
+      </span>
+
+      <span class="toolbar-group">
+        <button id="link-button" type="button" title="Insert link" disabled>Link</button>
+        <button id="unlink-button" type="button" title="Remove link" disabled>Unlink</button>
+        <label class="toolbar-file-button" title="Insert image">
+          <span>Image</span>
+          <input id="image-input" type="file" accept="image/*" disabled>
+        </label>
+      </span>
+
+      <span class="toolbar-group">
+        <button id="undo-button" type="button" title="Undo" disabled>Undo</button>
+        <button id="redo-button" type="button" title="Redo" disabled>Redo</button>
+      </span>
+
+      <span id="dirty-indicator" class="dirty-indicator" hidden>Modified</span>
+    </nav>
+
     <section class="workspace">
-      <aside class="source-pane" aria-label="Document source">
-        <div class="pane-heading">
-          <div class="tabs" role="tablist" aria-label="Source editor">
-            <button class="tab is-active" id="markdown-tab" type="button" role="tab" aria-selected="true">Markdown</button>
-            <button class="tab" id="css-tab" type="button" role="tab" aria-selected="false">CSS</button>
-          </div>
-          <span id="dirty-indicator" class="dirty-indicator" hidden>Modified</span>
-        </div>
-
-        <textarea id="markdown-editor" class="source-editor" spellcheck="true" aria-label="root.md editor" disabled></textarea>
-        <textarea id="css-editor" class="source-editor" spellcheck="false" aria-label="Active stylesheet editor" hidden disabled></textarea>
-
-        <div class="source-footer">
-          <span id="source-label">No document loaded</span>
-        </div>
-      </aside>
-
-      <section class="preview-pane" id="drop-zone" aria-label="Document preview">
-        <div class="preview-toolbar">
-          <label>
-            <span>Style</span>
-            <select id="style-select" disabled>
-              <option>No document loaded</option>
-            </select>
-          </label>
-          <span id="preview-mode">Continuous preview</span>
-        </div>
-
+      <section class="paper-pane" id="drop-zone" aria-label="Document editor">
         <div id="empty-state" class="empty-state">
-          <h1>MDOCSS Studio</h1>
+          <h1>DocumentOne</h1>
+          <p>A portable academic and basic-document editor built on MDOCSS.</p>
           <p>Create a document, open a <code>.mdocss</code> file, or drop one here.</p>
-          <p class="muted">This portable editor works entirely in your browser. Document content is not uploaded.</p>
+          <p class="muted">Everything runs locally in this browser. Your document is not uploaded.</p>
         </div>
 
         <iframe
           id="document-frame"
           class="document-frame"
-          title="Rendered MDOCSS document"
+          title="DocumentOne paper editor"
           sandbox="allow-same-origin allow-modals"
           hidden
         ></iframe>
       </section>
 
-      <aside class="designer-pane" aria-label="Style designer">
-        <div class="pane-heading">
-          <strong>Style Designer</strong>
+      <aside id="inspector" class="inspector" aria-label="Document inspector">
+        <div class="inspector-tabs" role="tablist">
+          <button id="design-tab" class="inspector-tab is-active" type="button" role="tab" aria-selected="true">Design</button>
+          <button id="source-tab" class="inspector-tab" type="button" role="tab" aria-selected="false">Advanced Source</button>
         </div>
 
-        <div class="designer-scroll">
-          <p class="designer-note">Designer changes are written to a managed CSS override block. CSS outside that block is preserved.</p>
-
-          <fieldset id="designer-controls" disabled>
-            <legend>Typography</legend>
-
+        <section id="design-panel" class="inspector-panel">
+          <div class="style-manager">
             <label>
-              <span>Body font</span>
-              <select id="font-family">
-                <option value='"Times New Roman", Times, serif'>Times New Roman</option>
-                <option value='Georgia, serif'>Georgia</option>
-                <option value='Arial, Helvetica, sans-serif'>Arial</option>
-                <option value='system-ui, sans-serif'>System UI</option>
+              <span>Document style</span>
+              <select id="style-select" disabled>
+                <option>No document loaded</option>
               </select>
             </label>
-
-            <div class="field-row">
-              <label>
-                <span>Size</span>
-                <input id="font-size" type="number" min="8" max="36" step="0.5" value="12">
-              </label>
-              <label>
-                <span>Line height</span>
-                <input id="line-height" type="number" min="1" max="3" step="0.05" value="1.5">
-              </label>
+            <div class="style-actions">
+              <button id="new-style-button" type="button" disabled>New</button>
+              <button id="duplicate-style-button" type="button" disabled>Duplicate</button>
+              <button id="rename-style-button" type="button" disabled>Rename</button>
+              <button id="delete-style-button" type="button" disabled>Delete</button>
             </div>
+          </div>
 
-            <div class="field-row">
+          <div class="designer-scroll">
+            <fieldset id="designer-controls" disabled>
+              <legend>Typography</legend>
+
               <label>
-                <span>Text</span>
-                <input id="text-color" type="color" value="#111111">
+                <span>Body font</span>
+                <select id="font-family">
+                  <option value='"Times New Roman", Times, serif'>Times New Roman</option>
+                  <option value='Georgia, serif'>Georgia</option>
+                  <option value='Arial, Helvetica, sans-serif'>Arial</option>
+                  <option value='system-ui, sans-serif'>System UI</option>
+                </select>
               </label>
+
+              <div class="field-row">
+                <label>
+                  <span>Size (pt)</span>
+                  <input id="font-size" type="number" min="8" max="36" step="0.5" value="12">
+                </label>
+                <label>
+                  <span>Line spacing</span>
+                  <input id="line-height" type="number" min="1" max="3" step="0.05" value="1.5">
+                </label>
+              </div>
+
+              <div class="field-row">
+                <label>
+                  <span>Text</span>
+                  <input id="text-color" type="color" value="#111111">
+                </label>
+                <label>
+                  <span>Page</span>
+                  <input id="page-color" type="color" value="#ffffff">
+                </label>
+              </div>
+            </fieldset>
+
+            <fieldset id="paragraph-controls" disabled>
+              <legend>Paragraphs</legend>
+
               <label>
-                <span>Page</span>
-                <input id="page-color" type="color" value="#ffffff">
+                <span>Alignment</span>
+                <select id="paragraph-align">
+                  <option value="left">Left</option>
+                  <option value="center">Center</option>
+                  <option value="right">Right</option>
+                  <option value="justify">Justified</option>
+                </select>
               </label>
-            </div>
-          </fieldset>
 
-          <fieldset id="page-controls" disabled>
-            <legend>Page</legend>
-
-            <label>
-              <span>Paper</span>
-              <select id="page-size">
-                <option value="letter">Letter</option>
-                <option value="A4">A4</option>
-                <option value="auto">Printer default</option>
-              </select>
-            </label>
-
-            <label>
-              <span>Margins (in)</span>
-              <input id="page-margin" type="number" min="0.25" max="3" step="0.05" value="1">
-            </label>
-
-            <label>
-              <span>Page numbers</span>
-              <select id="page-number">
-                <option value="none">None</option>
-                <option value="top-right">Top right</option>
-                <option value="bottom-center">Bottom center</option>
-                <option value="bottom-center-total">Bottom center — Page X of Y</option>
-              </select>
-            </label>
-          </fieldset>
-
-          <fieldset id="paragraph-controls" disabled>
-            <legend>Paragraphs</legend>
-
-            <label>
-              <span>First-line indent (in)</span>
-              <input id="paragraph-indent" type="number" min="0" max="2" step="0.05" value="0">
-            </label>
-
-            <div class="field-row">
               <label>
-                <span>Widows</span>
-                <input id="widows" type="number" min="1" max="8" step="1" value="2">
+                <span>First-line indent (in)</span>
+                <input id="paragraph-indent" type="number" min="0" max="2" step="0.05" value="0">
               </label>
+
+              <div class="field-row">
+                <label>
+                  <span>Before (pt)</span>
+                  <input id="paragraph-before" type="number" min="0" max="72" step="1" value="0">
+                </label>
+                <label>
+                  <span>After (pt)</span>
+                  <input id="paragraph-after" type="number" min="0" max="72" step="1" value="0">
+                </label>
+              </div>
+
+              <div class="field-row">
+                <label>
+                  <span>Widows</span>
+                  <input id="widows" type="number" min="1" max="8" step="1" value="2">
+                </label>
+                <label>
+                  <span>Orphans</span>
+                  <input id="orphans" type="number" min="1" max="8" step="1" value="2">
+                </label>
+              </div>
+
+              <label class="check-label">
+                <input id="keep-headings" type="checkbox" checked>
+                <span>Keep headings with following content</span>
+              </label>
+            </fieldset>
+
+            <fieldset id="page-controls" disabled>
+              <legend>Page</legend>
+
               <label>
-                <span>Orphans</span>
-                <input id="orphans" type="number" min="1" max="8" step="1" value="2">
+                <span>Paper</span>
+                <select id="page-size">
+                  <option value="letter">Letter</option>
+                  <option value="A4">A4</option>
+                  <option value="auto">Printer default</option>
+                </select>
               </label>
-            </div>
 
-            <label class="check-label">
-              <input id="keep-headings" type="checkbox" checked>
-              <span>Keep headings with following content</span>
-            </label>
-          </fieldset>
+              <label>
+                <span>Margins (in)</span>
+                <input id="page-margin" type="number" min="0.25" max="3" step="0.05" value="1">
+              </label>
 
-          <button id="reset-designer" type="button" disabled>Remove Designer Overrides</button>
-        </div>
+              <label>
+                <span>Page numbers</span>
+                <select id="page-number">
+                  <option value="none">None</option>
+                  <option value="top-right">Top right</option>
+                  <option value="bottom-center">Bottom center</option>
+                  <option value="bottom-center-total">Bottom center — Page X of Y</option>
+                </select>
+              </label>
+
+              <label>
+                <span>Running header</span>
+                <input id="header-text" type="text" placeholder="Optional header text">
+              </label>
+
+              <label>
+                <span>Header position</span>
+                <select id="header-position">
+                  <option value="top-left">Top left</option>
+                  <option value="top-center">Top center</option>
+                </select>
+              </label>
+            </fieldset>
+
+            <button id="reset-designer" type="button" disabled>Remove Designer Overrides</button>
+          </div>
+        </section>
+
+        <section id="source-panel" class="inspector-panel" hidden>
+          <div class="source-tabs">
+            <button id="markdown-tab" class="source-tab is-active" type="button">Markdown</button>
+            <button id="css-tab" class="source-tab" type="button">CSS</button>
+          </div>
+
+          <textarea id="markdown-editor" class="source-editor" spellcheck="true" aria-label="root.md editor" disabled></textarea>
+          <textarea id="css-editor" class="source-editor" spellcheck="false" aria-label="Active stylesheet editor" hidden disabled></textarea>
+
+          <div class="source-footer">
+            <span id="source-label">No document loaded</span>
+          </div>
+        </section>
       </aside>
     </section>
 
