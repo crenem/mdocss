@@ -137,6 +137,8 @@ let mode = "edit";
 let renderTimer = null;
 let cssTimer = null;
 let savedRange = null;
+let paperObserver = null;
+let paperSyncTimer = null;
 
 function setStatus(message) {
   els.status.textContent = message;
@@ -298,31 +300,33 @@ function syncMarkdownFromPaper() {
 }
 
 function bindPaperEvents() {
-  const doc = els.frame.contentDocument;
   const root = article();
-  if (!doc || !root) return;
+  if (!root) return;
 
-  doc.execCommand("defaultParagraphSeparator", false, "p");
-
-  doc.addEventListener("input", event => {
-    if (root.contains(event.target) || event.target === root) {
-      syncMarkdownFromPaper();
-      rememberSelection();
-    }
-  }, true);
+  paperObserver?.disconnect();
+  clearTimeout(paperSyncTimer);
 
   root.dataset.documentoneEditorBound = "true";
 
-  root.addEventListener("keyup", rememberSelection);
-  root.addEventListener("mouseup", rememberSelection);
-  doc.addEventListener("selectionchange", rememberSelection);
-
-  root.addEventListener("paste", event => {
+  paperObserver = new MutationObserver(mutations => {
     if (!isWritableEditMode()) return;
-    event.preventDefault();
-    const text = event.clipboardData?.getData("text/plain") || "";
-    insertText(doc, text);
-    syncMarkdownFromPaper();
+
+    const meaningful = mutations.some(mutation =>
+      mutation.type === "characterData" ||
+      mutation.type === "childList"
+    );
+    if (!meaningful) return;
+
+    clearTimeout(paperSyncTimer);
+    paperSyncTimer = setTimeout(() => {
+      syncMarkdownFromPaper();
+    }, 0);
+  });
+
+  paperObserver.observe(root, {
+    subtree: true,
+    childList: true,
+    characterData: true
   });
 }
 
@@ -611,6 +615,10 @@ els.sourceTab.addEventListener("click", () => setInspectorTab("source"));
 els.markdownTab.addEventListener("click", () => setSourceTab("markdown"));
 els.cssTab.addEventListener("click", () => setSourceTab("css"));
 
+els.writingToolbar.addEventListener("mousedown", () => {
+  rememberSelection();
+}, true);
+
 els.blockStyle.addEventListener("change", () => {
   if (!isWritableEditMode()) return;
   const doc = els.frame.contentDocument;
@@ -720,6 +728,7 @@ els.dropZone.addEventListener("drop", event => {
 });
 
 window.addEventListener("beforeunload", event => {
+  paperObserver?.disconnect();
   renderer.revokeAssets();
   if (current?.dirty) {
     event.preventDefault();
