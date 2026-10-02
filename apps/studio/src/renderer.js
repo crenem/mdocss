@@ -165,12 +165,14 @@ export class StudioRenderer {
   baseCss() {
     return [
       ":root { color-scheme: light; }",
-      "html, body { margin: 0; min-height: 100%; background: white; color: #111; }",
-      ".mdocss-document { display: block; min-height: 100vh; box-sizing: border-box; overflow-wrap: anywhere; }",
+      "html, body { margin: 0; min-height: 100%; background: #e3e7ed; color: #111; }",
+      "body { padding: 1.25rem 0 4rem; }",
+      ".mdocss-document { display: block; min-height: 11in; box-sizing: border-box; overflow-wrap: anywhere; background: white; }",
+      '.mdocss-document[contenteditable="true"] { outline: none; caret-color: #111; }',
       "img, svg, video { max-width: 100%; }",
       "pre { overflow-x: auto; }",
       "[data-mdocss-missing-resource], [data-mdocss-blocked-resource] { outline: 1px dashed #b00; }",
-      "@media print { html, body, .mdocss-document { background: white !important; } }"
+      "@media print { html, body { padding: 0; background: white !important; } .mdocss-document { background: white !important; } }"
     ].join("\n");
   }
 
