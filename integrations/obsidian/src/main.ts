@@ -741,7 +741,7 @@ class MdocssView extends FileView {
         cls: "mdocss-obsidian-frame",
         attr: {
           title: `Rendered MDOCSS: ${file.basename}`,
-          sandbox: "allow-same-origin"
+          sandbox: "allow-same-origin allow-modals"
         }
       });
 
