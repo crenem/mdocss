@@ -131,6 +131,33 @@ try {
   );
   assert.equal(await frame.locator(".mdocss-document").innerText(), originalText);
 
+  // The APA profile exposes standards-based physical pagination rules.
+  const apaCss = await frame.locator("#mdocss-style").textContent();
+  assert.match(apaCss || "", /@page\s*\{/);
+  assert.match(apaCss || "", /@top-right[\s\S]*counter\(page\)/);
+  assert.match(apaCss || "", /orphans:\s*\d+/);
+  assert.match(apaCss || "", /widows:\s*\d+/);
+
+  // Render the real iframe document through Chrome's physical-page PDF path.
+  // Title, abstract, and references carry forced page boundaries, so this
+  // fixture must fragment to at least three physical pages.
+  const printableHtml = await frame.locator("html").evaluate(element => element.outerHTML);
+  const paginationPage = await browser.newPage();
+  await paginationPage.setContent(printableHtml, { waitUntil: "load" });
+  await paginationPage.emulateMedia({ media: "print" });
+  const paginationPdf = await paginationPage.pdf({
+    printBackground: true,
+    preferCSSPageSize: true,
+    displayHeaderFooter: false
+  });
+  const pdfText = Buffer.from(paginationPdf).toString("latin1");
+  const physicalPages = (pdfText.match(/\/Type\s*\/Page\b/g) || []).length;
+  assert.ok(
+    physicalPages >= 3,
+    `APA pagination should produce at least 3 physical pages; got ${physicalPages}`
+  );
+  await paginationPage.close();
+
   // Print button calls the document frame's print function.
   await frame.locator("body").evaluate(() => {
     window.__mdocssPrintCalled = false;
