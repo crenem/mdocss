@@ -35,16 +35,16 @@ html = html.replace(
 );
 
 if (/<script\b[^>]*\bsrc\s*=/i.test(html)) {
-  throw new Error("Studio single-file build still contains an external script reference.");
+  throw new Error("DocumentOne single-file build still contains an external script reference.");
 }
 if (/<link\b[^>]*\brel=["']?stylesheet/i.test(html)) {
-  throw new Error("Studio single-file build still contains an external stylesheet reference.");
+  throw new Error("DocumentOne single-file build still contains an external stylesheet reference.");
 }
 
 const outDir = path.join(root, "artifacts");
 await fs.mkdir(outDir, { recursive: true });
-const out = path.join(outDir, "MDOCSS-Studio.html");
+const out = path.join(outDir, "DocumentOne.html");
 await fs.writeFile(out, html, "utf8");
 
 const bytes = Buffer.byteLength(html, "utf8");
-console.log("Wrote artifacts/MDOCSS-Studio.html (" + bytes + " bytes)");
+console.log("Wrote artifacts/DocumentOne.html (" + bytes + " bytes)");
