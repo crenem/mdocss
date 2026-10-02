@@ -20,7 +20,9 @@
     "package:smoke": "node scripts/package-smoke-kit.mjs",
     "test:browser-runtime": "node scripts/browser-runtime-smoke.mjs",
     "build:studio": "node scripts/build-studio.mjs",
-    "test:studio-runtime": "node scripts/studio-runtime-smoke.mjs"
+    "test:studio-runtime": "node scripts/studio-runtime-smoke.mjs",
+    "build:documentone": "node scripts/build-studio.mjs",
+    "test:documentone-runtime": "node scripts/studio-runtime-smoke.mjs"
   },
   "dependencies": {
     "ajv": "^8.17.1",
