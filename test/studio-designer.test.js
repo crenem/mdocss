@@ -38,7 +38,7 @@ test("DocumentOne designer preserves CSS outside its managed override block", ()
   assert.match(changed, /\.custom-rule \{ border: 3px solid rebeccapurple; \}/);
   assert.match(changed, /\.after \{ display: grid; \}/);
   assert.match(changed, /font-size:\s*14pt/);
-  assert.equal((changed.match(/MDOCSS DocumentOne managed overrides: begin/g) || []).length, 1);
+  assert.equal((changed.match(/DocumentOne managed overrides: begin/g) || []).length, 1);
 });
 
 test("DocumentOne managed overrides can be removed without deleting author CSS", () => {
