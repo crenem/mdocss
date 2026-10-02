@@ -1,0 +1,183 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>MDOCSS Studio</title>
+  <link rel="stylesheet" href="./src/app.css">
+</head>
+<body>
+  <main class="studio-shell">
+    <header class="topbar">
+      <div class="brand">
+        <strong>MDOCSS</strong>
+        <span>Studio</span>
+        <span class="local-badge" title="Documents are processed in this browser">Local</span>
+      </div>
+
+      <div class="file-actions">
+        <button id="new-button" type="button">New</button>
+        <label class="file-button">
+          <span>Open</span>
+          <input id="file-input" type="file" accept=".mdocss,application/zip">
+        </label>
+        <button id="save-button" type="button" disabled>Save Copy</button>
+        <button id="print-button" type="button" disabled>Print</button>
+      </div>
+    </header>
+
+    <section class="workspace">
+      <aside class="source-pane" aria-label="Document source">
+        <div class="pane-heading">
+          <div class="tabs" role="tablist" aria-label="Source editor">
+            <button class="tab is-active" id="markdown-tab" type="button" role="tab" aria-selected="true">Markdown</button>
+            <button class="tab" id="css-tab" type="button" role="tab" aria-selected="false">CSS</button>
+          </div>
+          <span id="dirty-indicator" class="dirty-indicator" hidden>Modified</span>
+        </div>
+
+        <textarea id="markdown-editor" class="source-editor" spellcheck="true" aria-label="root.md editor" disabled></textarea>
+        <textarea id="css-editor" class="source-editor" spellcheck="false" aria-label="Active stylesheet editor" hidden disabled></textarea>
+
+        <div class="source-footer">
+          <span id="source-label">No document loaded</span>
+        </div>
+      </aside>
+
+      <section class="preview-pane" id="drop-zone" aria-label="Document preview">
+        <div class="preview-toolbar">
+          <label>
+            <span>Style</span>
+            <select id="style-select" disabled>
+              <option>No document loaded</option>
+            </select>
+          </label>
+          <span id="preview-mode">Continuous preview</span>
+        </div>
+
+        <div id="empty-state" class="empty-state">
+          <h1>MDOCSS Studio</h1>
+          <p>Create a document, open a <code>.mdocss</code> file, or drop one here.</p>
+          <p class="muted">This portable editor works entirely in your browser. Document content is not uploaded.</p>
+        </div>
+
+        <iframe
+          id="document-frame"
+          class="document-frame"
+          title="Rendered MDOCSS document"
+          sandbox="allow-same-origin allow-modals"
+          hidden
+        ></iframe>
+      </section>
+
+      <aside class="designer-pane" aria-label="Style designer">
+        <div class="pane-heading">
+          <strong>Style Designer</strong>
+        </div>
+
+        <div class="designer-scroll">
+          <p class="designer-note">Designer changes are written to a managed CSS override block. CSS outside that block is preserved.</p>
+
+          <fieldset id="designer-controls" disabled>
+            <legend>Typography</legend>
+
+            <label>
+              <span>Body font</span>
+              <select id="font-family">
+                <option value='"Times New Roman", Times, serif'>Times New Roman</option>
+                <option value='Georgia, serif'>Georgia</option>
+                <option value='Arial, Helvetica, sans-serif'>Arial</option>
+                <option value='system-ui, sans-serif'>System UI</option>
+              </select>
+            </label>
+
+            <div class="field-row">
+              <label>
+                <span>Size</span>
+                <input id="font-size" type="number" min="8" max="36" step="0.5" value="12">
+              </label>
+              <label>
+                <span>Line height</span>
+                <input id="line-height" type="number" min="1" max="3" step="0.05" value="1.5">
+              </label>
+            </div>
+
+            <div class="field-row">
+              <label>
+                <span>Text</span>
+                <input id="text-color" type="color" value="#111111">
+              </label>
+              <label>
+                <span>Page</span>
+                <input id="page-color" type="color" value="#ffffff">
+              </label>
+            </div>
+          </fieldset>
+
+          <fieldset id="page-controls" disabled>
+            <legend>Page</legend>
+
+            <label>
+              <span>Paper</span>
+              <select id="page-size">
+                <option value="letter">Letter</option>
+                <option value="A4">A4</option>
+                <option value="auto">Printer default</option>
+              </select>
+            </label>
+
+            <label>
+              <span>Margins (in)</span>
+              <input id="page-margin" type="number" min="0.25" max="3" step="0.05" value="1">
+            </label>
+
+            <label>
+              <span>Page numbers</span>
+              <select id="page-number">
+                <option value="none">None</option>
+                <option value="top-right">Top right</option>
+                <option value="bottom-center">Bottom center</option>
+                <option value="bottom-center-total">Bottom center — Page X of Y</option>
+              </select>
+            </label>
+          </fieldset>
+
+          <fieldset id="paragraph-controls" disabled>
+            <legend>Paragraphs</legend>
+
+            <label>
+              <span>First-line indent (in)</span>
+              <input id="paragraph-indent" type="number" min="0" max="2" step="0.05" value="0">
+            </label>
+
+            <div class="field-row">
+              <label>
+                <span>Widows</span>
+                <input id="widows" type="number" min="1" max="8" step="1" value="2">
+              </label>
+              <label>
+                <span>Orphans</span>
+                <input id="orphans" type="number" min="1" max="8" step="1" value="2">
+              </label>
+            </div>
+
+            <label class="check-label">
+              <input id="keep-headings" type="checkbox" checked>
+              <span>Keep headings with following content</span>
+            </label>
+          </fieldset>
+
+          <button id="reset-designer" type="button" disabled>Remove Designer Overrides</button>
+        </div>
+      </aside>
+    </section>
+
+    <footer class="statusbar">
+      <span id="status" role="status" aria-live="polite">Ready.</span>
+      <span id="document-info"></span>
+    </footer>
+  </main>
+
+  <script src="./dist/app.js" defer></script>
+</body>
+</html>
