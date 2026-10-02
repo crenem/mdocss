@@ -90,6 +90,12 @@ try {
     document.querySelector("#css-editor")?.value.includes("font-size: 14pt")
   );
 
+  await page.waitForFunction(() => {
+    const frame = document.querySelector("#document-frame");
+    const node = frame?.contentDocument?.querySelector(".mdocss-document");
+    return node && frame.contentWindow.getComputedStyle(node).fontSize !== "16px";
+  });
+
   const renderedFont = await frame.locator(".mdocss-document").evaluate(node =>
     getComputedStyle(node).fontSize
   );
