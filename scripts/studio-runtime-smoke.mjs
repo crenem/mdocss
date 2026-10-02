@@ -84,8 +84,7 @@ try {
 
   // WYSIWYG typing updates canonical Markdown underneath.
   const originalParagraph = frame.getByText("Original text.", { exact: true });
-  const editedParagraph = frame.locator("p").filter({ hasText: "Edited on paper." }).first();
-  await editedParagraph.evaluate(element => {
+  await originalParagraph.evaluate(element => {
     element.textContent += " Edited on paper.";
     element.dispatchEvent(
       new InputEvent("input", {
@@ -106,7 +105,8 @@ try {
   );
 
   // Select the inserted words in the paper and format them using the host toolbar.
-  await originalParagraph.evaluate(element => {
+  const editedParagraph = frame.locator("p").filter({ hasText: "Edited on paper." }).first();
+  await editedParagraph.evaluate(element => {
     const text = element.firstChild;
     const value = text?.nodeValue || "";
     const phrase = "Edited on paper.";
