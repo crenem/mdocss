@@ -7,7 +7,7 @@ This document tracks issues that should be settled before the core format is dec
 
 ## Normative language
 
-Current status: **first-pass audit complete; final RC review pending**
+Current status: **pre-RC audit complete; post-feedback audit pending**
 
 - `SPEC.md` uses MUST/SHOULD/MAY terminology.
 - `SPEC.md` now explicitly references BCP 14 / RFC 2119 and RFC 8174.
@@ -15,7 +15,7 @@ Current status: **first-pass audit complete; final RC review pending**
 
 ## Schema/spec consistency
 
-Current status: **strong, still under audit**
+Current status: **RC contract frozen; post-feedback review pending**
 
 - manifest examples validate through the reference CLI;
 - the conformance corpus exercises schema failures and cross-field stylesheet rules;
@@ -38,7 +38,7 @@ Remaining work:
 
 ## Security
 
-Current status: **documented and tested, no external security review**
+Current status: **documented and runtime-tested; no external security review**
 
 Covered:
 
@@ -56,8 +56,8 @@ Covered:
 
 Remaining work:
 
-- manual hostile-document smoke testing in the browser viewer and Obsidian host;
-- independent review before a stable 1.0 release if feasible.
+- independent security/interoperability review before stable 1.0 if feasible;
+- repeat the final security audit after RC feedback is dispositioned.
 
 ## Media type
 
@@ -88,14 +88,14 @@ Every authored core role is now exercised by the generated style-demo source, an
 
 ## Rendering interoperability
 
-Current status: **multiple implementation paths present; runtime and third-party verification pending**
+Current status: **runtime verification complete; third-party verification pending**
 
 Implemented:
 
 - standalone browser reference viewer;
 - Obsidian custom `.mdocss` reader.
 
-Both build in CI and share the same format contract. CI packages both the browser viewer and the Obsidian reader for manual testing. The browser path now passes a real hosted-Chrome runtime gate covering style switching, content invariance, local/remote resource handling, print delegation, unsafe ZIP rejection, and generated-markup metadata escaping. That gate exposed and led to a fix for stale rendered content remaining visible after a rejected package. `SMOKE_TEST.md` defines the remaining cross-render/Obsidian procedure; completion is tracked in issue #2.
+Both build in CI and share the same format contract. The browser path passes a real hosted-Chrome runtime gate covering style switching, content invariance, local/remote resource handling, physical PDF pagination, print delegation, unsafe ZIP rejection, and generated-markup metadata escaping. The Windows/Obsidian smoke test also passed after the sandbox print-dialog fix. Runtime issue #2 is complete.
 
 The repository now also contains a standard-library Python validator/recovery reader written from the specification rather than ported from the Node implementation. CI runs both implementations against the same public corpus. This provides implementation-language independence, but not independent-party review. A genuinely third-party implementation or external code review would still provide stronger evidence and remains tracked with the RC feedback period in issue #5.
 
@@ -133,12 +133,9 @@ No broader patent or third-party-rights representation is implied by that statem
 
 ### Entry into v0.9 release-candidate phase
 
-The current blockers to publishing the first v0.9 RC are:
+**Met.** Browser and Obsidian runtime testing is complete, the exact 1.0 schema is frozen, CSS-native pagination is runtime-tested through Chrome's PDF path, and the pre-RC normative/security/schema audit is complete.
 
-1. complete the browser/Obsidian runtime smoke test — issue #2;
-2. complete the final pre-RC normative/security/schema audit after the runtime findings are available.
-
-The media-type registration strategy is already frozen. Submission itself depends on a stable versioned specification URL plus registrant/contact details and does not block publishing an RC.
+The media-type registration strategy is already frozen. Submission itself depends on a stable versioned specification URL plus registrant/contact details and does not block the RC feedback phase.
 
 The in-repository implementation/versioning review, shared 41-case dual-language conformance exercise, and second-pass review of `IMPLEMENTATION.md`, `VERSIONING.md`, and `MIGRATION.md` are complete.
 
