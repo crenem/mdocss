@@ -1,6 +1,12 @@
 @page {
   size: letter;
   margin: 1in;
+
+  @top-right {
+    content: counter(page);
+    font-family: "Times New Roman", Times, serif;
+    font-size: 12pt;
+  }
 }
 
 .mdocss-document {
@@ -121,6 +127,34 @@
 }
 
 @media print {
+  .mdocss-document h1,
+  .mdocss-document h2,
+  .mdocss-document h3 {
+    break-after: avoid;
+  }
+
+  .mdocss-document p,
+  .mdocss-document li {
+    orphans: 2;
+    widows: 2;
+  }
+
+  .mdocss-document blockquote,
+  .mdocss-reference,
+  .mdocss-figure,
+  .mdocss-table,
+  .mdocss-document tr {
+    break-inside: avoid;
+  }
+
+  .mdocss-document thead {
+    display: table-header-group;
+  }
+
+  .mdocss-appendix {
+    break-before: page;
+  }
+
   .mdocss-document {
     max-width: none;
     padding: 0;
