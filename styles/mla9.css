@@ -1,6 +1,14 @@
 @page {
   size: letter;
   margin: 1in;
+
+  /* Portable baseline: page number only. A surname running head requires
+     authored margin-box content or a richer generated-content workflow. */
+  @top-right {
+    content: counter(page);
+    font-family: "Times New Roman", Times, serif;
+    font-size: 12pt;
+  }
 }
 
 .mdocss-document {
@@ -123,6 +131,33 @@
 }
 
 @media print {
+  .mdocss-document h1,
+  .mdocss-document h2,
+  .mdocss-document h3,
+  .mdocss-document h4,
+  .mdocss-document h5,
+  .mdocss-document h6 {
+    break-after: avoid;
+  }
+
+  .mdocss-document p,
+  .mdocss-document li {
+    orphans: 2;
+    widows: 2;
+  }
+
+  .mdocss-document blockquote,
+  .mdocss-reference,
+  .mdocss-figure,
+  .mdocss-table,
+  .mdocss-document tr {
+    break-inside: avoid;
+  }
+
+  .mdocss-document thead {
+    display: table-header-group;
+  }
+
   .mdocss-document {
     max-width: none;
     padding: 0;
