@@ -137,8 +137,8 @@ let mode = "edit";
 let renderTimer = null;
 let cssTimer = null;
 let savedRange = null;
-let paperObserver = null;
-let paperSyncTimer = null;
+let paperPollTimer = null;
+let lastPaperHtml = "";
 
 function setStatus(message) {
   els.status.textContent = message;
@@ -294,6 +294,7 @@ function syncMarkdownFromPaper() {
   if (!root) return;
 
   const markdown = articleToMarkdown(root);
+  lastPaperHtml = root.innerHTML;
   els.markdownEditor.value = markdown;
   writeEditors(current, markdown, els.cssEditor.value);
   setDirty(true);
@@ -303,31 +304,21 @@ function bindPaperEvents() {
   const root = article();
   if (!root) return;
 
-  paperObserver?.disconnect();
-  clearTimeout(paperSyncTimer);
-
+  clearInterval(paperPollTimer);
+  lastPaperHtml = root.innerHTML;
   root.dataset.documentoneEditorBound = "true";
 
-  paperObserver = new MutationObserver(mutations => {
+  paperPollTimer = setInterval(() => {
     if (!isWritableEditMode()) return;
+    const liveRoot = article();
+    if (!liveRoot) return;
 
-    const meaningful = mutations.some(mutation =>
-      mutation.type === "characterData" ||
-      mutation.type === "childList"
-    );
-    if (!meaningful) return;
+    const html = liveRoot.innerHTML;
+    if (html === lastPaperHtml) return;
 
-    clearTimeout(paperSyncTimer);
-    paperSyncTimer = setTimeout(() => {
-      syncMarkdownFromPaper();
-    }, 0);
-  });
-
-  paperObserver.observe(root, {
-    subtree: true,
-    childList: true,
-    characterData: true
-  });
+    lastPaperHtml = html;
+    syncMarkdownFromPaper();
+  }, 120);
 }
 
 async function render({ syncDesigner = false } = {}) {
@@ -728,7 +719,7 @@ els.dropZone.addEventListener("drop", event => {
 });
 
 window.addEventListener("beforeunload", event => {
-  paperObserver?.disconnect();
+  clearInterval(paperPollTimer);
   renderer.revokeAssets();
   if (current?.dirty) {
     event.preventDefault();
