@@ -137,7 +137,6 @@ let mode = "edit";
 let renderTimer = null;
 let cssTimer = null;
 let savedRange = null;
-let paperPollTimer = null;
 let lastPaperHtml = "";
 
 function setStatus(message) {
@@ -194,6 +193,9 @@ function setEditingState() {
 
 function setMode(nextMode) {
   if (!current) return;
+  if (mode === "edit" && nextMode === "read" && !current.readOnly) {
+    syncMarkdownFromPaper();
+  }
   mode = current.readOnly ? "read" : (nextMode === "read" ? "read" : "edit");
   document.body.classList.toggle("reading-mode", mode === "read");
   els.readModeButton.classList.toggle("is-active", mode === "read");
@@ -303,22 +305,8 @@ function syncMarkdownFromPaper() {
 function bindPaperEvents() {
   const root = article();
   if (!root) return;
-
-  clearInterval(paperPollTimer);
   lastPaperHtml = root.innerHTML;
   root.dataset.documentoneEditorBound = "true";
-
-  paperPollTimer = setInterval(() => {
-    if (!isWritableEditMode()) return;
-    const liveRoot = article();
-    if (!liveRoot) return;
-
-    const html = liveRoot.innerHTML;
-    if (html === lastPaperHtml) return;
-
-    lastPaperHtml = html;
-    syncMarkdownFromPaper();
-  }, 120);
 }
 
 async function render({ syncDesigner = false } = {}) {
@@ -602,7 +590,10 @@ els.readModeButton.addEventListener("click", () => setMode("read"));
 els.editModeButton.addEventListener("click", () => setMode("edit"));
 
 els.designTab.addEventListener("click", () => setInspectorTab("design"));
-els.sourceTab.addEventListener("click", () => setInspectorTab("source"));
+els.sourceTab.addEventListener("click", () => {
+  if (isWritableEditMode()) syncMarkdownFromPaper();
+  setInspectorTab("source");
+});
 els.markdownTab.addEventListener("click", () => setSourceTab("markdown"));
 els.cssTab.addEventListener("click", () => setSourceTab("css"));
 
@@ -719,9 +710,14 @@ els.dropZone.addEventListener("drop", event => {
 });
 
 window.addEventListener("beforeunload", event => {
-  clearInterval(paperPollTimer);
+  const unsynchronizedPaper = Boolean(
+    current &&
+    mode === "edit" &&
+    article() &&
+    article().innerHTML !== lastPaperHtml
+  );
   renderer.revokeAssets();
-  if (current?.dirty) {
+  if (current?.dirty || unsynchronizedPaper) {
     event.preventDefault();
     event.returnValue = "";
   }
