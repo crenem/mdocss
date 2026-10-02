@@ -51,7 +51,9 @@ A stylesheet can control presentation, but it cannot make the underlying writing
 
 For example, `apa7-student.css` can provide margins, spacing, title-page layout, heading presentation, and hanging references. It cannot determine whether an in-text citation is correct, whether a source entry contains the required bibliographic elements, or whether an instructor has imposed additional requirements.
 
-Browser print engines also differ in support for advanced paged-media features such as running headers and generated page numbers. Applications may layer platform-specific pagination support on top of these portable CSS profiles.
+The reference styles use standard CSS Paged Media for page size/margins, page counters, break control, widows/orphans, and table fragmentation. Current Chromium/Electron print engines support `@page` margin boxes and the `page` / `pages` counters, so the reference readers can generate page numbers without an MDOCSS-specific pagination layer.
+
+Dynamic running heads derived from document content remain less portable than page counters. Profiles therefore degrade conservatively rather than pretending to provide editorial features the active renderer cannot support.
 
 ## Sources consulted for the reference academic layouts
 
