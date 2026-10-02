@@ -35,7 +35,7 @@ jobs:
           path: |
             artifacts/mdocss-obsidian-*.zip
             artifacts/mdocss-reference-viewer.zip
-            artifacts/MDOCSS-Studio.html
+            artifacts/DocumentOne.html
             artifacts/mdocss-style-demo.mdocss
             artifacts/mdocss-smoke-kit.zip
           if-no-files-found: error
