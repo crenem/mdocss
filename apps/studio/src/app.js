@@ -304,10 +304,14 @@ function bindPaperEvents() {
 
   doc.execCommand("defaultParagraphSeparator", false, "p");
 
-  root.addEventListener("input", () => {
-    syncMarkdownFromPaper();
-    rememberSelection();
-  });
+  doc.addEventListener("input", event => {
+    if (root.contains(event.target) || event.target === root) {
+      syncMarkdownFromPaper();
+      rememberSelection();
+    }
+  }, true);
+
+  root.dataset.documentoneEditorBound = "true";
 
   root.addEventListener("keyup", rememberSelection);
   root.addEventListener("mouseup", rememberSelection);
