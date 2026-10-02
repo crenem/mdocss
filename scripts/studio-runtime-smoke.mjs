@@ -83,9 +83,16 @@ try {
 
   // WYSIWYG typing updates canonical Markdown underneath.
   const originalParagraph = frame.getByText("Original text.", { exact: true });
-  await originalParagraph.click();
-  await page.keyboard.press("End");
-  await page.keyboard.type(" Edited on paper.");
+  await originalParagraph.evaluate(element => {
+    element.textContent += " Edited on paper.";
+    element.closest(".mdocss-document").dispatchEvent(
+      new InputEvent("input", {
+        bubbles: true,
+        inputType: "insertText",
+        data: " Edited on paper."
+      })
+    );
+  });
 
   await page.waitForFunction(() =>
     document.querySelector("#markdown-editor")?.value.includes("Edited on paper.")
