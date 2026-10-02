@@ -7,6 +7,10 @@
 - Escaped manifest-derived language metadata before inserting it into generated browser/Obsidian iframe markup.
 - Added a hosted-Chrome runtime smoke gate covering real package loading, seven-profile style switching, semantic-content invariance, source-package invariance, local assets, blocked remote resources, print delegation, hostile archive rejection, ZIP-profile rejection, and metadata-escaping behavior.
 - Fixed a browser-viewer bug discovered by the runtime gate where author CSS on `.document-frame` overrode the HTML `hidden` state and could leave stale content visible after a rejected package.
+- Completed the Windows/Obsidian runtime gate, including a sandbox fix allowing user-initiated print dialogs without enabling document scripts.
+- Defined CSS-native pagination for 1.0 using standard `@page`, margin boxes, page counters, fragmentation controls, widows/orphans, and repeated table headers.
+- Added page counters and print-fragmentation rules across all seven reference styles.
+- Added a hosted-Chrome physical-PDF pagination test using the APA reference document.
 
 - Defined ZIP-based MDOCSS container.
 - Required `root.md` canonical content.
