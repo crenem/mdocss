@@ -121,7 +121,7 @@ try {
   });
 
   await page.click("#bold-button");
-  await frame.locator("strong").filter({ hasText: "Edited on paper." }).waitFor();
+  await frame.locator("strong, b").filter({ hasText: "Edited on paper." }).waitFor();
 
   await page.waitForFunction(() =>
     /\*\*Edited on paper\.\*\*/.test(document.querySelector("#markdown-editor")?.value || "")
