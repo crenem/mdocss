@@ -1,3 +1,14 @@
+@page {
+  size: auto;
+  margin: 0.8in;
+
+  @bottom-center {
+    content: counter(page);
+    font-family: Georgia, Cambria, "Times New Roman", serif;
+    font-size: 10pt;
+  }
+}
+
 .mdocss-document {
   max-width: 72ch;
   margin: 0 auto;
@@ -67,6 +78,30 @@
 }
 
 @media print {
+  .mdocss-document h1,
+  .mdocss-document h2,
+  .mdocss-document h3 {
+    break-after: avoid;
+  }
+
+  .mdocss-document p,
+  .mdocss-document li {
+    orphans: 3;
+    widows: 3;
+  }
+
+  .mdocss-document blockquote,
+  .mdocss-reference,
+  .mdocss-figure,
+  .mdocss-table,
+  .mdocss-document tr {
+    break-inside: avoid;
+  }
+
+  .mdocss-document thead {
+    display: table-header-group;
+  }
+
   .mdocss-document {
     max-width: none;
     padding: 0;
