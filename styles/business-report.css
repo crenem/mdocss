@@ -1,3 +1,14 @@
+@page {
+  size: auto;
+  margin: 0.75in;
+
+  @bottom-center {
+    content: "Page " counter(page) " of " counter(pages);
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 9pt;
+  }
+}
+
 .mdocss-document {
   max-width: 52rem;
   margin: 0 auto;
@@ -76,6 +87,34 @@
 }
 
 @media print {
+  .mdocss-document h1,
+  .mdocss-document h2,
+  .mdocss-document h3 {
+    break-after: avoid;
+  }
+
+  .mdocss-document p,
+  .mdocss-document li {
+    orphans: 3;
+    widows: 3;
+  }
+
+  .mdocss-document blockquote,
+  .mdocss-reference,
+  .mdocss-figure,
+  .mdocss-table,
+  .mdocss-document tr {
+    break-inside: avoid;
+  }
+
+  .mdocss-document thead {
+    display: table-header-group;
+  }
+
+  .mdocss-appendix {
+    break-before: page;
+  }
+
   .mdocss-document {
     max-width: none;
     padding: 0;
