@@ -37,3 +37,33 @@ test("academic reference profiles are present", async () => {
   assert.ok(ids.has("org.mdocss.mla9"));
   assert.ok(ids.has("org.mdocss.chicago18.manuscript"));
 });
+
+
+test("every reference profile provides a portable print pagination baseline", async () => {
+  const catalog = JSON.parse(await fs.readFile("styles/profiles.json", "utf8"));
+
+  for (const profile of catalog.profiles) {
+    const css = await fs.readFile(path.join("styles", profile.file), "utf8");
+
+    assert.match(css, /@page\s*\{/s, `${profile.file}: missing @page`);
+    assert.match(css, /counter\(page\)/, `${profile.file}: missing page counter`);
+    assert.match(css, /@media\s+print\s*\{/s, `${profile.file}: missing print media block`);
+    assert.match(css, /break-after:\s*avoid/, `${profile.file}: headings should avoid orphaning`);
+    assert.match(css, /break-inside:\s*avoid/, `${profile.file}: missing fragmentation avoidance`);
+    assert.match(css, /orphans:\s*\d+/, `${profile.file}: missing orphan control`);
+    assert.match(css, /widows:\s*\d+/, `${profile.file}: missing widow control`);
+    assert.match(css, /display:\s*table-header-group/, `${profile.file}: missing repeated table-header rule`);
+  }
+});
+
+test("academic pagination profiles use Letter pages and visible page counters", async () => {
+  for (const file of [
+    "apa7-student.css",
+    "mla9.css",
+    "chicago18-manuscript.css"
+  ]) {
+    const css = await fs.readFile(path.join("styles", file), "utf8");
+    assert.match(css, /@page[\s\S]*?size:\s*letter/);
+    assert.match(css, /@top-right[\s\S]*?counter\(page\)/);
+  }
+});
