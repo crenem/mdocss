@@ -84,7 +84,8 @@ try {
 
   // WYSIWYG typing updates canonical Markdown underneath.
   const originalParagraph = frame.getByText("Original text.", { exact: true });
-  await originalParagraph.evaluate(element => {
+  const editedParagraph = frame.locator("p").filter({ hasText: "Edited on paper." }).first();
+  await editedParagraph.evaluate(element => {
     element.textContent += " Edited on paper.";
     element.dispatchEvent(
       new InputEvent("input", {
