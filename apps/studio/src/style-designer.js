@@ -1,5 +1,9 @@
-export const MANAGED_BEGIN = "/* MDOCSS Studio managed overrides: begin */";
-export const MANAGED_END = "/* MDOCSS Studio managed overrides: end */";
+export const MANAGED_BEGIN = "/* DocumentOne managed overrides: begin */";
+export const MANAGED_END = "/* DocumentOne managed overrides: end */";
+
+function cssString(value) {
+  return JSON.stringify(String(value || ""));
+}
 
 function pageNumberRule(position) {
   if (position === "top-right") {
@@ -12,6 +16,12 @@ function pageNumberRule(position) {
     return '\n  @bottom-center { content: "Page " counter(page) " of " counter(pages); font-family: inherit; font-size: 10pt; }';
   }
   return "";
+}
+
+function headerRule(text, position) {
+  if (!String(text || "").trim()) return "";
+  const box = position === "top-center" ? "@top-center" : "@top-left";
+  return "\n  " + box + " { content: " + cssString(text.trim()) + "; font-family: inherit; font-size: 10pt; }";
 }
 
 export function buildManagedCss(state) {
@@ -31,7 +41,9 @@ export function buildManagedCss(state) {
     MANAGED_BEGIN,
     "@page {",
     "  size: " + state.pageSize + ";",
-    "  margin: " + state.pageMargin + "in;" + pageNumberRule(state.pageNumber),
+    "  margin: " + state.pageMargin + "in;" +
+      pageNumberRule(state.pageNumber) +
+      headerRule(state.headerText, state.headerPosition),
     "}",
     "",
     ".mdocss-document {",
@@ -48,7 +60,12 @@ export function buildManagedCss(state) {
     "  widows: " + state.widows + ";",
     "}",
     "",
-    ".mdocss-document p { text-indent: " + state.paragraphIndent + "in; }",
+    ".mdocss-document p {",
+    "  text-align: " + state.paragraphAlign + ";",
+    "  text-indent: " + state.paragraphIndent + "in;",
+    "  margin-top: " + state.paragraphBefore + "pt;",
+    "  margin-bottom: " + state.paragraphAfter + "pt;",
+    "}",
     "",
     ".mdocss-figure,",
     ".mdocss-table,",
@@ -62,10 +79,24 @@ export function buildManagedCss(state) {
 }
 
 export function stripManagedCss(css) {
-  const start = css.indexOf(MANAGED_BEGIN);
-  const end = css.indexOf(MANAGED_END);
-  if (start < 0 || end < start) return css.trimEnd();
-  return (css.slice(0, start) + css.slice(end + MANAGED_END.length)).trimEnd();
+  const oldBegins = [
+    MANAGED_BEGIN,
+    "/* MDOCSS Studio managed overrides: begin */"
+  ];
+  const oldEnds = [
+    MANAGED_END,
+    "/* MDOCSS Studio managed overrides: end */"
+  ];
+
+  let result = String(css || "");
+  for (let i = 0; i < oldBegins.length; i++) {
+    const start = result.indexOf(oldBegins[i]);
+    const end = result.indexOf(oldEnds[i]);
+    if (start >= 0 && end >= start) {
+      result = result.slice(0, start) + result.slice(end + oldEnds[i].length);
+    }
+  }
+  return result.trimEnd();
 }
 
 export function applyManagedCss(css, state) {
@@ -83,7 +114,12 @@ export function defaultDesignerState() {
     pageSize: "letter",
     pageMargin: 1,
     pageNumber: "top-right",
+    headerText: "",
+    headerPosition: "top-left",
+    paragraphAlign: "left",
     paragraphIndent: 0,
+    paragraphBefore: 0,
+    paragraphAfter: 0,
     widows: 2,
     orphans: 2,
     keepHeadings: true
@@ -114,7 +150,12 @@ export function readDesignerState(controls) {
     pageSize: controls.pageSize.value,
     pageMargin: Number(controls.pageMargin.value) || 1,
     pageNumber: controls.pageNumber.value,
+    headerText: controls.headerText.value,
+    headerPosition: controls.headerPosition.value,
+    paragraphAlign: controls.paragraphAlign.value,
     paragraphIndent: Number(controls.paragraphIndent.value) || 0,
+    paragraphBefore: Number(controls.paragraphBefore.value) || 0,
+    paragraphAfter: Number(controls.paragraphAfter.value) || 0,
     widows: Math.max(1, Math.round(Number(controls.widows.value) || 2)),
     orphans: Math.max(1, Math.round(Number(controls.orphans.value) || 2)),
     keepHeadings: controls.keepHeadings.checked
@@ -157,8 +198,22 @@ export function syncDesignerControls(controls, frame, css) {
     controls.pageNumber.value = "none";
   }
 
+  const headerLeft = /@top-left\s*\{\s*content:\s*"([^"]*)"/i.exec(css)?.[1];
+  const headerCenter = /@top-center\s*\{\s*content:\s*"([^"]*)"/i.exec(css)?.[1];
+  controls.headerText.value = headerCenter ?? headerLeft ?? "";
+  controls.headerPosition.value = headerCenter != null ? "top-center" : "top-left";
+
+  const align = /text-align\s*:\s*(left|center|right|justify)/i.exec(css)?.[1];
+  if (align) controls.paragraphAlign.value = align;
+
   const indent = /text-indent\s*:\s*([0-9.]+)in/i.exec(css)?.[1];
   if (indent) controls.paragraphIndent.value = indent;
+
+  const before = /margin-top\s*:\s*([0-9.]+)pt/i.exec(css)?.[1];
+  if (before) controls.paragraphBefore.value = before;
+
+  const after = /margin-bottom\s*:\s*([0-9.]+)pt/i.exec(css)?.[1];
+  if (after) controls.paragraphAfter.value = after;
 
   const widows = /widows\s*:\s*(\d+)/i.exec(css)?.[1];
   if (widows) controls.widows.value = widows;
