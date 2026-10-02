@@ -43,6 +43,8 @@ jobs:
   browser-runtime:
     runs-on: ubuntu-latest
     timeout-minutes: 15
+    env:
+      MDOCSS_PLAYWRIGHT_CHANNEL: chrome
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -55,5 +57,3 @@ jobs:
       - run: npm run build:style-demo
       - run: npm run test:browser-runtime
       - run: npm run test:studio-runtime
-        env:
-          MDOCSS_PLAYWRIGHT_CHANNEL: chrome
