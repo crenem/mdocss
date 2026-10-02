@@ -96,3 +96,10 @@ Conforming core packages must be single-disk archives, must not require ZIP64, m
 This reduces parser diversity and prevents an archive from being formally “ZIP” while depending on a compression or addressing feature that common document readers cannot process consistently.
 
 Readers should identify these profile violations before interpreting package semantics where practical. A host may still offer explicit recovery tooling, but a package outside the profile is not conforming MDOCSS core.
+
+
+## Sandboxed print dialogs
+
+Reference rich readers render document content in a sandboxed iframe. The sandbox permits `allow-same-origin` for controlled local blob resources and `allow-modals` so an explicit user-initiated Print command can invoke the host print dialog.
+
+The sandbox does **not** include `allow-scripts`. Document scripting therefore remains disabled; permitting modals is not permission to execute document JavaScript.
