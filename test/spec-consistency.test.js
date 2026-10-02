@@ -153,3 +153,15 @@ test("specification states the stylesheet constraints enforced by schema and pac
   assert.match(spec, /href.*MUST end in `\.css`/is);
   assert.match(spec, /exactly one regular UTF-8 CSS file/is);
 });
+
+
+test("rich-reader sandboxes permit print dialogs without enabling document scripts", async () => {
+  const browser = await fs.readFile("viewer/index.html", "utf8");
+  const obsidian = await fs.readFile("integrations/obsidian/src/main.ts", "utf8");
+
+  assert.match(browser, /sandbox="allow-same-origin allow-modals"/);
+  assert.doesNotMatch(browser, /allow-scripts/);
+
+  assert.match(obsidian, /sandbox: "allow-same-origin allow-modals"/);
+  assert.doesNotMatch(obsidian, /allow-scripts/);
+});
