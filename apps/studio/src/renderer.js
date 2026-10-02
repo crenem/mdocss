@@ -15,11 +15,21 @@ export class StudioRenderer {
     this.frame = frame;
     this.documentModel = null;
     this.blobUrls = new Map();
+    this.editable = true;
   }
 
   setDocument(documentModel) {
     this.revokeAssets();
     this.documentModel = documentModel;
+  }
+
+  setEditable(editable) {
+    this.editable = Boolean(editable);
+    const article = this.frame.contentDocument?.querySelector(".mdocss-document");
+    if (article) {
+      article.setAttribute("contenteditable", this.editable ? "true" : "false");
+      article.setAttribute("spellcheck", this.editable ? "true" : "false");
+    }
   }
 
   revokeAssets() {
@@ -51,6 +61,7 @@ export class StudioRenderer {
     for (const [selector, attr] of resourceAttributes) {
       for (const element of parsed.querySelectorAll(selector + "[" + attr + "]")) {
         const value = element.getAttribute(attr);
+        element.setAttribute("data-mdocss-source-src", value || "");
         const kind = referenceKind(value);
         if (kind === "data" || kind === "blob" || kind === "fragment") continue;
 
@@ -73,6 +84,7 @@ export class StudioRenderer {
 
     for (const link of parsed.querySelectorAll("a[href]")) {
       const href = link.getAttribute("href");
+      link.setAttribute("data-mdocss-source-href", href || "");
       const kind = referenceKind(href);
 
       if (kind === "external") {
@@ -182,7 +194,11 @@ export class StudioRenderer {
       '<style id="mdocss-base-style">' + this.baseCss() + "</style>",
       '<style id="mdocss-style">' + css + "</style>",
       "</head>",
-      '<body><article class="mdocss-document">' + content + "</article></body>",
+      '<body><article class="mdocss-document" contenteditable="' +
+        (this.editable ? "true" : "false") +
+        '" spellcheck="' +
+        (this.editable ? "true" : "false") +
+        '">' + content + "</article></body>",
       "</html>"
     ].join("\n");
   }
