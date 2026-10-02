@@ -9,7 +9,7 @@ import {
   stripManagedCss
 } from "../apps/studio/src/style-designer.js";
 
-test("Studio designer emits standard CSS paged-media controls", () => {
+test("DocumentOne designer emits standard CSS paged-media controls", () => {
   const css = buildManagedCss(defaultDesignerState());
   assert.match(css, /@page\s*\{/);
   assert.match(css, /size:\s*letter/);
@@ -20,7 +20,7 @@ test("Studio designer emits standard CSS paged-media controls", () => {
   assert.match(css, /break-after:\s*avoid/);
 });
 
-test("Studio designer preserves CSS outside its managed override block", () => {
+test("DocumentOne designer preserves CSS outside its managed override block", () => {
   const original = [
     ".custom-rule { border: 3px solid rebeccapurple; }",
     "",
@@ -38,10 +38,10 @@ test("Studio designer preserves CSS outside its managed override block", () => {
   assert.match(changed, /\.custom-rule \{ border: 3px solid rebeccapurple; \}/);
   assert.match(changed, /\.after \{ display: grid; \}/);
   assert.match(changed, /font-size:\s*14pt/);
-  assert.equal((changed.match(/MDOCSS Studio managed overrides: begin/g) || []).length, 1);
+  assert.equal((changed.match(/MDOCSS DocumentOne managed overrides: begin/g) || []).length, 1);
 });
 
-test("Studio managed overrides can be removed without deleting author CSS", () => {
+test("DocumentOne managed overrides can be removed without deleting author CSS", () => {
   const authorCss = ".author { color: navy; }";
   const combined = authorCss + "\n\n" + buildManagedCss(defaultDesignerState());
   assert.equal(stripManagedCss(combined), authorCss);
