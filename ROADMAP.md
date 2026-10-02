@@ -57,7 +57,7 @@ Milestones are release gates rather than branch names. The current draft PR alre
 
 ## v0.4 — Reference renderer
 
-**Draft status:** browser reference implementation builds and passes a real hosted-Chrome runtime gate in CI, covering package loading, style hot-swapping, content invariance, local/remote resources, print delegation, hostile input, and generated-markup metadata safety. Final exit verification requires the manual cross-render smoke test against the Obsidian integration.
+**Status:** complete. The browser reference implementation passes a real hosted-Chrome runtime gate in CI, and the same representative packages were manually cross-rendered in Obsidian on Windows. Style switching, local/remote resource behavior, hostile-input handling, print preview, and semantic consistency were verified.
 
 **Goal:** prove interoperable rendering outside the CLI.
 
@@ -74,7 +74,7 @@ Milestones are release gates rather than branch names. The current draft PR alre
 
 ## v0.5 — Obsidian reader MVP
 
-**Draft status:** reader MVP is implemented and type-checks/builds against the current Obsidian API in CI. Manual in-app smoke testing remains before this gate is marked complete.
+**Status:** complete. The reader MVP builds in CI and passed the Windows/Obsidian runtime smoke test, including extension registration, hot-swappable styles, per-file preference persistence, rename migration, local assets, remote-resource blocking, hostile package rejection, print preview, and canonical-content invariance.
 
 **Goal:** make MDOCSS useful in an existing Markdown ecosystem.
 
@@ -146,7 +146,7 @@ Reference academic styles are implementation aids, not claims of endorsement by 
 
 ## v0.9 — Release-candidate phase
 
-**Draft status:** preparation is underway. Normative wording, versioning guidance, migration notes, implementation guidance, semantic-role coverage, schema/example consistency tests, and a release-readiness audit now exist. A second standard-library Python implementation exercises the same public conformance corpus independently of the Node reference code.
+**Status:** release-candidate phase entered. The RC entry gate is satisfied: automated conformance/build gates are green, browser and Obsidian runtime testing has passed, the exact 1.0 manifest schema is frozen in-repository, CSS-native pagination is exercised through the hosted-Chrome PDF path, and the pre-RC normative/security/schema audit is complete. A second standard-library Python implementation exercises the same public conformance corpus independently of the Node reference code.
 
 **Goal:** freeze a candidate 1.0 contract, publish an RC, and use the RC period to search for interoperability failures.
 
@@ -161,7 +161,7 @@ Reference academic styles are implementation aids, not claims of endorsement by 
 - at least two independently functioning reader implementations or code paths tested against the same corpus — implemented in Node and independently authored Python validation/recovery code; third-party review remains desirable
 - release-candidate feedback period
 
-**RC entry gate:** automated conformance/build gates are green, the browser/Obsidian runtime smoke test passes, the exact 1.0 manifest schema is frozen in-repository, and no known issue already requires a breaking core change.
+**RC entry gate:** automated conformance/build gates are green, the browser/Obsidian runtime smoke test passes, the exact 1.0 manifest schema is frozen in-repository, and no known issue already requires a breaking core change. **Met.**
 
 **Exit condition to v1.0:** the documented RC feedback period and independent-party interoperability review are complete, findings are dispositioned, and no known breaking changes are required for ordinary RC documents to become 1.0 documents.
 
