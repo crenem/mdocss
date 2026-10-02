@@ -85,7 +85,7 @@ try {
   const originalParagraph = frame.getByText("Original text.", { exact: true });
   await originalParagraph.evaluate(element => {
     element.textContent += " Edited on paper.";
-    element.closest(".mdocss-document").dispatchEvent(
+    element.dispatchEvent(
       new InputEvent("input", {
         bubbles: true,
         inputType: "insertText",
