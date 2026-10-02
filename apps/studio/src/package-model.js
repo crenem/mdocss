@@ -43,6 +43,17 @@ export function validateArchive(zip, buffer) {
   }
 }
 
+function refreshStyles(documentModel) {
+  documentModel.styles = styleChoices(
+    documentModel.manifest,
+    Boolean(zipEntry(documentModel.zip, "root.css"))
+  );
+
+  if (!documentModel.styles.some(style => style.id === documentModel.activeStyleId)) {
+    documentModel.activeStyleId = chooseInitialStyle(documentModel.manifest, documentModel.styles);
+  }
+}
+
 export async function openPackage(file) {
   const buffer = await file.arrayBuffer();
   const zip = await JSZip.loadAsync(buffer);
@@ -77,7 +88,8 @@ export async function openPackage(file) {
     activeStyleId: chooseInitialStyle(featureManifest, styles),
     markdown,
     readOnly: !compatibility.supported,
-    dirty: false
+    dirty: false,
+    preferredMode: featureManifest?.documentOne?.preferredMode === "read" ? "read" : "edit"
   };
 }
 
@@ -96,12 +108,134 @@ export async function readActiveCss(documentModel) {
   return entry ? decodeUtf8(entry, path) : "";
 }
 
+export function writeManifest(documentModel) {
+  if (!documentModel?.manifest) return;
+  documentModel.zip.file("manifest.json", JSON.stringify(documentModel.manifest, null, 2) + "\n");
+  documentModel.rawManifest = documentModel.manifest;
+}
+
 export function writeEditors(documentModel, markdown, css) {
   if (!documentModel || documentModel.readOnly) return;
   documentModel.zip.file("root.md", markdown);
   documentModel.markdown = markdown;
   const cssPath = activeCssPath(documentModel);
   if (cssPath) documentModel.zip.file(cssPath, css);
+  writeManifest(documentModel);
+}
+
+function styleIdFromLabel(label) {
+  const base = String(label || "style")
+    .normalize("NFKD")
+    .replace(/[^\x00-\x7F]/g, "")
+    .replace(/[^A-Za-z0-9._-]+/g, "-")
+    .replace(/^[^A-Za-z]+/, "")
+    .replace(/-+/g, "-")
+    .replace(/^-|-$/g, "") || "style";
+  return /^[A-Za-z]/.test(base) ? base : "style-" + base;
+}
+
+function uniqueStyleId(documentModel, label) {
+  const base = styleIdFromLabel(label);
+  const used = new Set(documentModel.styles.map(style => style.id));
+  let id = base;
+  let index = 2;
+  while (used.has(id)) id = base + "-" + index++;
+  return id;
+}
+
+export async function addStyle(documentModel, label, css = "") {
+  if (!documentModel?.manifest || documentModel.readOnly) {
+    throw new Error("A writable manifest is required to create styles.");
+  }
+
+  const id = uniqueStyleId(documentModel, label);
+  const href = "styles/" + id + ".css";
+  documentModel.zip.file(href, css);
+  documentModel.manifest.stylesheets = Array.isArray(documentModel.manifest.stylesheets)
+    ? documentModel.manifest.stylesheets
+    : [];
+  documentModel.manifest.stylesheets.push({ id, label: String(label || id), href });
+  if (!documentModel.manifest.defaultStylesheet) {
+    documentModel.manifest.defaultStylesheet = id;
+  }
+  documentModel.activeStyleId = id;
+  refreshStyles(documentModel);
+  writeManifest(documentModel);
+  return id;
+}
+
+export async function duplicateActiveStyle(documentModel, label) {
+  const css = await readActiveCss(documentModel);
+  return addStyle(documentModel, label, css);
+}
+
+export function renameActiveStyle(documentModel, label) {
+  const style = activeStyle(documentModel);
+  if (!style || !documentModel?.manifest || documentModel.readOnly) return false;
+  const declaration = documentModel.manifest.stylesheets?.find(item => item.id === style.id);
+  if (!declaration) return false;
+  declaration.label = String(label || style.label).trim() || style.label;
+  refreshStyles(documentModel);
+  writeManifest(documentModel);
+  return true;
+}
+
+export function deleteActiveStyle(documentModel) {
+  const style = activeStyle(documentModel);
+  if (!style || !documentModel?.manifest || documentModel.readOnly) return false;
+  const declarations = documentModel.manifest.stylesheets;
+  if (!Array.isArray(declarations) || declarations.length <= 1) return false;
+
+  const index = declarations.findIndex(item => item.id === style.id);
+  if (index < 0) return false;
+
+  declarations.splice(index, 1);
+  if (style.href !== "root.css") documentModel.zip.remove(style.href);
+
+  if (documentModel.manifest.defaultStylesheet === style.id) {
+    documentModel.manifest.defaultStylesheet = declarations[0]?.id;
+  }
+
+  documentModel.activeStyleId = declarations[Math.min(index, declarations.length - 1)]?.id || null;
+  refreshStyles(documentModel);
+  writeManifest(documentModel);
+  return true;
+}
+
+function cleanAssetName(name) {
+  const raw = String(name || "image")
+    .normalize("NFKD")
+    .replace(/[^\x00-\x7F]/g, "")
+    .replace(/[^A-Za-z0-9._-]+/g, "-")
+    .replace(/^-+|-+$/g, "");
+  return raw && raw !== "." && raw !== ".." ? raw : "image";
+}
+
+export async function addAsset(documentModel, file) {
+  if (!documentModel || documentModel.readOnly) throw new Error("Document is read-only.");
+  const clean = cleanAssetName(file.name);
+  const dot = clean.lastIndexOf(".");
+  const stem = dot > 0 ? clean.slice(0, dot) : clean;
+  const ext = dot > 0 ? clean.slice(dot) : "";
+
+  let path = "assets/" + clean;
+  let index = 2;
+  while (documentModel.zip.files[path]) {
+    path = "assets/" + stem + "-" + index++ + ext;
+  }
+
+  documentModel.zip.file(path, new Uint8Array(await file.arrayBuffer()));
+  return path;
+}
+
+export function setPreferredMode(documentModel, mode) {
+  if (!documentModel?.manifest || documentModel.readOnly) return;
+  documentModel.manifest.documentOne = {
+    ...(documentModel.manifest.documentOne || {}),
+    preferredMode: mode === "read" ? "read" : "edit"
+  };
+  documentModel.preferredMode = mode === "read" ? "read" : "edit";
+  writeManifest(documentModel);
 }
 
 export async function generatePackageBlob(documentModel, markdown, css) {
@@ -138,7 +272,10 @@ export async function createNewPackage(initialCss) {
     stylesheets: [
       { id: "default", label: "Default", href: "root.css" }
     ],
-    defaultStylesheet: "default"
+    defaultStylesheet: "default",
+    documentOne: {
+      preferredMode: "edit"
+    }
   }, null, 2) + "\n");
 
   const blob = await zip.generateAsync({ type: "blob", compression: "DEFLATE" });
