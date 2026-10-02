@@ -56,7 +56,6 @@ const browser = await chromium.launch({
 const page = await browser.newPage({ acceptDownloads: true });
 const requests = [];
 page.on("request", request => requests.push(request.url()));
-page.on("console", message => console.log("BROWSER", message.type(), message.text()));
 page.on("pageerror", error => console.log("PAGEERROR", error.stack || error.message));
 
 try {
@@ -96,12 +95,14 @@ try {
     );
   });
 
-  await page.waitForTimeout(250);
-  const markdownAfterPaperEdit = await page.locator("#markdown-editor").inputValue();
-  const statusAfterPaperEdit = await page.locator("#status").textContent();
-  console.log("MARKDOWN_AFTER_PAPER_EDIT", JSON.stringify(markdownAfterPaperEdit));
-  console.log("STATUS_AFTER_PAPER_EDIT", JSON.stringify(statusAfterPaperEdit));
-  assert.match(markdownAfterPaperEdit, /Edited on paper\./);
+  await page.click("#source-tab");
+  await page.waitForFunction(() =>
+    document.querySelector("#markdown-editor")?.value.includes("Edited on paper.")
+  );
+  assert.match(
+    await page.locator("#markdown-editor").inputValue(),
+    /Edited on paper\./
+  );
 
   // Select the inserted words in the paper and format them using the host toolbar.
   await originalParagraph.evaluate(element => {
