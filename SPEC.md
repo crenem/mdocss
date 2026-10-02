@@ -146,6 +146,18 @@ Readers SHOULD scope document CSS so it cannot style the host application's chro
 
 Relative CSS resources are resolved inside the archive. Readers MUST NOT resolve archive-relative references outside the archive and SHOULD NOT fetch remote CSS, fonts, images, or other network resources without explicit user or host-application permission.
 
+### 4.5 Paged media
+
+An MDOCSS stylesheet MAY use standard CSS Paged Media and fragmentation features, including `@page`, page-margin boxes, `counter(page)`, `counter(pages)`, `break-*`, `widows`, and `orphans`.
+
+Readers that expose printing SHOULD preserve supported paged-media rules from the active stylesheet.
+
+Page numbers, running headers, page size, margins, and page-break choices are presentation and MUST NOT require modification of canonical `root.md`.
+
+MDOCSS 1.0 does not require unrelated rendering engines to produce identical line breaks, page counts, or element-to-page assignments. Font metrics, supported CSS features, target paper, and renderer behavior can legitimately affect final pagination.
+
+See `PRINT.md` for portability guidance.
+
 ## 5. Semantic class profile
 
 MDOCSS defines a companion Core Semantic Class Profile in `SEMANTICS.md`.
